@@ -3,14 +3,17 @@ version: "3.9"
 services:
   database:
     container_name: mssql-server
-    image: mcr.microsoft.com/azure-sql-edge
+    # image: mcr.microsoft.com/mssql/server:2019-latest #windows
+    image: mcr.microsoft.com/azure-sql-edge           #arm
     ports:
       - "1433:1433"
     environment:
       SA_PASSWORD: yourStrong(!)Password
-      ACCEPT_EULA: 1
+      ACCEPT_EULA: Y
       TZ: Asia/Bangkok
+    restart: always
     volumes:
+      # - /data/mssql:/var/opt/mssql
       - database-volume:/var/opt/mssql
     networks:
       - app-network

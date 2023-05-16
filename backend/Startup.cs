@@ -45,41 +45,33 @@ namespace backend
                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                   };
                 });
+
+            services.AddCors(options =>
+              {
+                  options.AddPolicy("AllowSpecificOrigins",
+                   builder =>
+                   {
+                       builder.WithOrigins(
+                           "http://eseal.web",
+                           "http://localhost:4200",
+                           "http://localhost:8080")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                       //.WithMethods("GET", "POST", "HEAD");
+                   });
+
+                  options.AddPolicy("AllowAll",
+                   builder =>
+                   {
+                       builder.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+                   });
+              });
             services.AddControllers();
             // Register the Swagger services
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "eSeal Project Web API", Version = "v1" }));
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigins",
-                 builder =>
-                 {
-                     builder.WithOrigins(
-                         "http://example.com",
-                         "http://localhost:4200")
-                         .AllowAnyHeader()
-                         .AllowAnyMethod();
-                     //.WithMethods("GET", "POST", "HEAD");
-                 });
-
-                options.AddPolicy("AllowAll",
-                 builder =>
-                 {
-                     builder.AllowAnyOrigin()
-                     .AllowAnyHeader()
-                     .AllowAnyMethod();
-                 });
-
-                /*
-                    The browser can skip the preflight request
-                    if the following conditions are true:
-                    - The request method is GET, HEAD, or POST.
-                    - The Content-Type header
-                       - application/x-www-form-urlencoded
-                       - multipart/form-data
-                       - text/plain
-                */
-            });
 
         }
 

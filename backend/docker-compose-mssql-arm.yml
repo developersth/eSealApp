@@ -10,6 +10,8 @@ services:
       SA_PASSWORD: yourStrong(!)Password
       ACCEPT_EULA: 1
       TZ: Asia/Bangkok
+    cap_add:
+      - SYS_PTRACE
     volumes:
       - database-volume:/var/opt/mssql
     networks:

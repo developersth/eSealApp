@@ -68,7 +68,7 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/backend.csproj"
+                "appProject": "${workspaceFolder}/backend/backend.csproj"
             }
         },
         {
