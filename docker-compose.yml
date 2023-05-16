@@ -1,0 +1,71 @@
+version: '3.9'
+
+services:
+  database:
+    container_name: mssql-server
+    # image: mcr.microsoft.com/mssql/server:2019-latest #windows
+    image: mcr.microsoft.com/azure-sql-edge           #arm
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: yourStrong(!)Password
+      ACCEPT_EULA: Y
+      TZ: Asia/Bangkok
+    restart: always
+    volumes:
+      # - /data/mssql:/var/opt/mssql
+      - database-volume:/var/opt/mssql
+    networks:
+      - app-network
+      
+  backend:
+    container_name: esso_backend
+    image: esso_backend
+    build: 
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      - database
+    ports:
+      - 5000:5000
+    restart: always
+    environment:
+      - ConnectionStrings__ConnectionSQLServer=Server=database;user id=sa; password=yourStrong(!)Password; Database=esso;TrustServerCertificate=True;
+      - Jwt__Key=DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4
+      - Jwt__Issuer=Ginnovation Ltd
+      - Jwt__Subject=kritsadee@ginnovation.co.th
+      - Jwt__Audience=www.ginnovation.co.th
+      - Jwt__ExpireDay=1
+    networks:
+      - app-network
+
+  frontend:
+    container_name: frontend-angular
+    image: frontend-angular:1.0
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      - TZ=Asia/Bangkok
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    volumes:
+        - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    
+
+networks:
+  app-network:
+    name : app-network
+
+volumes:
+  database-volume:
+    name : database-volume
+    external : false
+  app-volume:
+    name : app-volume
+    external : false

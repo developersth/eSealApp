@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  database:
+    container_name: azuresqledge
+    image: mcr.microsoft.com/azure-sql-edge
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: yourStrong(!)Password
+      ACCEPT_EULA: 1
+      TZ: Asia/Bangkok
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - database-volume:/var/opt/mssql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name : app-network
+
+volumes:
+  database-volume:
+    name : database-volume
+    external : false

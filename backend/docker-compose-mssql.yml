@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  database:
+    container_name: mssql-server
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: YourStrong!Passw0rd
+      ACCEPT_EULA: Y
+      TZ: Asia/Bangkok
+    restart: always
+    volumes:
+      - database-volume:/var/opt/mssql
+    networks:
+      - app-network
+
+  # mssqltool:
+  #   container_name: mssqltool
+  #   image: mcr.microsoft.com/mssql-tools:latest
+  #   environment:
+  #     ACCEPT_EULA: Y
+  #   depends_on:
+  #     - database
+  #   command: tail -f /dev/null
+  #   volumes:
+  #     - database-volume:/var/opt/mssql
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    name : app-network
+
+volumes:
+  database-volume:
+    name : database-volume
+    external : false

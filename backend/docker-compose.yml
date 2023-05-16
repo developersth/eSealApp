@@ -1,0 +1,47 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.4'
+
+services:
+  database:
+    container_name: mssql-server
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: YourStrong!Passw0rd
+      ACCEPT_EULA: Y
+      TZ: Asia/Bangkok
+    restart: always
+    volumes:
+      - /data/mssql:/var/opt/mssql
+      - database-volume:/var/opt/mssql
+    networks:
+      - app-network
+      
+  backend:
+    container_name: esso_backend
+    image: esso_backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      - ConnectionStrings__ConnectionSQLServer=Server=database;user id=sa; password=YourStrong!Passw0rd; Database=esso;TrustServerCertificate=True;
+      - Jwt__Key=DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4
+      - Jwt__Issuer=Ginnovation Ltd
+      - Jwt__Subject=kritsadee@ginnovation.co.th
+      - Jwt__Audience=www.ginnovation.co.th
+      - Jwt__ExpireDay=1
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name : app-network
+
+volumes:
+  database-volume:
+    name : database-volume
+    external : false
