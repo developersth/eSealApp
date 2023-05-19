@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/auth";
 import firebase from 'firebase/app'
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { delay, tap } from 'rxjs/operators';
 
+const headers = new HttpHeaders().set("Content-Type", "application/json");
 @Injectable()
 export class AuthService {
   private user: Observable<firebase.User>;

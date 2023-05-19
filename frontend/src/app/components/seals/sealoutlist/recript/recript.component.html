@@ -15,9 +15,9 @@
               <br><span style="font-size: larger;">คลังน้ำมันเอสโซ่ศรีราชา</span>
             </p>
             <div>
-              <br>รหัสออเดอร์ : {{data['_id']}}
-              <br>ทะเบียนรถ  : {{data['truckLicense']}}
-              <br>วันที่      : {{data['createAtStr']}}
+              <br>รหัสออเดอร์ : {{id}}
+              <br>ทะเบียนรถ  : {{truckName}}
+              <br>วันที่      : {{created| date: 'yyyy-MM-dd HH:mm'}}
             </div>
           </div>
           <br>
@@ -26,26 +26,27 @@
             <thead>
               <tr>
                 <th>ลำดับ</th>
+                <th>ช่วงหมายเลขซีล</th>
                 <th>หมายเลขซีล</th>
                 <th>แพ็ค</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of data['sealItem'];let i = index">
+              <tr *ngFor="let item of mSealOut;let i = index">
                 <th scope="row">{{i+1}}</th>
                 <td class="description">
-                  <p *ngFor="let sealNoItem of item['sealNoItem']">
-                    {{sealNoItem.sealNo}}
-                  </p>
+                    {{item.sealBetWeen}}
                 </td>
-                <td class="pack">{{item.pack}}</td>
+                <td>
+                   <p>{{item.pack}}</p>
+                </td>
               </tr>
               <tr>
                 <td class="item"></td>
                 <td class="description">รวมทั้งหมด</td>
-                <td class="pack">{{ data['sealTotal'] }} ตัว</td>
+                <td class="pack"> ตัว</td>
               </tr>
-              <tr *ngIf="data['sealItemExtra']">
+              <!-- <tr *ngIf="data['sealItemExtra']">
                 <td colspan="3">ซีลประเภทพิเศษ</td>
               </tr>
               <tr *ngFor="let item of data['sealItemExtra'];let i = index">
@@ -56,13 +57,13 @@
                   </p>
                 </td>
                 <td class="pack">{{item.pack}}</td>
-              </tr>
+              </tr> -->
             </tbody>
-            <tr *ngIf="data['sealItemExtra']">
+            <!-- <tr *ngIf="mSealOut[0].sealTotalExtra>0">
               <td class="item"></td>
               <td class="sealno">รวมทั้งหมด</td>
               <td class="pack">{{ data['sealTotalExtra'] }} ตัว</td>
-            </tr>
+            </tr> -->
           </table>
           <p class="centered">
            ผู้ตรวจสอบ ...............................................

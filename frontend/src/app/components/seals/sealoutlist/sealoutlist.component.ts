@@ -115,12 +115,10 @@ export class SealOutListComponent implements OnInit {
     this.service
       .getSealOutAll(this.isCancel,this.columnSearch, this.searchTerm, startDate, endDate).subscribe((res: any) => {
       this.sealItem = res.result;
-      console.log(this.sealItem);
     });
   }
 
-  deleteData(id: string) {
-    console.log(id);
+  deleteData(id: string) {;
     swal
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
       .then((res) => {
@@ -143,8 +141,8 @@ export class SealOutListComponent implements OnInit {
       size: "md",
     };
     const modalRef = this.modalService.open(RecriptComponent, ngbModalOptions);
-    modalRef.componentInstance.id = item._id;
-    modalRef.componentInstance.data = item;
+    modalRef.componentInstance.id = item.id;
+    //modalRef.componentInstance.data = item;
   }
   sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));

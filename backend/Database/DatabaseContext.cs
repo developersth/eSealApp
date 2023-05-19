@@ -24,6 +24,9 @@ namespace backend.Database
         public virtual DbSet<Truck> Truck { get; set; }
         public virtual DbSet<SealOut> SealOut { get; set; }
         public virtual DbSet<SealOutInfo> SealOutInfo { get; set; }
+        public virtual DbSet<SealInTransaction> SealInTransaction { get; set; }
+        public virtual DbSet<Products> Products { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -73,6 +76,17 @@ namespace backend.Database
             {
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
+            });
+
+            modelBuilder.Entity<SealInTransaction>(entity =>
+            {
+                entity.Property(e => e.Timestamp).HasDefaultValueSql("(getdate())");
+            });
+            
+            modelBuilder.Entity<Products>(entity =>
+            {
+                entity.HasKey(e => e.ProductId);
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
             });
             OnModelCreatingPartial(modelBuilder);
         }

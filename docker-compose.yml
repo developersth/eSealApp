@@ -29,6 +29,8 @@ services:
     ports:
       - 5000:5000
     restart: always
+    volumes:
+      
     environment:
       - ConnectionStrings__ConnectionSQLServer=Server=database;user id=sa; password=yourStrong(!)Password; Database=esso;TrustServerCertificate=True;
       - Jwt__Key=DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4
@@ -68,4 +70,7 @@ volumes:
     external : false
   app-volume:
     name : app-volume
+    external : false
+  dotnet-volume:
+    name : dotnet-volume
     external : false

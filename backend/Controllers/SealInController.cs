@@ -22,14 +22,14 @@ namespace backend.Controllers
         }
         // GET: api/<SealInController>
         [HttpGet]
-        public IActionResult Get([FromQuery] string pIsActive = "",[FromQuery] string pColumnSearch = "", [FromQuery] string searchTerm="", [FromQuery] string pStartDate ="", [FromQuery] string pEndDate="")
+        public IActionResult Get([FromQuery] string pIsActive = "", [FromQuery] string pColumnSearch = "", [FromQuery] string searchTerm = "", [FromQuery] string pStartDate = "", [FromQuery] string pEndDate = "")
         {
             try
             {
                 DateTime startDate = DateTime.Now;
                 DateTime endDate = DateTime.Now;
                 bool vIsActive = false;
-                searchTerm =searchTerm.Trim();
+                searchTerm = searchTerm.Trim();
                 var query = Context.SealIn.AsQueryable();
 
                 if (!string.IsNullOrEmpty(pColumnSearch))
@@ -50,26 +50,28 @@ namespace backend.Controllers
                             break;
                         case "sealNo":
                             query = from s in Context.SealIn
-                                    join si in Context.SealItem on s.Id equals si.SealInId into gj
-                                    from subSi in gj.DefaultIfEmpty()
-                                    where subSi.SealNo == searchTerm
+                                    join st in Context.SealInTransaction on s.Id equals st.SealInId
+                                    join sim in Context.SealItem on st.SealItemId equals sim.Id
+                                    where sim.SealNo == searchTerm
                                     select new SealIn
                                     {
-                                        Id =s.Id,
+                                        Id = s.Id,
                                         SealBetween = s.SealBetween,
                                         Pack = s.Pack,
-                                        IsActive =s.IsActive,
-                                        CreatedBy =s.CreatedBy,
-                                        UpdatedBy=s.UpdatedBy,
-                                        Created=s.Created,
-                                        Updated=s.Updated
+                                        IsActive = s.IsActive,
+                                        CreatedBy = s.CreatedBy,
+                                        UpdatedBy = s.UpdatedBy,
+                                        Created = s.Created,
+                                        Updated = s.Updated
                                     };
+
+
                             break;
 
                         default:
                             return BadRequest("Invalid search column");
                     }
-                    
+
                 }
                 else
                 {
@@ -85,13 +87,13 @@ namespace backend.Controllers
                         endDate = new DateTime(Convert.ToInt16(p[0]), Convert.ToInt16(p[1]), Convert.ToInt16(p[2]));
                     }
                     query = query.Where(u => u.Created >= startDate && u.Created <= endDate);
-                  
+
                 }
 
-                if(!string.IsNullOrEmpty(pIsActive))
+                if (!string.IsNullOrEmpty(pIsActive))
                 {
-                    if(pIsActive=="1") vIsActive = true;
-                    query = query.Where(u=>u.IsActive==vIsActive);
+                    if (pIsActive == "1") vIsActive = true;
+                    query = query.Where(u => u.IsActive == vIsActive);
                 }
                 return Ok(new { result = query.ToList(), message = "request successfully" });
             }
@@ -161,31 +163,43 @@ namespace backend.Controllers
 
                     };
                     Context.SealIn.Add(newSealIn);
-                    if (Context.SaveChanges() > 0)
+                    var result = await Context.SaveChangesAsync();
+                    if (result > 0)
                     {
                         if (item.SealItem != null)
                         {
                             List<SealItem> sealItems = new List<SealItem>();
+                            List<SealInTransaction> sealInTransaction = new List<SealInTransaction>();
                             foreach (var sealItem in item.SealItem)
                             {
                                 var model = new SealItem
                                 {
                                     SealNo = sealItem.SealNo,
-                                    SealInId = newSealIn.Id,
                                     Type = 1, //ปกติ
                                     IsUsed = false,
                                     Status = 1, //ซีลใช้งานได้ปกติ
                                     CreatedBy = sealItem.CreatedBy,
                                     UpdaetedBy = sealItem.UpdaetedBy,
-
                                 };
-                                sealItems.Add(model);
+                                //sealItems.Add(model);
+                                Context.SealItem.Add(model);
+                                if (Context.SaveChanges() > 0)
+                                {
+                                    var transactionModel = new SealInTransaction
+                                    {
+                                        SealInId = newSealIn.Id,
+                                        SealItemId = model.Id,
+                                        SealNo = sealItem.SealNo
+                                    };
+                                    //sealInTransaction.Add(transactionModel);
+                                    Context.SealInTransaction.Add(transactionModel);
+                                    Context.SaveChanges();
+                                }
                             }
-                            Context.SealItem.AddRange(sealItems);
-                            Context.SaveChanges();
+                            //Context.SealItem.AddRange(sealItems);
+                            //Context.SaveChanges();
+
                         }
-
-
                     }
                 }
 
@@ -207,7 +221,7 @@ namespace backend.Controllers
 
         // DELETE api/<SealInController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Int32 id)
         {
             try
             {
@@ -218,13 +232,24 @@ namespace backend.Controllers
                     return NotFound();
                 }
 
-                Context.SealIn.Remove(result);
-                if(Context.SaveChanges()>0)
+                if (result != null)
                 {
-                   var sealItem = Context.SealItem.Where(p => p.SealInId == id);
-                   Context.SealItem.RemoveRange(sealItem);
-                   Context.SaveChanges();
+                    var sealInTransaction = Context.SealInTransaction.Where(p => p.SealInId == result.Id).ToList();
+                    if (sealInTransaction != null)
+                    {
+                        foreach (var item in sealInTransaction)
+                        {
+                            var resultSealItem = Context.SealItem.FirstOrDefault(p => p.Id == item.SealItemId);
+                            Context.SealItem.Remove(resultSealItem);
+                        }
+                        Context.SaveChanges();
+                    }
+                    var sealInTransaction2 = Context.SealInTransaction.Where(p => p.SealInId == result.Id);
+                    Context.SealInTransaction.RemoveRange(sealInTransaction2);
+                    Context.SaveChanges();
                 }
+                Context.SealIn.Remove(result);
+                Context.SaveChanges();
 
                 return Ok(new { result = "", message = "delete product sucessfully" });
             }

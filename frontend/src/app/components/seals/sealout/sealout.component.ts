@@ -23,6 +23,8 @@ import { TruckModalComponent } from "app/components/trucks/truck-modal/truck-mod
 import * as swalFunctions from "../../../shared/services/sweetalert.service";
 import { NgOption } from "@ng-select/ng-select";
 import { Truck } from "app/models/truck.model";
+import { SealItemList } from "app/models/seal.model";
+import { stringify } from "querystring";
 
 @Component({
   selector: "app-sealout",
@@ -58,6 +60,9 @@ export class SealoutComponent implements OnInit {
   itemSealBetWeen: any[] = [];
   itemSealOutList: any[] = [];
   mTruck: Truck[];
+
+  mSealitem: SealItemList[] = [];
+  mSealitemExtra: SealItemList[] = [];
   //seal no item
   sealNoItem: any[] = [];
 
@@ -133,12 +138,16 @@ export class SealoutComponent implements OnInit {
       if (!this.isValidChkAddItemSeal(id, result.pack)) {
         return;
       }
-      this.itemSealOutList.push({
-        sealInId: result.id,
-        sealBetween: result.sealBetween,
-        pack: result.pack,
-        sealtype: 1,
-        sealtypeName: "ปกติ",
+      this.service.getSealItemBySealInId(result.id).subscribe((res: any) => {
+        this.itemSealOutList.push({
+          sealInId: result.id,
+          sealBetween: result.sealBetween,
+          pack: result.pack,
+          sealType: 1,
+          sealTypeName: "ปกติ",
+          sealItemList:JSON.stringify(res.result)
+        });
+
       });
     } else {
       this.toastr.warning("กรุณาเลือก หมายเลขซีล/QR Code");
@@ -150,8 +159,9 @@ export class SealoutComponent implements OnInit {
       sealInId: 0,
       sealBetween: "",
       pack: 1,
-      sealtype: 2,
-      sealtypeName: "พิเศษ",
+      sealType: 2,
+      sealTypeName: "พิเศษ",
+      sealItemList:JSON.stringify([])
     });
   }
   removeItem(item: any) {
@@ -176,6 +186,15 @@ export class SealoutComponent implements OnInit {
     let total: number = 0;
     for (const key in this.itemSealOutList) {
       if (this.itemSealOutList[key].pack) {
+        total += parseInt(this.itemSealOutList[key].pack);
+      }
+    }
+    return total;
+  }
+  subTotalSealExtra() {
+    let total: number = 0;
+    for (const key in this.itemSealOutList) {
+      if (this.itemSealOutList[key].sealType ===2) {
         total += parseInt(this.itemSealOutList[key].pack);
       }
     }
@@ -220,14 +239,11 @@ export class SealoutComponent implements OnInit {
     }
     //check count seal==txtSealTotal
     //seal extra
-    let vCountExtra: number = 0;
     const filterSealExtra = this.itemSealOutList.filter(
-      (obj) => obj.sealtype === 2
+      (obj) => obj.sealType === 2
     );
-    filterSealExtra.forEach((el) => {
-      vCountExtra = vCountExtra + el.pack;
-    });
-    if (this.subTotalSeal() !== parseInt(this.txtSealTotal + vCountExtra)) {
+    console.log(this.subTotalSealExtra());
+    if (this.subTotalSeal() !== parseInt(this.txtSealTotal + this.subTotalSealExtra())) {
       this.toastr.warning("จำนวนซีลไม่เท่ากับจำนวนซีลรวม");
       return false;
     }
@@ -346,8 +362,8 @@ export class SealoutComponent implements OnInit {
       sealTotalExtra: this.txtSealExtraTotal,
       truckId: result.truckId,
       truckName: `${result.truckHead}/${result.truckTail}`,
-      sealItem: this.itemSealOutList,
-      sealItemExtra: this.sealItemExtra,
+      sealItemList:JSON.stringify(this.itemSealOutList)  ,
+      sealItemExtraList:JSON.stringify(this.sealItemExtra) ,
     };
     this.service.updateSealOut(this.getId, JSON.stringify(body)).subscribe(
       (res: any) => {
@@ -378,12 +394,14 @@ export class SealoutComponent implements OnInit {
 
     const body = {
       sealTotal: this.txtSealTotal,
+      sealTotalExtra: this.txtSealExtraTotal,
       truckId: result.truckId,
       truckName: truckName,
-      sealOutInfo: this.itemSealOutList,
+      sealOutInfo:this.itemSealOutList,
       createdBy: "System",
       updatedBy: "System",
     };
+    console.log(body);
     this.service.addSealOut(JSON.stringify(body)).subscribe(
       (res: any) => {
         this.spinner.hide();

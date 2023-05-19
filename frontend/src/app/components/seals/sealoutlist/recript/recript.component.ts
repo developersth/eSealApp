@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from '../../../../services/rest.service';
+import { SealItem, SealItemList, SealOut } from 'app/models/seal.model';
+import { forEach } from 'core-js/core/array';
 @Component({
   selector: 'app-recript',
   templateUrl: './recript.component.html',
@@ -15,25 +17,38 @@ export class RecriptComponent implements OnInit {
     private service: RestService,
     private router: Router,
   ) { }
-  @Input() id: string;
+
   orderNo = '1234';
   dateTime = new Date().toLocaleString();
-  @Input() data: any[] = [];
-  @Input() sealItem: any[] = [];
   @Input() truckLicense: string;
+  mSealItem :any[] = [];
   pdfUrl:any;
+  id: string;
+  truckName:string;
+  created:Date;
+  mSealOut:SealOut[]=[];
+  mArray: SealItem[] = [];
   ngOnInit(): void {
     //this.data = [];
     this.getData();
   }
   getData() {
-    this.service.getSealOutById(this.id).subscribe((res: any) => {
-      this.data = res.result;
-    });
-    this.service.getReportReceipt(this.id).subscribe((res: any) => {
-     const pdfBlob = new Blob([res], { type: 'application/pdf' });
-      this.pdfUrl = res
-    });
+    // this.service.getSealOutById(this.id).subscribe((res: any) => {
+    //   this.data = res.result;
+    // });
+    this.service.getSealOutById(this.id).subscribe(
+      data => {
+        // console.log(JSON.stringify(data.result));
+        this.mSealOut = data.result;
+        if (data.result.sealItemList!=null) {
+        }
+
+      },
+      error => {
+        console.log(JSON.stringify(error));
+      }
+    );
+
   }
   getDatetimeNow() {
     return new Date();

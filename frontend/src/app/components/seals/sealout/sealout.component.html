@@ -10,7 +10,6 @@
               <div class="content-header" style="color: white;">จ่ายซีล</div>
             </div>
           </div>
-
         </div>
         <div class="card-content">
           <div class="card-body">
@@ -77,10 +76,10 @@
                 <tr *ngFor="let item of itemSealOutList;let idx = index">
                   <td class="font-medium-3">{{idx+1}}</td>
                   <td class="font-medium-3">
-                    <input type="text" class="form-control font-medium-2" [(ngModel)]="item.sealBetween" [readonly]="item.sealtypeName == 'ปกติ'" placeholder="ระบุหมายเลขซีล">
+                    <input type="text" class="form-control font-medium-2" [(ngModel)]="item.sealBetween" [readonly]="item.sealType == '1'" placeholder="ระบุหมายเลขซีล">
                   </td>
                   <td class="font-medium-3">{{item.pack}}</td>
-                  <td class="font-medium-3">{{item.sealtypeName}}</td>
+                  <td class="font-medium-3">{{item.sealTypeName}}</td>
                   <td class="font-medium-3">
                     <btn class="btn btn-danger" (click)="removeItem(item)"><i class="fa fa-trash"></i></btn>
                   </td>

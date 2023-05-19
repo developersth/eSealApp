@@ -103,18 +103,18 @@ namespace backend.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult>
-        EditProduct([FromForm] Truck data, int id)
+        EditProduct([FromBody] Truck data, int id)
         {
             try
             {
-                var product = Context.Truck.SingleOrDefault(p => p.TruckId == id);
+                var truck = Context.Truck.SingleOrDefault(p => p.TruckId == id);
 
-                if (product == null)
+                if (truck == null)
                 {
                     return NotFound();
                 }
 
-                Context.Truck.Update(product);
+                Context.Truck.Update(data);
                 Context.SaveChanges();
 
                 return Ok(new { result = "", message = "update product successfully" });

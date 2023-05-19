@@ -22,18 +22,31 @@ export class Seal {
 }
 
 export class SealOut {
-  public _id: string;
-  public id: { increment: number };
+  public id: number;
   public sealTotal: number;
   public sealTotalExtra: number;
-  public truckLicense: boolean;
-  public sealItem: {
-    some(arg0: (seal: any) => any): unknown; sealNo: string, pack: number, type: string
-  };
-  public sealItemExtra: { sealNo: string, pack: number, type: string };
-  public createAt: Date;
-  public createAtSt: string;
-  public checked: boolean;
+  public truckId: number;
+  public truckName: string;
+  public sealItemList:string;
+  public sealList:any[];
+  public sealItemListExtra: string;
+  public created: Date;
+  public isCancel:boolean;
+  public checked:boolean;
+  public sealType:number;
+  public sealTypeName:string;
+  constructor() {
+     this.sealTotal= 0;
+     this.sealTotalExtra= 0;
+     this.truckId= 0;
+     this.truckName= 'x';
+     this.sealItemList='';
+     this.sealItemListExtra= '';
+     this.checked=false;
+     this.isCancel=false;
+     this.sealType=1;
+     this.sealTypeName='ปกติ'
+  }
 }
 export class SealOutInfo {
   public id:number;
@@ -43,4 +56,19 @@ export class SealOutInfo {
   public pack:number;
   public sealType:number;
   public sealTypeName:string;
+}
+export class SealItemList {
+  id: number;
+  sealBetween: string;
+  pack: number;
+  sealType: number;
+  sealTypeName: string;
+  sealItem:any;
+}
+export class SealItem {
+  id: number;
+  sealNo: string;
+  type: number;
+  status: number;
+  isUsd: string;
 }

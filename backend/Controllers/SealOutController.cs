@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text.Json;
 namespace backend.Controllers
 {
     [ApiController]
@@ -49,25 +52,13 @@ namespace backend.Controllers
                             query = query.Where(p => p.Id == id);
                             break;
 
-                        case "sealBetween":
-                            //find id SealOut
-                            var sealOutInfo = Context.SealOutInfo.SingleOrDefault(a => a.SealBetween == searchTerm);
-                            if (sealOutInfo != null)
-                            {
-                                Int32 sealOutId = sealOutInfo.SealOutId;
-                                query = query.Where(p => p.Id.ToString().Contains(sealOutId.ToString()));
-                            }
-                            break;
-                        case "sealNo":
-                            //find sealInId ก่อน
-                            var sealItem = Context.SealItem.SingleOrDefault(a => a.SealNo == searchTerm);
-                            if (sealItem != null)
-                            {
-                                Int32 sealInId = sealItem.SealInId;
-                                var info = Context.SealOutInfo.SingleOrDefault(a => a.SealInId == sealItem.SealInId);
-                                query = query.Where(p => p.Id.ToString().Contains(info.SealOutId.ToString()));
-                            }
-                            break;
+                        // case "sealBetween":
+                        //     //find id SealOut
+                        //     query = query.Where(p => p.SealItemList.ToString().Contains(searchTerm));
+                        //     break;
+                        // case "sealNo":
+                        //     query = query.Where(p => p.SealItemList.ToString().Contains(searchTerm));
+                        //     break;
                         case "TruckName":
                             query = query.Where(p => p.TruckName == searchTerm);
                             break;
@@ -107,12 +98,64 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Truck.SingleOrDefault(p => p.TruckId == id);
+                var result = from so in Context.SealOut
+                             join info in Context.SealOutInfo on so.Id equals info.SealOutId
+                             where so.Id == id
+                             select new
+                             {
+                                 Id = so.Id,
+                                 SealTotal = so.SealTotal,
+                                 SealTotalExtra = so.SealTotalExtra,
+                                 TruckId = so.TruckId,
+                                 TruckName = so.TruckName,
+                                 IsCancel = so.IsCancel,
+                                 SealBetWeen = info.SealBetween,
+                                 Pack = info.Pack,
+                                 SealType = info.SealType,
+                                 SealTypeName = info.SealTypeName,
+                                 SealItemList = info.SealItemList,
+                                 Created = info.Created
+                             };
 
                 if (result == null)
                 {
                     return NotFound();
                 }
+                else
+                {
+                    return Ok(new { result = result, message = "request successfully" });
+                }
+
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
+        [HttpGet("ShowReceipt/{id}")]
+        public IActionResult ShowReceipt(string id)
+        {
+            try
+            {
+                Int32 sealOutId = Int32.Parse(id);
+                var result = from so in Context.SealOut
+                             join soif in Context.SealOutInfo on so.Id equals soif.SealOutId
+                             //join si in Context.SealItem on soif.SealInId equals si.SealInId
+                             where so.Id == sealOutId
+                             select new
+                             {
+                                 Id = so.Id,
+                                 SealTotal = so.SealTotal,
+                                 TruckName = so.TruckName,
+                                 Created = so.Created,
+                                 SealBetween = soif.SealBetween,
+                                 Pack = soif.Pack,
+                                 SealType = soif.SealType,
+                                 SealTypeName = soif.SealTypeName,
+                                 //SealNo = si.SealNo
+                             };
+
                 return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
@@ -130,63 +173,117 @@ namespace backend.Controllers
                 var sealout = new SealOut
                 {
                     SealTotal = model.SealTotal,
+                    SealTotalExtra = model.SealTotalExtra,
                     TruckId = model.TruckId,
                     TruckName = model.TruckName,
-
                     CreatedBy = model.CreatedBy,
                     UpdatedBy = model.UpdatedBy
                 };
                 Context.SealOut.Add(sealout);
-                var result = Context.SaveChanges();
-                if (result > 0)
+                var result = await Context.SaveChangesAsync();
+                if (result > 0 && model.SealOutInfo != null)
                 {
-                    if (model.SealOutInfo != null)
+                    List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
+                    foreach (var item in model.SealOutInfo)
                     {
-                        List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
-                        List<Int32> sealInIdList = new List<Int32>();
-                        foreach (var item in model.SealOutInfo)
-                        {
-                            var sealOutInfoModel = new SealOutInfo
-                            {
-                                SealInId = item.SealInId,
-                                SealOutId = sealout.Id,
-                                SealBetween = item.SealBetween,
-                                Pack = item.Pack,
-                                SealType = item.SealType,
-                                SealTypeName = item.SealTypeName
 
-                            };
-                            sealOutInfoList.Add(sealOutInfoModel);
-
-                            //seal In Id
-                            if (item.SealType == 1) //ซีลปกติ
-                            {
-                                var id = item.SealInId;
-                                sealInIdList.Add(Convert.ToInt32(id));
-                            }
-                        }
-                        Context.SealOutInfo.AddRange(sealOutInfoList);
-                        if (Context.SaveChanges() > 0)
+                        var sealOutInfoModel = new SealOutInfo
                         {
-                            //change IsActive = 1
-                            var query = Context.SealIn.Where(p => sealInIdList.Contains(p.Id)).ToList();
-                            foreach (var item in query)
-                            {
-                                item.IsActive = true;
-                                //update SealItem IsUsed
-                                var sealItem = Context.SealItem.Where(p => p.SealInId == item.Id);
-                                foreach (var seal in sealItem)
-                                {
-                                    seal.IsUsed = true;
-                                }
-                                //Context.SealItem.UpdateRange(sealItem);
-                                //Context.SaveChanges();
-                            }
-                            //Context.UpdateRange(query);
-                            Context.SaveChanges();
-                        }
+                            SealInId = item.SealInId,
+                            SealOutId = sealout.Id,
+                            SealBetween = item.SealBetween,
+                            Pack = item.Pack,
+                            SealType = item.SealType,
+                            SealTypeName = item.SealTypeName,
+                            SealItemList = item.SealItemList
+                        };
+                        sealOutInfoList.Add(sealOutInfoModel);
                     }
+                    Context.SealOutInfo.AddRange(sealOutInfoList);
+                    await Context.SaveChangesAsync();
                 }
+                // if (result > 0)
+                // {
+                //     if (model.SealOutInfo != null)
+                //     {
+                //         List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
+                //         List<Int32> sealInIdList = new List<Int32>();
+                //         List<Int32> sealInIdListExtra = new List<Int32>();
+                //         //List<SealItem> sealItemsExtra = new List<SealItem>();
+
+                //         foreach (var item in model.SealOutInfo)
+                //         {
+
+                //             var sealOutInfoModel = new SealOutInfo
+                //             {
+                //                 SealInId = item.SealInId,
+                //                 SealOutId = sealout.Id,
+                //                 SealBetween = item.SealBetween,
+                //                 Pack = item.Pack,
+                //                 SealType = item.SealType,
+                //                 SealTypeName = item.SealTypeName,
+                //                 SealItemList = item.SealItemList
+                //             };
+
+                //             //seal In Id
+                //             if (item.SealType == 1) //ซีลปกติ
+                //             {
+                //                 var id = item.SealInId;
+                //                 sealInIdList.Add(Convert.ToInt32(id));
+                //             }
+                //             if (item.SealType == 2) //ซีลพิเศษ
+                //             {
+                //                 //insert SealItem ซีลพิเศษ
+                //                 var sealItemModel = new SealItem
+                //                 {
+                //                     SealNo = item.SealBetween,
+                //                     Type = 2, //ปกติ
+                //                     IsUsed = true,
+                //                     Status = 1 //ซีลใช้งานได้ปกติ
+                //                 };
+                //                 //sealItemsExtra.Add(sealItemModel);
+                //                 Context.SealItem.AddRange(sealItemModel);
+                //                 Context.SaveChanges();
+                //                 //Add Seal Extra to SealOutInfo
+
+                //                 sealOutInfoModel = new SealOutInfo
+                //                 {
+                //                     SealInId = 0,
+                //                     SealOutId = sealout.Id,
+                //                     SealBetween = item.SealBetween,
+                //                     Pack = item.Pack,
+                //                     SealType = item.SealType,
+                //                     SealTypeName = item.SealTypeName,
+                //                     SealItemList = item.SealItemList
+                //                 };
+                //             }
+
+                //             sealOutInfoList.Add(sealOutInfoModel);
+                //         }
+                //         Context.SealOutInfo.AddRange(sealOutInfoList);
+                //         var save = await Context.SaveChangesAsync();
+                //         if (save > 0)
+                //         {
+
+                //             string sql = @"UPDATE dbo.SealIn
+                //                         SET IsActive = 1
+                //                         WHERE SealIn.Id IN (SELECT distinct SealInId From SealOutInfo WHERE SealOutInfo.SealOutId =" + sealout.Id + ")";
+                //             SqlDatabase.Exec_NonQuery(sql);
+
+
+                //             sql = @"UPDATE dbo.SealItem
+                //                     SET IsUsed = 1
+                //                     WHERE SealItem.Id IN 
+                //                     (SELECT distinct SealItemId FROM SealItem
+                //                     INNER JOIN SealInTransaction
+                //                     ON SealItem.Id = SealInTransaction.SealItemId
+                //                     INNER JOIN SealOutInfo
+                //                     ON SealInTransaction.SealInId = SealOutInfo.SealInId
+                //                     WHERE SealOutInfo.SealOutId ="+sealout.Id+")";
+                //             SqlDatabase.Exec_NonQuery(sql);
+                //         }
+                //     }
+                // }
 
                 return Ok(new { result = sealout, success = true, message = "เพิ่มข้อมูล  เรียบร้อยแล้ว" });
             }
@@ -224,19 +321,24 @@ namespace backend.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var product = Context.Truck.SingleOrDefault(p => p.TruckId == id);
+                var result = Context.SealOut.SingleOrDefault(p => p.Id == id);
 
-                if (product == null)
+                if (result == null)
                 {
                     return NotFound();
                 }
+                else
+                {
+                    var sealOutInfo = Context.SealOutInfo.Where(p => p.SealOutId == result.Id);
 
-                Context.Truck.Remove(product);
-                Context.SaveChanges();
+                    Context.SealOutInfo.RemoveRange(sealOutInfo);
+                    Context.SealOut.Remove(result);
+                    await Context.SaveChangesAsync();
+                }
 
                 return Ok(new { result = "", message = "delete product sucessfully" });
             }

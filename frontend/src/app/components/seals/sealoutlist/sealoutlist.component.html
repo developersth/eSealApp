@@ -130,11 +130,11 @@
                     <td>{{ item.id }}</td>
                     <td>{{ item.sealTotal }}</td>
                     <td>{{ item.truckName }}</td>
-                    <td>{{ item.createAtStr }}</td>
+                    <td>{{ item.created| date: 'yyyy-MM-dd HH:mm'}}</td>
                     <td>
                       <button class="btn btn-info" (click)="printSlip(item)"><i class="ft ft-printer"></i></button>
-                      <button class="btn btn-success" routerLink="/seals/sealout/{{item._id}}"><i class="ft ft-edit"></i></button>
-                      <button (click)="deleteData(item._id)" class="btn btn-danger"><i class="ft ft-trash"></i></button>
+                      <button class="btn btn-success" routerLink="/seals/sealout/{{item.id}}"><i class="ft ft-edit"></i></button>
+                      <button (click)="deleteData(item.id)" class="btn btn-danger"><i class="ft ft-trash"></i></button>
                     </td>
                   </tr>
                   <tr *ngIf="sealItem.length==0" class="text-center">

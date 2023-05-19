@@ -12,8 +12,8 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230515164612_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230518070028_Product")]
+    partial class Product
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,26 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("backend.Models.Products", b =>
+                {
+                    b.Property<int?>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("product_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("ProductId"));
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("qty")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("Products");
+                });
 
             modelBuilder.Entity("backend.Models.Roles", b =>
                 {
@@ -84,6 +104,39 @@ namespace backend.Migrations
                     b.ToTable("SealIn");
                 });
 
+            modelBuilder.Entity("backend.Models.SealInTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SealInId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SealItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SealNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("UpdaetedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SealInTransaction");
+                });
+
             modelBuilder.Entity("backend.Models.SealItem", b =>
                 {
                     b.Property<int>("Id")
@@ -104,9 +157,6 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");
-
-                    b.Property<int>("SealInId")
-                        .HasColumnType("int");
 
                     b.Property<string>("SealNo")
                         .HasColumnType("nvarchar(max)");
@@ -157,10 +207,10 @@ namespace backend.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");
 
-                    b.Property<int?>("SealToTal")
+                    b.Property<int?>("SealTotal")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SealToTalExtra")
+                    b.Property<int?>("SealTotalExtra")
                         .HasColumnType("int");
 
                     b.Property<int?>("TruckId")
@@ -203,6 +253,12 @@ namespace backend.Migrations
 
                     b.Property<int?>("SealInId")
                         .HasColumnType("int");
+
+                    b.Property<string>("SealItemList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealItemListExtra")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SealOutId")
                         .HasColumnType("int");

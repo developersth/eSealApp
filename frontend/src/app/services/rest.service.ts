@@ -114,7 +114,7 @@ export class RestService {
     return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, { headers });
   }
   getReportReceipt(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt`, { headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers });
   }
   getSealOutAll(
     isCancel: string,

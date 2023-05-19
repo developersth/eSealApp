@@ -145,6 +145,7 @@ export class SealinComponent implements OnInit {
   }
 
   getSeal() {
+    this.currentPage = 1;
     let startDate: string = `${this.dtStart.year}-${this.dtStart.month}-${this.dtStart.day}`;
     let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
     this.service

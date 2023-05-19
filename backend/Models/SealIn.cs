@@ -4,7 +4,6 @@ namespace backend.Models
 {
     public class SealIn
     {
-
         public Int32 Id { get; set; }
         public string? SealBetween { get; set; }
         public int? Pack { get; set; }
@@ -14,11 +13,21 @@ namespace backend.Models
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
     }
+    public class SealInTransaction
+    {
+        public Int32 Id { get; set; }
+        public Int32 SealInId { get; set; } //ref SealIn
+        public Int32 SealItemId { get; set; }  //ref SealItem
+        public string? SealNo { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdaetedBy { get; set; }
+        public DateTime Timestamp { get; set; }
+
+    }
     public class SealItem
     {
         public Int32 Id { get; set; }
         public string? SealNo { get; set; }
-        public Int32 SealInId { get; set; }  //ref SealIn.id
         public int? Type { get; set; } //ref SealType 1=ปกติ, 2=พิเศษ
         public bool? IsUsed { get; set; }
         public int? Status { get; set; } //1=ซีลใช้งานได้ปกติ,2=ซีลชำรุด,3=ซีลทดแทน

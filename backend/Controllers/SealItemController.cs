@@ -60,17 +60,29 @@ namespace backend.Controllers
         }
 
         [HttpGet("BySealInId/{id}")]
-        public ActionResult GetBySealInId(int id)
+        public ActionResult GetBySealInId(Int32 id)
         {
             try
             {
-                var result = Context.SealItem.Where(p => p.SealInId == id);
+                var result = from tran in Context.SealInTransaction
+                             join seal in Context.SealItem on tran.SealItemId equals seal.Id 
+                             where tran.SealInId == id
+                             select new{
+                                Id =seal.Id,
+                                SealNo =seal.SealNo,
+                                Type = seal.Type,
+                                Status =seal.Status,
+                                IsUsed = seal.IsUsed,
+                                Created = seal.Created
+                             };
 
                 if (result == null)
                 {
                     return NotFound();
                 }
+
                 return Ok(new { result = result, message = "request successfully" });
+
             }
             catch (Exception error)
             {
