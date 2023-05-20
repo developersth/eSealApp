@@ -114,7 +114,5 @@ namespace backend.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
-
     }
 }

@@ -26,7 +26,6 @@
             <thead>
               <tr>
                 <th>ลำดับ</th>
-                <th>ช่วงหมายเลขซีล</th>
                 <th>หมายเลขซีล</th>
                 <th>แพ็ค</th>
               </tr>
@@ -34,9 +33,10 @@
             <tbody>
               <tr *ngFor="let item of mSealOut;let i = index">
                 <th scope="row">{{i+1}}</th>
-                <td class="description">
-                    {{item.sealBetWeen}}
-                </td>
+                <td>
+                  <div *ngFor="let sealItem of mArray[i]">
+                    <p>{{sealItem.sealNo}}</p>
+                  </div>
                 <td>
                    <p>{{item.pack}}</p>
                 </td>

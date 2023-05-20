@@ -28,9 +28,10 @@ export class RestService {
   private userUrl = `${this.apiUrl}/user`;
   private truckUrl = `${this.apiUrl}/truck`;
 
+
   //----------------------------------------------------------------
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.userUrl}`);
+    return this.http.get<User[]>(`${this.userUrl}/GetUser`);
   }
   getUser(id: number): Observable<User> {
     return this.http.get<User>(`${this.userUrl}/${id}`);
@@ -42,7 +43,7 @@ export class RestService {
     return this.http.put<User>(`${this.userUrl}/${id}`, body);
   }
   deleteUser(id: string): Observable<any> {
-    return this.http.delete(`${this.userUrl}/user/${id}`);
+    return this.http.delete(`${this.userUrl}/${id}`);
   }
   //----------------------------------------------------------------
   getTruck(): Observable<Truck[]> {

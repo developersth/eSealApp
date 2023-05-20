@@ -37,11 +37,12 @@ export class UserEditComponent implements OnInit {
       password: [""],
       name: [""],
       email: [""],
-      role: [""],
+      roleId: [0],
       isActive: [true],
     });
   }
   ngOnInit(): void {
+    console.log(this.data);
     this.buildItemForm(this.data);
   }
   private buildItemForm(item) {
@@ -50,7 +51,7 @@ export class UserEditComponent implements OnInit {
       password: [""],
       name: [item.name || ""],
       email: [item.email || ""],
-      role: [item.role.name||""],
+      roleId: [item.roleId||""],
       isActive: [item.isActive],
     });
   }

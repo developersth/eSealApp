@@ -13,7 +13,7 @@ import * as swalFunctions from "../../../shared/services/sweetalert.service";
   providers:[RestService]
 })
 export class UserListComponent implements OnInit {
-  users: User[];
+  users: any[];
   user: User;
   swal = swalFunctions;
 
@@ -29,7 +29,7 @@ export class UserListComponent implements OnInit {
 
   getUsers() {
     this.service.getUsers().subscribe((user:any) => {
-      this.users = user;
+      this.users = user.result;
     });
   }
   deleteUser(id: string) {
@@ -107,7 +107,7 @@ export class UserListComponent implements OnInit {
       size: "md",
     };
     const modalRef = this.modalService.open(UserEditComponent, ngbModalOptions);
-    modalRef.componentInstance.id = item._id; // should be the id
+    modalRef.componentInstance.id = item.id; // should be the id
     modalRef.componentInstance.data = item;
     modalRef.result
       .then((result) => {

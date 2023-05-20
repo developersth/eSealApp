@@ -29,8 +29,9 @@
                     <th>ชื่อผู้ใช้งาน</th>
                     <th>ชื่อ-สกุล</th>
                     <th>อีเมล​์</th>
+                    <th>วันที่สร้าง</th>
                     <th>ประเภทผู้ใช้งาน</th>
-                    <th>การใช้งาน</th>
+
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -39,7 +40,7 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.role.name }}</td>
+                    <td>{{ user.created | date: 'yyyy-MM-dd HH:mm' }}</td>
                     <td>
                       <span *ngIf="!user.isActive" class="badge badge-danger">หยุดใช้งาน</span>
                       <span *ngIf="user.isActive" class="badge badge-success">ใช้งานได้</span>

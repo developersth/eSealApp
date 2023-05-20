@@ -40,8 +40,14 @@ export class RecriptComponent implements OnInit {
       data => {
         // console.log(JSON.stringify(data.result));
         this.mSealOut = data.result;
-        if (data.result.sealItemList!=null) {
-        }
+        this.mSealOut.forEach(item =>
+          {
+            if(item.sealItemList!='[]'){
+              this.mArray.push(JSON.parse(item.sealItemList));
+            }
+          }
+        );
+        console.log(this.mArray);
 
       },
       error => {
