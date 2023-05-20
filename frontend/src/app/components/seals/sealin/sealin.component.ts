@@ -17,7 +17,7 @@ import { RestService } from "../../../services/rest.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import * as swalFunctions from "../../../shared/services/sweetalert.service";
 import { th } from "date-fns/locale";
-import { Seal } from "../../../models/seal.model";
+import { SealIn } from "../../../models/seal.model";
 import { forEach } from "core-js/core/array";
 
 let swal = swalFunctions;
@@ -53,8 +53,8 @@ export class SealinComponent implements OnInit {
   closeResult: string;
   checkedAll: boolean = false;
   sealBetween: string;
-  sealInItem: Seal[] = [];
-  filterItems: Seal[] = [];
+  sealInItem: SealIn[]=[];
+  filterItems: SealIn[] = [];
   enableBtnDelete: boolean = false;
   now: Date = new Date();
   columnSearch = "";
@@ -91,7 +91,9 @@ export class SealinComponent implements OnInit {
   }
   onItemChecked(item: any, isChecked: boolean) {
     // Do something with the checked item
-    if (isChecked) {
+    let check =this.sealItem.filter(s=>s.checked===true)
+    console.log(check)
+    if (check) {
       this.enableBtnDelete = true;
     } else {
       this.enableBtnDelete = false;
@@ -106,6 +108,10 @@ export class SealinComponent implements OnInit {
         item.checked = false;
       }
     }
+  }
+  countCheckedItems() {
+    let item = this.sealInItem.filter(s=>s.checked===false);
+    return item.length;
   }
 
   isDisabled(date: NgbDateStruct, current: { month: number }) {
@@ -225,13 +231,22 @@ export class SealinComponent implements OnInit {
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
       .then((res) => {
         if (res) {
+          this.spinner.show(undefined, {
+            type: "ball-triangle-path",
+            size: "medium",
+            bdColor: "rgba(0, 0, 0, 0.8)",
+            color: "#fff",
+            fullScreen: true,
+          });
           this.service.deleteSealAll(itemId).subscribe(
             (res: any) => {
               swal.showDialog("success", "ลบข้อมูลเรียบร้อยแล้วแล้ว");
               this.getSeal();
+              this.spinner.hide();
             },
             (error: any) => {
               swal.showDialog("error", "เกิดข้อผิดพลาด:" + error);
+              this.spinner.hide();
             }
           );
         }

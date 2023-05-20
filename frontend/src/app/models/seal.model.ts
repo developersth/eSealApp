@@ -1,11 +1,8 @@
 import { th } from "date-fns/locale";
 import { DatePipe } from "@angular/common";
-export class Seal {
+export class SealIn {
   public _id: string;
-  public id: { increment: number };
-  public sealNoItem: {
-    some(arg0: (seal: any) => any): unknown; sealNo: string;
-  }
+  public id: number;
   public sealBetween: string;
   public pack: number;
   public isUsed: boolean;
@@ -13,7 +10,7 @@ export class Seal {
   public createAt: Date;
   public createAtSt: string;
   constructor() {
-    this.id.increment = 0;
+    this.id = 0;
     this.sealBetween = '';
     this.pack = 0;
     this.isUsed = false;

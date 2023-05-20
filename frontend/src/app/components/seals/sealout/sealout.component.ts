@@ -51,8 +51,8 @@ export class SealoutComponent implements OnInit {
   }
   swal = swalFunctions;
   keyword = "name";
-  @Input() txtSealTotal: string = "0";
-  @Input() txtSealExtraTotal: string = "0";
+  @Input() txtSealTotal: number =0 ;
+  @Input() txtSealExtraTotal: number = 0;
   @Input() txtTruckId: string;
   @Input() sealNoExt: any[] = [];
   @Input() sealItemExtra: any[] = [];
@@ -100,7 +100,7 @@ export class SealoutComponent implements OnInit {
   genSealExtra(txt: number) {
     this.sealNoExt = [];
     if (this.txtSealExtraTotal) {
-      let vCount: number = parseInt(this.txtSealExtraTotal);
+      let vCount: number = this.txtSealExtraTotal;
       for (let index = 0; index < vCount; index++) {
         this.sealNoExt.push({
           id: this.generator(),
@@ -128,7 +128,7 @@ export class SealoutComponent implements OnInit {
   selectEvent() {
     let id = this.selectedOptionsQRCode;
     this.clearSelectionQRCode();
-    if (!this.txtSealTotal || parseInt(this.txtSealTotal) <= 0) {
+    if (!this.txtSealTotal || this.txtSealTotal <= 0) {
       this.toastr.warning("กรุณาระบุ จำนวนซีล");
       return;
     }
@@ -222,7 +222,7 @@ export class SealoutComponent implements OnInit {
   }
   validateData() {
     //check จำนวนซีล
-    if (!this.txtSealTotal || this.txtSealTotal === "0") {
+    if (!this.txtSealTotal || this.txtSealTotal === 0) {
       this.toastr.warning("กรุณากรอก จำนวนซีล");
       return false;
     }
@@ -243,7 +243,7 @@ export class SealoutComponent implements OnInit {
       (obj) => obj.sealType === 2
     );
     console.log(this.subTotalSealExtra());
-    if (this.subTotalSeal() !== parseInt(this.txtSealTotal + this.subTotalSealExtra())) {
+    if (this.subTotalSeal() !== this.txtSealTotal + this.subTotalSealExtra()) {
       this.toastr.warning("จำนวนซีลไม่เท่ากับจำนวนซีลรวม");
       return false;
     }

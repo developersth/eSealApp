@@ -1,20 +1,27 @@
+<div class="row justify-content-between">
+  <div class="col-10">
+    <div class="content-header">รายการซีลเข้าระบบ</div>
+  </div>
+  <div class="col-2">
+    <div>
+      <button type="button" (click)="addData()" class="btn btn-info">
+        <span class="d-flex align-items-center">
+          <i class="ft-plus mr-1"></i>
+          <span>สร้าง</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
 <section id="seal-cart">
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <div class="card-header bg-primary layout-dark">
+        <div class="card-header layout-dark">
           <div class="row justify-content-between">
-            <div class="col-10">
-              <div class="content-header" style="color: white;">ข้อมูลซีล</div>
-            </div>
             <div class="col-2">
               <div class="my-1">
-                <button type="button" (click)="addData()" class="btn btn-info mr-2">
-                  <span class="d-flex align-items-center">
-                    <i class="ft-plus mr-1"></i>
-                    <span>สร้าง</span>
-                  </span>
-                </button>
+
               </div>
             </div>
           </div>
@@ -106,11 +113,13 @@
                 </div>
               </div>
               <div *ngIf="enableBtnDelete||checkedAll" class="col-md-4">
-                <button class="btn btn-danger" (click)="deleteAll()"><i class="fa fa-trash">ลบ</i></button>
+                <button class="btn btn-danger" (click)="deleteAll()">ลบ</button>
+                <div for="count">{{countCheckedItems()}} รายการ</div>
               </div>
             </div>
             <div class="table-responsive">
               <table class="table table-bordered table-strip">
+                <ngx-spinner></ngx-spinner>
                 <thead>
                   <tr>
                     <th>
@@ -133,7 +142,8 @@
                       </ng-container>
                     </td>
                     <td>{{ item.id }}</td>
-                    <td>{{ item.sealBetween }} <button class="btn btn-sm btn-info" (click)="showSealItem(item,sealItemModal)"><i class="fa fa-eye"></i></button>
+                    <td>{{ item.sealBetween }} <button class="btn btn-sm btn-info"
+                        (click)="showSealItem(item,sealItemModal)"><i class="fa fa-eye"></i></button>
                     </td>
                     <td>{{ item.pack }}</td>
                     <td>
@@ -151,13 +161,15 @@
                     <td colspan="7">ไม่พบข้อมูล</td>
                   </tr>
               </table>
-              <!-- ใช้ pagination-controls directive ในการแสดง control ของ pagination -->
-              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-              <!-- <ul>
-              <div *ngFor="let item of Seal" >
-                <li *ngIf="item.checked">{{item.id}}</li>
+            </div>
+            <div class="row justify-content-between">
+              <div class="col-md-6">
+                <!-- ใช้ pagination-controls directive ในการแสดง control ของ pagination -->
+                <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
               </div>
-            </ul> -->
+              <div class="col-md-2">
+                <label>ข้อมูลทั้งหมด <b> {{sealInItem.length}}</b> รายการ</label>
+              </div>
             </div>
             <!--Modal with Default options starts-->
             <ng-template #content let-c="close" let-d="dismiss">

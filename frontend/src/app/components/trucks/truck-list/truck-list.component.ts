@@ -90,7 +90,7 @@ export class TruckListComponent implements OnInit {
     modalRef.componentInstance.data = {
       truckHead: "",
       truckTail: "",
-      sealTotal:"0"
+      sealTotal:0
     }; // should be the data
     modalRef.result
       .then((result) => {

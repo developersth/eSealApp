@@ -7,7 +7,6 @@ import { environment } from "environments/environment";
 import { forEach } from "core-js/core/array";
 
 //----------------------------------------------------------------
-import { Seal } from "../models/seal.model";
 import { User } from "../models/user.model";
 import { Truck } from "../models/truck.model";
 import { Response } from "../models/response.model";
