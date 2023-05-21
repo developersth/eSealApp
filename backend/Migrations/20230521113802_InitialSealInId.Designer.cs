@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Database;
 
@@ -11,9 +12,11 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230521113802_InitialSealInId")]
+    partial class InitialSealInId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,9 +89,6 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SealBetween")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SealInId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated")

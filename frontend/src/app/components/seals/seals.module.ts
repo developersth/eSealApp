@@ -16,13 +16,17 @@ import { DatePipe } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SealOutListComponent } from './sealoutlist/sealoutlist.component';
 import { RecriptComponent } from './sealoutlist/recript/recript.component';
+import { SealListComponent } from './seal/seal-list/seal-list.component';
+import { SealModalComponent } from './seal/seal-modal/seal-modal.component';
 @NgModule({
   declarations: [
     SealinComponent,
     SealoutComponent,
     CrudModalComponent,
     SealOutListComponent,
-    RecriptComponent
+    RecriptComponent,
+    SealListComponent,
+    SealModalComponent
   ],
   imports: [
     CommonModule,

@@ -5,7 +5,7 @@ namespace backend.Models
 {
     public partial class Truck
     {
-        public Int32 TruckId { get; set; }
+        public int TruckId { get; set; }
         public string? TruckHead { get; set; }
 
         public string? TruckTail { get; set; }

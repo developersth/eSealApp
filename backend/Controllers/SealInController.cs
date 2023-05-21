@@ -37,9 +37,8 @@ namespace backend.Controllers
 
                     switch (pColumnSearch)
                     {
-                        case "id":
-                            int id = int.Parse(searchTerm);
-                            query = query.Where(p => p.Id == id);
+                        case "sealInId":
+                            query = query.Where(p => p.SealInId.Contains(searchTerm));
                             break;
 
                         case "sealBetween":
@@ -166,6 +165,10 @@ namespace backend.Controllers
                     var result = await Context.SaveChangesAsync();
                     if (result > 0)
                     {
+                    //UPdate SealInId              
+                     newSealIn.SealInId = Utilities.GennerateId("SI",newSealIn.Id);
+                     Context.Update(newSealIn);
+                     Context.SaveChanges();
                         if (item.SealItem != null)
                         {
                             List<SealItem> sealItems = new List<SealItem>();

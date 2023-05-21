@@ -5,7 +5,7 @@ namespace backend.Models
 {
     public partial class SealOut
     {
-        public Int32 Id { get; set; }
+        public int Id { get; set; }
         public int? SealTotal { get; set; }
         public int? SealTotalExtra { get; set; }
         public int? TruckId { get; set; }
@@ -20,9 +20,9 @@ namespace backend.Models
     }
     public partial class SealOutInfo
     {
-        public Int32 id { get; set; }
-        public Int32 SealOutId { get; set; } //ref Sealout id
-        public Int32? SealInId { get; set; } //ref Sealout id
+        public int id { get; set; }
+        public int SealOutId { get; set; } //ref Sealout id
+        public string? SealInId { get; set; } //ref Sealout id
         public string? SealBetween { get; set; }
         public int? Pack { get; set; }
         public int? SealType { get; set; }
@@ -34,9 +34,9 @@ namespace backend.Models
     }
     //     public class SealOutTransaction
     // {
-    //     public Int32 Id { get; set; }
-    //     public Int32 SealOutInfoId { get; set; } //ref SealOutInfo
-    //     public Int32 SealItemId { get; set; }  //ref SealItem
+    //     public int Id { get; set; }
+    //     public int SealOutInfoId { get; set; } //ref SealOutInfo
+    //     public int SealItemId { get; set; }  //ref SealItem
     //     public string? SealNo { get; set; }
     //     public string? CreatedBy { get; set; }
     //     public string? UpdaetedBy { get; set; }

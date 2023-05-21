@@ -48,7 +48,7 @@
                 <label>ค้นหาจาก:</label>
                 <select class="form-control" [(ngModel)]="columnSearch">
                   <option value="">--ไม่ระบุ--</option>
-                  <option value="id">รหัส</option>
+                  <option value="sealInId">รหัสซีล</option>
                   <option value="sealBetween">ช่วงหมายเลขซีล</option>
                   <option value="sealNo">หมายเลขซีล</option>
                   <option value="pack">แพ็ค</option>
@@ -125,7 +125,7 @@
                     <th>
                       <input type="checkbox" [(ngModel)]="checkedAll" (change)="checkAllItems()">
                     </th>
-                    <th>รหัส</th>
+                    <th>รหัสซีล</th>
                     <th>ช่วงหมายเลขซีล</th>
                     <th>แพ็ค</th>
                     <th>การใช้งาน</th>
@@ -141,7 +141,7 @@
                           [(ngModel)]="item.checked">
                       </ng-container>
                     </td>
-                    <td>{{ item.id }}</td>
+                    <td>{{ item.sealInId }}</td>
                     <td>{{ item.sealBetween }} <button class="btn btn-sm btn-info"
                         (click)="showSealItem(item,sealItemModal)"><i class="fa fa-eye"></i></button>
                     </td>
