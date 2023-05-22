@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from '../../../../services/rest.service';
-import { SealItem, SealItemList, SealOut } from 'app/models/seal.model';
+import { Seals } from 'app/models/seals.model';
+import { SealOut } from 'app/models/seal-out.model';
 import { forEach } from 'core-js/core/array';
 @Component({
   selector: 'app-recript',
@@ -27,7 +28,7 @@ export class RecriptComponent implements OnInit {
   truckName:string;
   created:Date;
   mSealOut:SealOut[]=[];
-  mArray: SealItem[] = [];
+  mArray: Seals[] = [];
   ngOnInit(): void {
     //this.data = [];
     this.getData();
@@ -42,8 +43,8 @@ export class RecriptComponent implements OnInit {
         this.mSealOut = data.result;
         this.mSealOut.forEach(item =>
           {
-            if(item.sealItemList!='[]'){
-              this.mArray.push(JSON.parse(item.sealItemList));
+            if(item.sealList!='[]'){
+              this.mArray.push(JSON.parse(item.sealExtraList));
             }
           }
         );

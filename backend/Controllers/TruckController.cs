@@ -33,7 +33,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Truck.ToList();
+                var result = Context.Trucks.ToList();
                 return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
@@ -48,7 +48,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Truck.SingleOrDefault(p => p.TruckId == id);
+                var result = Context.Trucks.SingleOrDefault(p => p.TruckId == id);
 
                 if (result == null)
                 {
@@ -64,11 +64,11 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Truck model)
+        public async Task<IActionResult> Post([FromBody] Trucks model)
         {
             try
             {
-                var query = Context.Truck.Where(u => u.TruckHead == model.TruckHead || u.TruckTail == model.TruckTail);
+                var query = Context.Trucks.Where(u => u.TruckHead == model.TruckHead || u.TruckTail == model.TruckTail);
                 if (query != null) //check data exists
                 {
                     foreach (var item in query)
@@ -89,7 +89,7 @@ namespace backend.Controllers
                     }
 
                 }
-                Context.Truck.Add(model);
+                Context.Trucks.Add(model);
                 Context.SaveChanges();
 
                 return Ok(new { result = model, success = true, message = "เพิ่มข้อมูล ทะเบียนรถ เรียบร้อยแล้ว" });
@@ -103,18 +103,18 @@ namespace backend.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult>
-        EditProduct([FromBody] Truck data, int id)
+        EditProduct([FromBody] Trucks data, int id)
         {
             try
             {
-                var truck = Context.Truck.SingleOrDefault(p => p.TruckId == id);
+                var truck = Context.Trucks.SingleOrDefault(p => p.TruckId == id);
 
                 if (truck == null)
                 {
                     return NotFound();
                 }
 
-                Context.Truck.Update(data);
+                Context.Trucks.Update(data);
                 Context.SaveChanges();
 
                 return Ok(new { result = "", message = "update product successfully" });
@@ -132,14 +132,14 @@ namespace backend.Controllers
         {
             try
             {
-                var product = Context.Truck.SingleOrDefault(p => p.TruckId == id);
+                var product = Context.Trucks.SingleOrDefault(p => p.TruckId == id);
 
                 if (product == null)
                 {
                     return NotFound();
                 }
 
-                Context.Truck.Remove(product);
+                Context.Trucks.Remove(product);
                 Context.SaveChanges();
 
                 return Ok(new { result = "", message = "delete product sucessfully" });

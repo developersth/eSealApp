@@ -22,7 +22,7 @@ export class RestService {
   };
   //----------------------------------------------------------------
   private sealInUrl = `${this.apiUrl}/sealin`;
-  private sealItemUrl = `${this.apiUrl}/SealItem`;
+  private sealUrl = `${this.apiUrl}/Seal`;
   private sealOutUrl = `${this.apiUrl}/sealout`;
   private userUrl = `${this.apiUrl}/user`;
   private truckUrl = `${this.apiUrl}/truck`;
@@ -92,7 +92,7 @@ export class RestService {
   }
   //----------------------------------------------------------------
   getSealItemBySealInId(id: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.sealItemUrl}/BySealInId/${id}`, {
+    return this.http.get<any[]>(`${this.sealUrl}/BySealInId/${id}`, {
       headers,
     });
   }

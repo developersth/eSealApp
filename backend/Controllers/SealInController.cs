@@ -49,8 +49,8 @@ namespace backend.Controllers
                             break;
                         case "sealNo":
                             query = from s in Context.SealIn
-                                    join st in Context.SealInTransaction on s.Id equals st.SealInId
-                                    join sim in Context.SealItem on st.SealItemId equals sim.Id
+                                    join st in Context.SealInInfo on s.SealInId equals st.SealInId
+                                    join sim in Context.Seals on st.SealId equals sim.Id
                                     where sim.SealNo == searchTerm
                                     select new SealIn
                                     {
@@ -139,7 +139,7 @@ namespace backend.Controllers
             catch (Exception error)
             {
                 _logger.LogError($"Log GetSealIn: {error}");
-                return StatusCode(500, new { result = "", message = error });
+                return StatusCode(500, new { result = "", message = error.Message });
             }
         }
 
@@ -162,45 +162,44 @@ namespace backend.Controllers
 
                     };
                     Context.SealIn.Add(newSealIn);
-                    var result = await Context.SaveChangesAsync();
+                    Context.SaveChanges();
+                    //UPdate SealInId              
+                    newSealIn.SealInId = Utilities.GennerateId("SI", newSealIn.Id);
+                    Context.Update(newSealIn);
+                    var result = Context.SaveChanges();
                     if (result > 0)
                     {
-                    //UPdate SealInId              
-                     newSealIn.SealInId = Utilities.GennerateId("SI",newSealIn.Id);
-                     Context.Update(newSealIn);
-                     Context.SaveChanges();
-                        if (item.SealItem != null)
+
+                        //Context.SaveChanges();
+                        if (item.SealList != null)
                         {
-                            List<SealItem> sealItems = new List<SealItem>();
-                            List<SealInTransaction> sealInTransaction = new List<SealInTransaction>();
-                            foreach (var sealItem in item.SealItem)
+                            List<Seals> seals = new List<Seals>();
+                            List<SealInInfo> sealInInfo = new List<SealInInfo>();
+                            foreach (var sItem in item.SealList)
                             {
-                                var model = new SealItem
+                                var model = new Seals
                                 {
-                                    SealNo = sealItem.SealNo,
+                                    SealNo = sItem.SealNo,
                                     Type = 1, //ปกติ
-                                    IsUsed = false,
-                                    Status = 1, //ซีลใช้งานได้ปกติ
-                                    CreatedBy = sealItem.CreatedBy,
-                                    UpdaetedBy = sealItem.UpdaetedBy,
+                                    Status = 1, //ยังไม่ได้ใช้งาน
+                                    CreatedBy = sItem.CreatedBy,
+                                    UpdatedBy = sItem.UpdatedBy,
                                 };
                                 //sealItems.Add(model);
-                                Context.SealItem.Add(model);
-                                if (Context.SaveChanges() > 0)
+                                //seals.Add(model);
+                                Context.Seals.Add(model);
+                                Context.SaveChanges();
+                                var modelInfo = new SealInInfo
                                 {
-                                    var transactionModel = new SealInTransaction
-                                    {
-                                        SealInId = newSealIn.Id,
-                                        SealItemId = model.Id,
-                                        SealNo = sealItem.SealNo
-                                    };
-                                    //sealInTransaction.Add(transactionModel);
-                                    Context.SealInTransaction.Add(transactionModel);
-                                    Context.SaveChanges();
-                                }
+                                    SealInId = newSealIn.SealInId,
+                                    SealId = model.Id,
+                                    SealNo = model.SealNo
+                                };
+                                sealInInfo.Add(modelInfo);
+
                             }
-                            //Context.SealItem.AddRange(sealItems);
-                            //Context.SaveChanges();
+                            Context.SealInInfo.AddRange(sealInInfo);
+                            await Context.SaveChangesAsync();
 
                         }
                     }
@@ -212,7 +211,7 @@ namespace backend.Controllers
             catch (Exception error)
             {
                 _logger.LogError($"Log CreateProduct: {error}");
-                return StatusCode(500, new { result = "", message = error });
+                return StatusCode(500, new { result = "", message = error.Message });
             }
         }
 
@@ -237,29 +236,29 @@ namespace backend.Controllers
 
                 if (result != null)
                 {
-                    var sealInTransaction = Context.SealInTransaction.Where(p => p.SealInId == result.Id).ToList();
-                    if (sealInTransaction != null)
+                    var sealInInfo = Context.SealInInfo.Where(p => p.SealInId == result.SealInId).ToList();
+                    if (sealInInfo != null)
                     {
-                        foreach (var item in sealInTransaction)
+                        foreach (var item in sealInInfo)
                         {
-                            var resultSealItem = Context.SealItem.FirstOrDefault(p => p.Id == item.SealItemId);
-                            Context.SealItem.Remove(resultSealItem);
+                            var resultSealItem = Context.Seals.FirstOrDefault(p => p.Id == item.SealId);
+                            Context.Seals.Remove(resultSealItem);
                         }
                         Context.SaveChanges();
                     }
-                    var sealInTransaction2 = Context.SealInTransaction.Where(p => p.SealInId == result.Id);
-                    Context.SealInTransaction.RemoveRange(sealInTransaction2);
+                    var sealInTransaction2 = Context.SealInInfo.Where(p => p.SealInId == result.SealInId);
+                    Context.SealInInfo.RemoveRange(sealInTransaction2);
                     Context.SaveChanges();
                 }
                 Context.SealIn.Remove(result);
                 Context.SaveChanges();
 
-                return Ok(new { result = "", message = "delete product sucessfully" });
+                return Ok(new { result = "", message = "delete data sucessfully" });
             }
             catch (Exception error)
             {
                 _logger.LogError($"Log DeleteProduct: {error}");
-                return StatusCode(500, new { result = "", message = error });
+                return StatusCode(500, new { result = "", message = error.Message });
             }
         }
     }

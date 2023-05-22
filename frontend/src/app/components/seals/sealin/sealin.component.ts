@@ -17,7 +17,7 @@ import { RestService } from "../../../services/rest.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import * as swalFunctions from "../../../shared/services/sweetalert.service";
 import { th } from "date-fns/locale";
-import { SealIn } from "../../../models/seal.model";
+import { SealIn } from "../../../models/seal-in.model";
 import { forEach } from "core-js/core/array";
 
 let swal = swalFunctions;
@@ -176,8 +176,8 @@ export class SealinComponent implements OnInit {
     );
   }
   showSealItem(item: any, content: any){
-    this.getSealItem(item.id);
-    this.sealInId =item.id;
+    this.getSealItem(item.sealInId);
+    this.sealInId =item.sealInId;
     const modalOptions: NgbModalOptions = {
       keyboard: false,
       centered: false,
@@ -191,6 +191,7 @@ export class SealinComponent implements OnInit {
     .getSealItemBySealInId(id)
     .subscribe((res: any) => {
       this.sealItem = res.result;
+      console.log(res.result);
     });
   }
   // This function is used in open

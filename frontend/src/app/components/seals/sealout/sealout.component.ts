@@ -23,7 +23,7 @@ import { TruckModalComponent } from "app/components/trucks/truck-modal/truck-mod
 import * as swalFunctions from "../../../shared/services/sweetalert.service";
 import { NgOption } from "@ng-select/ng-select";
 import { Truck } from "app/models/truck.model";
-import { SealItemList } from "app/models/seal.model";
+import { SealIn } from "app/models/seal-in.model";
 import { stringify } from "querystring";
 
 @Component({
@@ -61,8 +61,6 @@ export class SealoutComponent implements OnInit {
   itemSealOutList: any[] = [];
   mTruck: Truck[];
 
-  mSealitem: SealItemList[] = [];
-  mSealitemExtra: SealItemList[] = [];
   //seal no item
   sealNoItem: any[] = [];
 

@@ -12,6 +12,24 @@ namespace backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Drivers",
+                columns: table => new
+                {
+                    DriverId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Prefix = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drivers", x => x.DriverId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -30,6 +48,7 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    SealInId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SealBetween = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Pack = table.Column<int>(type: "int", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true),
@@ -44,41 +63,22 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SealInTransaction",
+                name: "SealInInfo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SealInId = table.Column<int>(type: "int", nullable: false),
-                    SealItemId = table.Column<int>(type: "int", nullable: false),
+                    SealInId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SealId = table.Column<int>(type: "int", nullable: true),
                     SealNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdaetedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SealInTransaction", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SealItem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SealNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<int>(type: "int", nullable: true),
-                    IsUsed = table.Column<bool>(type: "bit", nullable: true, defaultValueSql: "0"),
-                    Status = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdaetedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
-                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SealItem", x => x.Id);
+                    table.PrimaryKey("PK_SealInInfo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +89,7 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SealTotal = table.Column<int>(type: "int", nullable: true),
                     SealTotalExtra = table.Column<int>(type: "int", nullable: true),
+                    SealExtraList = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TruckId = table.Column<int>(type: "int", nullable: true),
                     TruckName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DriverId = table.Column<int>(type: "int", nullable: true),
@@ -111,19 +112,37 @@ namespace backend.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SealOutId = table.Column<int>(type: "int", nullable: false),
-                    SealInId = table.Column<int>(type: "int", nullable: true),
+                    SealInId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SealBetween = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Pack = table.Column<int>(type: "int", nullable: true),
                     SealType = table.Column<int>(type: "int", nullable: true),
                     SealTypeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SealItemList = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SealItemListExtra = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SealList = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
                     Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SealOutInfo", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Seals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SealNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: true, defaultValueSql: "1"),
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Seals", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,7 +159,7 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SealType",
+                name: "SealTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -149,11 +168,11 @@ namespace backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SealType", x => x.Id);
+                    table.PrimaryKey("PK_SealTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Truck",
+                name: "Trucks",
                 columns: table => new
                 {
                     TruckId = table.Column<int>(type: "int", nullable: false)
@@ -167,7 +186,7 @@ namespace backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Truck", x => x.TruckId);
+                    table.PrimaryKey("PK_Trucks", x => x.TruckId);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,16 +227,16 @@ namespace backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Drivers");
+
+            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "SealIn");
 
             migrationBuilder.DropTable(
-                name: "SealInTransaction");
-
-            migrationBuilder.DropTable(
-                name: "SealItem");
+                name: "SealInInfo");
 
             migrationBuilder.DropTable(
                 name: "SealOut");
@@ -226,13 +245,16 @@ namespace backend.Migrations
                 name: "SealOutInfo");
 
             migrationBuilder.DropTable(
+                name: "Seals");
+
+            migrationBuilder.DropTable(
                 name: "SealStatus");
 
             migrationBuilder.DropTable(
-                name: "SealType");
+                name: "SealTypes");
 
             migrationBuilder.DropTable(
-                name: "Truck");
+                name: "Trucks");
 
             migrationBuilder.DropTable(
                 name: "Users");

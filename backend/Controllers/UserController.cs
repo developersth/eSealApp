@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Reflection;
+using System.Runtime.Intrinsics.X86;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -34,7 +36,7 @@ namespace backend.Controllers
             this.Configuration = Configuration;
         }
 
-       [HttpGet("GetUser")]
+        [HttpGet("GetUser")]
         public IActionResult GetUser()
         {
             try
@@ -57,7 +59,7 @@ namespace backend.Controllers
                 var existingUser = Context.Users.FirstOrDefault(u => u.Username == model.Username);
                 if (existingUser != null)
                 {
-                    return Ok(new { result = "failure",success=false, message = "มีข้อมูลผู้ใช้งาน" });
+                    return Ok(new { result = "failure", success = false, message = "มีข้อมูลผู้ใช้งาน" });
                 }
                 model.Password = Crypto.HashPassword(model.Password);
                 Context.Users.Add(model);
@@ -73,17 +75,31 @@ namespace backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Users users )
+        public async Task<IActionResult> Update(int id, Users users)
         {
             var result = await Context.Users.FindAsync(id);
-            if(result == null)
+            if (result == null)
             {
                 return BadRequest();
             }
-            users.Password = Crypto.HashPassword(users.Password);
-            Context.Users.Update(result);
-            await Context.SaveChangesAsync();
-            return Ok(new { result = "", message = "edit successfully" });
+            else
+            {
+                result.Username = users.Username;
+                result.Name = users.Name;
+                result.Email = users.Email;
+                result.IsActive = users.IsActive;
+                result.RoleId = users.RoleId;
+                if (!string.IsNullOrEmpty(users.Password))
+                {
+                    result.Password = users.Password;
+                    users.Password = Crypto.HashPassword(users.Password);
+                }
+                Context.Users.Update(result);
+                await Context.SaveChangesAsync();
+                return Ok(new { result = "", message = "edit successfully" });
+            }
+
+
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
@@ -101,7 +117,7 @@ namespace backend.Controllers
             }
             catch (Exception error)
             {
-               
+
                 return StatusCode(500, new { result = "", message = error });
             }
         }

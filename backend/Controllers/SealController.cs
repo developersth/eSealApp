@@ -9,13 +9,13 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SealItemController : ControllerBase
+    public class SealController : ControllerBase
     {
-        ILogger<SealItemController> _logger;
+        ILogger<SealController> _logger;
         public DatabaseContext Context { get; }
 
-        public SealItemController(DatabaseContext context,
-        ILogger<SealItemController> logger)
+        public SealController(DatabaseContext context,
+        ILogger<SealController> logger)
         {
             Context = context;
             _logger = logger;
@@ -25,7 +25,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.SealItem.ToList();
+                var result = Context.Seals.ToList();
                 if (result == null)
                 {
                     return NotFound();
@@ -44,7 +44,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.SealItem.SingleOrDefault(p => p.Id == id);
+                var result = Context.Seals.SingleOrDefault(p => p.Id == id);
 
                 if (result == null)
                 {
@@ -60,19 +60,18 @@ namespace backend.Controllers
         }
 
         [HttpGet("BySealInId/{id}")]
-        public ActionResult GetBySealInId(Int32 id)
+        public ActionResult GetBySealInId(string id)
         {
             try
             {
-                var result = from tran in Context.SealInTransaction
-                             join seal in Context.SealItem on tran.SealItemId equals seal.Id 
-                             where tran.SealInId == id
+                var result = from info in Context.SealInInfo
+                             join seal in Context.Seals on info.SealId equals seal.Id 
+                             where info.SealInId == id
                              select new{
                                 Id =seal.Id,
                                 SealNo =seal.SealNo,
                                 Type = seal.Type,
                                 Status =seal.Status,
-                                IsUsed = seal.IsUsed,
                                 Created = seal.Created
                              };
 

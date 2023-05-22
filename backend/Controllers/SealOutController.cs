@@ -113,7 +113,7 @@ namespace backend.Controllers
                                  Pack = info.Pack,
                                  SealType = info.SealType,
                                  SealTypeName = info.SealTypeName,
-                                 SealItemList = info.SealItemList,
+                                 SealList = info.SealList,
                                  Created = info.Created
                              };
 
@@ -153,6 +153,8 @@ namespace backend.Controllers
                                  Pack = soif.Pack,
                                  SealType = soif.SealType,
                                  SealTypeName = soif.SealTypeName,
+                                 SealList=soif.SealList,
+                                 SealExtraList =so.SealExtraList
                                  //SealNo = si.SealNo
                              };
 
@@ -161,7 +163,7 @@ namespace backend.Controllers
             catch (Exception error)
             {
                 _logger.LogError($"Log Get: {error}");
-                return StatusCode(500, new { result = "", message = error });
+                return StatusCode(500, new { result = "", message = error.Message });
             }
         }
 
@@ -195,7 +197,7 @@ namespace backend.Controllers
                             Pack = item.Pack,
                             SealType = item.SealType,
                             SealTypeName = item.SealTypeName,
-                            SealItemList = item.SealItemList
+                            SealList = item.SealList
                         };
                         sealOutInfoList.Add(sealOutInfoModel);
                     }
@@ -293,32 +295,6 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error });
             }
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult>
-        EditProduct([FromForm] Truck data, int id)
-        {
-            try
-            {
-                var product = Context.Truck.SingleOrDefault(p => p.TruckId == id);
-
-                if (product == null)
-                {
-                    return NotFound();
-                }
-
-                Context.Truck.Update(product);
-                Context.SaveChanges();
-
-                return Ok(new { result = "", message = "update product successfully" });
-            }
-            catch (Exception error)
-            {
-                _logger.LogError($"Log UpdateProduct: {error}");
-                return StatusCode(500, new { result = "", message = error });
-            }
-        }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

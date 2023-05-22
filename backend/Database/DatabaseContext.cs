@@ -18,14 +18,14 @@ namespace backend.Database
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<SealIn> SealIn { get; set; }
-        public virtual DbSet<SealItem> SealItem { get; set; }
-        public virtual DbSet<SealType> SealType { get; set; }
+        public virtual DbSet<Seals> Seals { get; set; }
+        public virtual DbSet<SealTypes> SealTypes { get; set; }
         public virtual DbSet<SealStatus> SealStatus { get; set; }
-        public virtual DbSet<Truck> Truck { get; set; }
+        public virtual DbSet<Trucks> Trucks { get; set; }
         public virtual DbSet<SealOut> SealOut { get; set; }
         public virtual DbSet<SealOutInfo> SealOutInfo { get; set; }
-        public virtual DbSet<SealInTransaction> SealInTransaction { get; set; }
-        public virtual DbSet<Products> Products { get; set; }
+        public virtual DbSet<SealInInfo> SealInInfo { get; set; }
+        public virtual DbSet<Drivers> Drivers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,15 +49,17 @@ namespace backend.Database
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
-            modelBuilder.Entity<SealItem>(entity =>
+            modelBuilder.Entity<Seals>(entity =>
             {
-                entity.Property(e => e.IsUsed).HasDefaultValueSql("0");
+                entity.Property(e => e.Type).HasDefaultValueSql("1");
+                entity.Property(e => e.Type).HasDefaultValueSql("1");
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
 
-            modelBuilder.Entity<Truck>(entity =>
+            modelBuilder.Entity<Trucks>(entity =>
             {
+                entity.HasKey(e=>e.TruckId);
                 entity.Property(e => e.IsActive).HasDefaultValueSql("1");
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
@@ -78,16 +80,14 @@ namespace backend.Database
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
 
-            modelBuilder.Entity<SealInTransaction>(entity =>
+            modelBuilder.Entity<Drivers>(entity =>
             {
-                entity.Property(e => e.Timestamp).HasDefaultValueSql("(getdate())");
+                entity.HasKey(e=>e.DriverId);
+                entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
-            
-            modelBuilder.Entity<Products>(entity =>
-            {
-                entity.HasKey(e => e.ProductId);
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
-            });
+
+
             OnModelCreatingPartial(modelBuilder);
         }
 

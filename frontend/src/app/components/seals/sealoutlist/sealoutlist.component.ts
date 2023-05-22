@@ -10,7 +10,7 @@ import { RestService } from "../../../services/rest.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import * as swalFunctions from "../../../shared/services/sweetalert.service";
 import { th } from "date-fns/locale";
-import { SealOut } from "../../../models/seal.model";
+import { SealOut } from "../../../models/seal-out.model";
 import { forEach } from "core-js/core/array";
 import { RecriptComponent } from "./recript/recript.component";
 import { map } from "rxjs/operators";
