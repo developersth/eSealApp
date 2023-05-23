@@ -71,7 +71,9 @@ export class SealListComponent implements OnInit {
     }
   }
   getData(){
-    this.service.getSeals().subscribe((res: any) => {
+    let startDate: string = `${this.dtStart.year}-${this.dtStart.month}-${this.dtStart.day}`;
+    let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
+    this.service.getSeals(startDate,endDate).subscribe((res: any) => {
       this.data = res.result;
       this.searchItem();
     });

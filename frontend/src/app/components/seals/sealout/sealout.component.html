@@ -92,21 +92,28 @@
               <td class="font-medium-2">จำนวนซีลรวมทั้งหมด</td>
               <td class="font-medium-2"> {{subTotalSeal()}} ตัว</td>
             </tr>
-            <table *ngIf="sealNoItem.length!=0" class="table">
+            <table *ngIf="sealItemExtraList.length!=0" class="table">
               <thead>
                 <tr>
                   <th scope="col">ลำดับ</th>
-                  <th scope="col">หมายเลยซีล</th>
+                  <th scope="col">หมายเลยซีลพิเศษ</th>
+                  <th scope="col">ประเภทซีล</th>
                   <th scope="col">#</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of sealNoItem;let idx = index">
+                <tr *ngFor="let item of sealItemExtraList;let idx = index">
                   <td class="font-medium-3">{{idx+1}}</td>
                   <td class="font-medium-3">
-                    <input type="text" [value]="item.sealNo" readonly  class="form-control font-medium-2"
-                    placeholder="หมายเลขซีล">
+                    <ng-select class="font-medium-2" [items]="item.sealNo" (change)="selectEvent()" [virtualScroll]="true"
+                    [clearable]="true" bindLabel="sealBetween" bindValue="id" placeholder="หมายเลขซีลพิเศษ"
+                    [(ngModel)]="selectedOptionsQRCode">
+                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                      {{item.sealNo}}
+                    </ng-template>
+                  </ng-select>
                   </td>
+                  <td class="font-medium-3">{{item.sealTypeName}}</td>
                   <td class="font-medium-3">
                     <btn class="btn btn-danger" (click)="removeItem(item)"><i class="fa fa-trash"></i></btn>
                   </td>

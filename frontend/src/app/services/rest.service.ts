@@ -72,7 +72,6 @@ export class RestService {
     startDate: string,
     endDate: string
   ): Observable<any> {
-    const body = { startDate: startDate, endDate: endDate };
     return this.http.get<any[]>(
       `${this.sealInUrl}?pIsActive=${isActive}&pColumnSearch=${columnSearch}&searchTerm=${searchTerm}&pStartDate=${startDate}&pEndDate=${endDate}`,
       { headers }
@@ -91,8 +90,8 @@ export class RestService {
     return forkJoin(deleteRequests);
   }
   //----------------------------------------------------------------
-  getSeals(): Observable<any[]> {
-    return this.http.get<any[]>(this.sealUrl);
+  getSeals( startDate: string,endDate: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.sealUrl}?pStartDate=${startDate}&pEndDate=${endDate}`);
   }
   getSealItemBySealInId(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.sealUrl}/BySealInId/${id}`, {

@@ -55,7 +55,7 @@ export class SealoutComponent implements OnInit {
   @Input() txtSealExtraTotal: number = 0;
   @Input() txtTruckId: string;
   @Input() sealNoExt: any[] = [];
-  @Input() sealItemExtra: any[] = [];
+  @Input() sealItemExtraList: any[] = [];
   selectedOptionsQRCode: any[] = [];
   itemSealBetWeen: any[] = [];
   itemSealOutList: any[] = [];
@@ -153,13 +153,13 @@ export class SealoutComponent implements OnInit {
     // do something with selected item
   }
   addListSealExtra() {
-    this.itemSealOutList.push({
-      sealInId: 0,
-      sealBetween: "",
-      pack: 1,
+    this.sealItemExtraList.push({
+      id: 0,
+      sealNo: "",
+      status:1,
+      statusName:"ยังไม่ได้ใช้งาน",
       sealType: 2,
       sealTypeName: "พิเศษ",
-      sealItemList:JSON.stringify([])
     });
   }
   removeItem(item: any) {
@@ -361,7 +361,7 @@ export class SealoutComponent implements OnInit {
       truckId: result.truckId,
       truckName: `${result.truckHead}/${result.truckTail}`,
       sealItemList:JSON.stringify(this.itemSealOutList)  ,
-      sealItemExtraList:JSON.stringify(this.sealItemExtra) ,
+      sealItemExtraList:JSON.stringify(this.sealItemExtraList) ,
     };
     this.service.updateSealOut(this.getId, JSON.stringify(body)).subscribe(
       (res: any) => {

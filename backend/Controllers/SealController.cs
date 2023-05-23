@@ -21,33 +21,47 @@ namespace backend.Controllers
             _logger = logger;
         }
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string pStartDate = "", [FromQuery] string pEndDate = "")
         {
             try
             {
-                 var query = from s in Context.Seals
+                DateTime startDate = DateTime.Now;
+                DateTime endDate = DateTime.Now;
+                var query = from s in Context.Seals
                             join st in Context.SealTypes
                             on s.Type equals st.Id into joinedSealTypes
                             from js in joinedSealTypes.DefaultIfEmpty()
                             join ss in Context.SealStatus
                             on s.Status equals ss.Id into joinedSealStatus
                             from jss in joinedSealStatus.DefaultIfEmpty()
-                            select new{
-                                Id=s.Id,
-                                SealNo=s.SealNo,
-                                Type =s.Type,
-                                TypeName =js.TypeName,
-                                Status =s.Status,
-                                StatusName=jss.Name,
-                                CreatedBy =s.CreatedBy,
-                                UpdatedBy=s.UpdatedBy,
-                                Created=s.Created,
-                                Updated=s.Updated,
+                            select new
+                            {
+                                Id = s.Id,
+                                SealNo = s.SealNo,
+                                Type = s.Type,
+                                TypeName = js.TypeName,
+                                Status = s.Status,
+                                StatusName = jss.Name,
+                                CreatedBy = s.CreatedBy,
+                                UpdatedBy = s.UpdatedBy,
+                                Created = s.Created,
+                                Updated = s.Updated,
                             };
                 if (query == null)
                 {
                     return NotFound();
                 }
+                if (!string.IsNullOrEmpty(pStartDate))
+                {
+                    string[] p = pStartDate.Split('-');
+                    startDate = new DateTime(Convert.ToInt16(p[0]), Convert.ToInt16(p[1]), Convert.ToInt16(p[2]));
+                }
+                if (!string.IsNullOrEmpty(pEndDate))
+                {
+                    string[] p = pEndDate.Split('-');
+                    endDate = new DateTime(Convert.ToInt16(p[0]), Convert.ToInt16(p[1]), Convert.ToInt16(p[2]));
+                }
+                query = query.Where(u => u.Created >= startDate && u.Created <= endDate);
                 return Ok(new { result = query.ToList(), message = "request successfully" });
             }
             catch (Exception error)
@@ -83,14 +97,15 @@ namespace backend.Controllers
             try
             {
                 var result = from info in Context.SealInInfo
-                             join seal in Context.Seals on info.SealId equals seal.Id 
+                             join seal in Context.Seals on info.SealId equals seal.Id
                              where info.SealInId == id
-                             select new{
-                                Id =seal.Id,
-                                SealNo =seal.SealNo,
-                                Type = seal.Type,
-                                Status =seal.Status,
-                                Created = seal.Created
+                             select new
+                             {
+                                 Id = seal.Id,
+                                 SealNo = seal.SealNo,
+                                 Type = seal.Type,
+                                 Status = seal.Status,
+                                 Created = seal.Created
                              };
 
                 if (result == null)
