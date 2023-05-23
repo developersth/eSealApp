@@ -128,7 +128,7 @@ export class TruckListComponent implements OnInit {
       size: "md",
     };
     const modalRef = this.modalService.open(TruckModalComponent, ngbModalOptions);
-    modalRef.componentInstance.id = item.id; // should be the id
+    modalRef.componentInstance.truckId = item.truckId; // should be the id
     modalRef.componentInstance.data = item;
     modalRef.result
       .then((result) => {
@@ -139,7 +139,7 @@ export class TruckListComponent implements OnInit {
           color: "#fff",
           fullScreen: true,
         });
-        this.service.updateTruck(item.id,result).subscribe(
+        this.service.updateTruck(item.truckId,result).subscribe(
           (res: any) => {
             this.spinner.hide();
             this.swal.showDialog("success", "แก้ไขข้อมูลสำเร็จแล้ว");

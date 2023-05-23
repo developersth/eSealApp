@@ -25,17 +25,35 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Seals.ToList();
-                if (result == null)
+                 var query = from s in Context.Seals
+                            join st in Context.SealTypes
+                            on s.Type equals st.Id into joinedSealTypes
+                            from js in joinedSealTypes.DefaultIfEmpty()
+                            join ss in Context.SealStatus
+                            on s.Status equals ss.Id into joinedSealStatus
+                            from jss in joinedSealStatus.DefaultIfEmpty()
+                            select new{
+                                Id=s.Id,
+                                SealNo=s.SealNo,
+                                Type =s.Type,
+                                TypeName =js.TypeName,
+                                Status =s.Status,
+                                StatusName=jss.Name,
+                                CreatedBy =s.CreatedBy,
+                                UpdatedBy=s.UpdatedBy,
+                                Created=s.Created,
+                                Updated=s.Updated,
+                            };
+                if (query == null)
                 {
                     return NotFound();
                 }
-                return Ok(new { result = result, message = "request successfully" });
+                return Ok(new { result = query.ToList(), message = "request successfully" });
             }
             catch (Exception error)
             {
                 _logger.LogError($"Log GetSealIn: {error}");
-                return StatusCode(500, new { result = "", message = error });
+                return StatusCode(500, new { result = "", message = error.Message });
             }
         }
 

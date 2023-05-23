@@ -18,7 +18,7 @@ import { ToastrService } from "ngx-toastr";
 })
 export class TruckModalComponent implements OnInit {
   truckForm: FormGroup;
-  id: string = "";
+  truckId: number = 0;
   truck: Truck[];
   @Input() data: any = {};
   constructor(
@@ -41,7 +41,7 @@ export class TruckModalComponent implements OnInit {
     this.truckForm = this.formBuilder.group({
       truckHead: [item.truckHead || "", Validators.required],
       truckTail: [item.truckTail||""],
-      sealTotal: [item.sealTotal||""]
+      sealTotal: [item.sealTotal||0]
     });
   }
   getTrimmedValues(formGroup: FormGroup): any {

@@ -74,7 +74,7 @@ namespace backend.Controllers
                     foreach (var item in query)
                     {
                         //check truck head
-                        if (item.TruckHead == model.TruckHead && item.TruckTail == model.TruckTail &&item.TruckTail!="")
+                        if (item.TruckHead == model.TruckHead && item.TruckTail == model.TruckTail && item.TruckTail != "")
                         {
                             return Ok(new { result = model, success = false, message = "มีข้อมูลทะเบียนหัว และทะเบียนหางในระบบแล้ว" });
                         }
@@ -103,7 +103,7 @@ namespace backend.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult>
-        EditProduct([FromBody] Trucks data, int id)
+        Put([FromBody] Trucks data, int id)
         {
             try
             {
@@ -113,9 +113,16 @@ namespace backend.Controllers
                 {
                     return NotFound();
                 }
+                else
+                {
+                    truck.TruckHead = data.TruckHead;
+                    truck.TruckTail = data.TruckTail;
+                    truck.SealTotal = data.SealTotal;
 
-                Context.Trucks.Update(data);
-                Context.SaveChanges();
+                    Context.Trucks.Update(truck);
+                    Context.SaveChanges();
+                }
+
 
                 return Ok(new { result = "", message = "update product successfully" });
             }
@@ -128,21 +135,21 @@ namespace backend.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public IActionResult Delete(int id)
         {
             try
             {
-                var product = Context.Trucks.SingleOrDefault(p => p.TruckId == id);
+                var result = Context.Trucks.SingleOrDefault(p => p.TruckId == id);
 
-                if (product == null)
+                if (result == null)
                 {
                     return NotFound();
                 }
 
-                Context.Trucks.Remove(product);
+                Context.Trucks.Remove(result);
                 Context.SaveChanges();
 
-                return Ok(new { result = "", message = "delete product sucessfully" });
+                return Ok(new { result = "", message = "delete data sucessfully" });
             }
             catch (Exception error)
             {

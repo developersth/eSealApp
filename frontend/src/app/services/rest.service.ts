@@ -91,6 +91,9 @@ export class RestService {
     return forkJoin(deleteRequests);
   }
   //----------------------------------------------------------------
+  getSeals(): Observable<any[]> {
+    return this.http.get<any[]>(this.sealUrl);
+  }
   getSealItemBySealInId(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.sealUrl}/BySealInId/${id}`, {
       headers,

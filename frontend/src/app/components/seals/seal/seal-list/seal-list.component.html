@@ -24,10 +24,10 @@
                   <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
                 </select>
               </div>
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-4">
                 <label> ฟิลเตอร์</label>
                 <fieldset>
-                  <div class="form-inline">
+                  <div class="input-group">
                     <div class="input-group">
                       <input type="text" class="form-control" [(ngModel)]="keyword" placeholder="ค้นหาข้อมูลในตาราง">
                       <div class="input-group-append">
@@ -35,11 +35,54 @@
                           <i class="ft ft-x-square"></i>
                         </button>
                       </div>
-                      <button (click)="getData()" class="btn btn-primary">ค้นหา </button>
                     </div>
-
                   </div>
                 </fieldset>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="form-action-3">จากวันที่</label>
+                <div class="form-inline">
+                  <div class="input-group" style="width: 100%;">
+                    <input class="form-control" readonly (click)="dpStart.toggle()" placeholder="dd/mm/yyyy" name="dp"
+                      [(ngModel)]="dtStart" ngbDatepicker [dayTemplate]="customDay" [markDisabled]="isDisabled"
+                      #dpStart="ngbDatepicker">
+                    <div class="input-group-append">
+                      <div class="input-group-text" (click)="dpStart.toggle()">
+                        <i class="ft ft-calendar" style="cursor: pointer;"></i>
+                      </div>
+                    </div>
+                    <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
+                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
+                        [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="form-action-4">ถึงวันที่</label>
+                <div class="form-inline">
+                  <div class="input-group" style="width: 100%;">
+                    <input class="form-control" readonly (click)="dpEnd.toggle()" placeholder="dd/mm/yyyy" name="dp"
+                      [(ngModel)]="dtEnd" ngbDatepicker [dayTemplate]="customDay" [markDisabled]="isDisabled"
+                      #dpEnd="ngbDatepicker">
+                    <div class="input-group-append">
+                      <div class="input-group-text" (click)="dpEnd.toggle()">
+                        <i class="ft ft-calendar" style="cursor: pointer;"></i>
+                      </div>
+                      <button (click)="getData()" class="btn btn-primary">ค้นหา </button>
+                    </div>
+                    <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
+                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
+                        [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="row">
@@ -49,9 +92,12 @@
                     <thead>
                       <tr>
                         <th>รหัส</th>
-                        <th>ทะเบียนหัว</th>
-                        <th>ทะเบียนหาง</th>
-                        <th>จำนวนซีล</th>
+                        <th>หมายเลขซีล</th>
+                        <th>ประเภทซีล</th>
+                        <th>สถานะ</th>
+                        <th>วันที่สร้าง</th>
+                        <th>สร้างโดย</th>
+                        <th>แก้ไขโดย</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -60,8 +106,11 @@
                         *ngFor="let item of filterItems| paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
                         <td>{{ item.id }}</td>
                         <td>{{ item.sealNo }}</td>
-                        <td>{{ item.IsUsed }}</td>
-                        <td>{{ item.sealTotal }}</td>
+                        <td>{{ item.typeName }}</td>
+                        <td>{{ item.statusName }}</td>
+                        <td>{{ item.created|date: 'yyyy/MM/dd HH:mm' }}</td>
+                        <td>{{ item.createdBy }}</td>
+                        <td>{{ item.updatedBy }}</td>
                         <td>
                           <a class="btn btn-primary" (click)="editData(item)">
                             <i class="fa fa-pencil">แก้ไข</i>

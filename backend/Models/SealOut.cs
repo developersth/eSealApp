@@ -6,6 +6,7 @@ namespace backend.Models
     public partial class SealOut
     {
         public int Id { get; set; }
+        public string? SealOutId { get; set; } //รหัสซีล Genarations
         public int? SealTotal { get; set; }
         public int? SealTotalExtra { get; set; }
         public string? SealExtraList { get; set; }

@@ -153,8 +153,8 @@ namespace backend.Controllers
                                  Pack = soif.Pack,
                                  SealType = soif.SealType,
                                  SealTypeName = soif.SealTypeName,
-                                 SealList=soif.SealList,
-                                 SealExtraList =so.SealExtraList
+                                 SealList = soif.SealList,
+                                 SealExtraList = so.SealExtraList
                                  //SealNo = si.SealNo
                              };
 
@@ -183,8 +183,12 @@ namespace backend.Controllers
                 };
                 Context.SealOut.Add(sealout);
                 var result = await Context.SaveChangesAsync();
+
                 if (result > 0 && model.SealOutInfo != null)
                 {
+                    //update Id Format
+                    sealout.SealOutId = Utilities.GennerateId("S0", sealout.Id);
+                    Context.Update(sealout);
                     List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
                     foreach (var item in model.SealOutInfo)
                     {
