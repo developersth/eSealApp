@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SealinComponent } from './sealin/sealin.component';
 import { SealoutComponent } from './sealout/sealout.component';
 import { SealOutListComponent } from './sealoutlist/sealoutlist.component';
+import { SealListComponent } from './seal/seal-list/seal-list.component';
 const routes: Routes = [
   {
     path: '',
@@ -34,6 +35,13 @@ const routes: Routes = [
         component: SealOutListComponent,
         data: {
           title: 'รายการจ่ายซีล'
+        }
+      },
+      {
+        path: 'seallist',
+        component: SealListComponent,
+        data: {
+          title: 'ข้อมูลซีล'
         }
       }
     ]

@@ -23,6 +23,7 @@ export class UserEditComponent implements OnInit {
   id: string = "";
   user: User[];
   @Input() data: any = {};
+  rols:any[]
   constructor(
     public activeModal: NgbActiveModal,
     public formBuilder: FormBuilder,
@@ -44,6 +45,21 @@ export class UserEditComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.data);
     this.buildItemForm(this.data);
+    this.rols=[
+      {
+        id:1,
+        name:"ผู้ดูแลระบบ"
+      },
+      {
+        id:2,
+        name:"ผู้ใช้งาน"
+      },
+      {
+        id:3,
+        name:"หัวหน้างาน"
+      }
+    ]
+
   }
   private buildItemForm(item) {
     this.userForm = this.formBuilder.group({

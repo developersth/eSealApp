@@ -10,6 +10,7 @@ export const HROUTES: RouteInfo[] = [
       { path: '/seals/sealin', title: 'รายการนำซีลเข้าระบบ', icon: 'ft-arrow-down submenu-icon', class: '', isExternalLink: false, submenu: [] },
       { path: '/seals/sealout', title: 'การจ่ายซีล', icon: 'ft-arrow-up submenu-icon', class: '', isExternalLink: false, submenu: [] },
       { path: '/seals/sealoutlist', title: 'รายการจ่ายซีล', icon: 'ft-list submenu-icon', class: '', isExternalLink: false, submenu: [] },
+      { path: '/seals/seallist', title: 'ข้อมูลซีล', icon: 'ft-octagon submenu-icon', class: '', isExternalLink: false, submenu: [] },
     ]
   },
   {

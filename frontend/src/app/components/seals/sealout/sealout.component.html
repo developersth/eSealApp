@@ -51,7 +51,7 @@
                     <button class="btn btn-secondary" type="button"><i class="ft ft-file-text"></i></button>
                   </div>
                   <ng-select class="font-medium-2" [items]="itemSealBetWeen" (change)="selectEvent()" [virtualScroll]="true"
-                    [clearable]="true" bindLabel="sealBetween" bindValue="id" placeholder="ค้นหา แสกน QR CODE"
+                    [clearable]="true" bindLabel="sealBetween" bindValue="sealInId" placeholder="ค้นหา แสกน QR CODE"
                     [(ngModel)]="selectedOptionsQRCode">
                     <ng-template ng-option-tmp let-item="item" let-index="index">
                       {{item.sealBetween}} [แพ็ค {{item.pack}}]
@@ -66,6 +66,7 @@
               <thead>
                 <tr>
                   <th scope="col">ลำดับ</th>
+                  <th scope="col">รหัสซีลแพ็ค</th>
                   <th scope="col">ช่วงหมายเลยซีล</th>
                   <th scope="col">แพ็ค</th>
                   <th scope="col">ประเภทซีล</th>
@@ -75,9 +76,8 @@
               <tbody>
                 <tr *ngFor="let item of itemSealOutList;let idx = index">
                   <td class="font-medium-3">{{idx+1}}</td>
-                  <td class="font-medium-3">
-                    <input type="text" class="form-control font-medium-2" [(ngModel)]="item.sealBetween" [readonly]="item.sealType == '1'" placeholder="ระบุหมายเลขซีล">
-                  </td>
+                  <td class="font-medium-3">{{item.sealInId}}</td>
+                  <td class="font-medium-3">{{item.sealBetween}}</td>
                   <td class="font-medium-3">{{item.pack}}</td>
                   <td class="font-medium-3">{{item.sealTypeName}}</td>
                   <td class="font-medium-3">

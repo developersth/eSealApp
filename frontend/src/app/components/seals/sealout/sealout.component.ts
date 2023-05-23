@@ -124,21 +124,21 @@ export class SealoutComponent implements OnInit {
   }
 
   selectEvent() {
-    let id = this.selectedOptionsQRCode;
+    let sealInId = this.selectedOptionsQRCode;
     this.clearSelectionQRCode();
     if (!this.txtSealTotal || this.txtSealTotal <= 0) {
       this.toastr.warning("กรุณาระบุ จำนวนซีล");
       return;
     }
     if (this.selectedOptionsQRCode) {
-      const result = this.itemSealBetWeen.find((item) => item.id === id);
+      const result = this.itemSealBetWeen.find((item) => item.sealInId === sealInId);
       console.log(result);
-      if (!this.isValidChkAddItemSeal(id, result.pack)) {
+      if (!this.isValidChkAddItemSeal(sealInId, result.pack)) {
         return;
       }
-      this.service.getSealItemBySealInId(result.id).subscribe((res: any) => {
+      this.service.getSealItemBySealInId(result.sealInId).subscribe((res: any) => {
         this.itemSealOutList.push({
-          sealInId: result.id,
+          sealInId: result.sealInId,
           sealBetween: result.sealBetween,
           pack: result.pack,
           sealType: 1,

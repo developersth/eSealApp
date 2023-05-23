@@ -41,7 +41,22 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Users.ToList();
+                var query = from u in Context.Users
+                            join r in Context.Roles
+                            on u.RoleId equals r.Id into joinedUserRole
+                            from ju in joinedUserRole.DefaultIfEmpty()
+                            select new
+                            {
+                                Id = u.Id,
+                                Username = u.Username,
+                                Name = u.Name,
+                                Email = u.Email,
+                                RoleName = ju.Name,
+                                IsActive = u.IsActive,
+                                Created = u.Created,
+                                Update = u.Updated
+                            };
+                var result = query.ToList();
                 return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
