@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System;
 using System.IO;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace backend.Controllers
                         //     query = query.Where(p => p.SealItemList.ToString().Contains(searchTerm));
                         //     break;
                         case "TruckName":
-                            query = query.Where(p => p.TruckName == searchTerm);
+                            query = query.Where(p => p.TruckName.Contains(searchTerm));
                             break;
 
                         default:
@@ -98,6 +99,29 @@ namespace backend.Controllers
         {
             try
             {
+                var result = Context.SealOut.FirstOrDefault(s => s.Id == id);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(new { result = result, message = "request successfully" });
+                }
+
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
+        [HttpGet("ShowReceipt/{id}")]
+        public IActionResult ShowReceipt(int id)
+        {
+            try
+            {
                 var result = from so in Context.SealOut
                              join info in Context.SealOutInfo on so.Id equals info.SealOutId
                              where so.Id == id
@@ -125,40 +149,6 @@ namespace backend.Controllers
                 {
                     return Ok(new { result = result, message = "request successfully" });
                 }
-
-            }
-            catch (Exception error)
-            {
-                _logger.LogError($"Log Get: {error}");
-                return StatusCode(500, new { result = "", message = error });
-            }
-        }
-        [HttpGet("ShowReceipt/{id}")]
-        public IActionResult ShowReceipt(string id)
-        {
-            try
-            {
-                Int32 sealOutId = Int32.Parse(id);
-                var result = from so in Context.SealOut
-                             join soif in Context.SealOutInfo on so.Id equals soif.SealOutId
-                             //join si in Context.SealItem on soif.SealInId equals si.SealInId
-                             where so.Id == sealOutId
-                             select new
-                             {
-                                 Id = so.Id,
-                                 SealTotal = so.SealTotal,
-                                 TruckName = so.TruckName,
-                                 Created = so.Created,
-                                 SealBetween = soif.SealBetween,
-                                 Pack = soif.Pack,
-                                 SealType = soif.SealType,
-                                 SealTypeName = soif.SealTypeName,
-                                 SealList = soif.SealList,
-                                 SealExtraList = so.SealExtraList
-                                 //SealNo = si.SealNo
-                             };
-
-                return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
             {
@@ -168,7 +158,7 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SealOutTodo model)
+        public async Task<IActionResult> Post([FromBody] RequestSealOut model)
         {
             try
             {
@@ -178,10 +168,23 @@ namespace backend.Controllers
                     SealTotalExtra = model.SealTotalExtra,
                     TruckId = model.TruckId,
                     TruckName = model.TruckName,
+                    SealExtraList = model.SealExtraList,
                     CreatedBy = model.CreatedBy,
                     UpdatedBy = model.UpdatedBy
                 };
                 Context.SealOut.Add(sealout);
+                //update status seal extra
+                dynamic jsonObject = JsonConvert.DeserializeObject(model.SealExtraList);
+                if (jsonObject.Count > 0)
+                {
+                    foreach (var item in jsonObject)
+                    {
+                        Int32 id =item.id;
+                        var sealNoExtra = Context.Seals.FirstOrDefault(a=>a.Id==id);
+                        sealNoExtra.Status =2;
+                        Context.Seals.Update(sealNoExtra);
+                    }
+                }
                 var result = await Context.SaveChangesAsync();
 
                 if (result > 0 && model.SealOutInfo != null)
@@ -190,6 +193,7 @@ namespace backend.Controllers
                     sealout.SealOutId = Utilities.GennerateId("S0", sealout.Id);
                     Context.Update(sealout);
                     List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
+                    List<string> sealInId = new List<string>();
                     foreach (var item in model.SealOutInfo)
                     {
 
@@ -204,92 +208,35 @@ namespace backend.Controllers
                             SealList = item.SealList
                         };
                         sealOutInfoList.Add(sealOutInfoModel);
+                        sealInId.Add(item.SealInId);
                     }
                     Context.SealOutInfo.AddRange(sealOutInfoList);
+                    foreach (var id in sealInId)
+                    {
+                        //update status = 2 ใช้งานแล้ว sealIn
+                        List<SealIn> results = (from p in Context.SealIn
+                                                where p.SealInId == id
+                                                select p).ToList();
+
+                        foreach (SealIn p in results)
+                        {
+                            p.IsActive = true;
+                        }
+                        //update seal status = 2 ใช้งานแล้ว
+                        var query = (from info in Context.SealInInfo
+                                     join s in Context.Seals on info.SealId equals s.Id
+                                     where info.SealInId == id
+                                     select s).ToList();
+                        foreach (Seals p in query)
+                        {
+                            p.Status = 2;
+                        }
+                    }
+
+
                     await Context.SaveChangesAsync();
                 }
-                // if (result > 0)
-                // {
-                //     if (model.SealOutInfo != null)
-                //     {
-                //         List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
-                //         List<Int32> sealInIdList = new List<Int32>();
-                //         List<Int32> sealInIdListExtra = new List<Int32>();
-                //         //List<SealItem> sealItemsExtra = new List<SealItem>();
 
-                //         foreach (var item in model.SealOutInfo)
-                //         {
-
-                //             var sealOutInfoModel = new SealOutInfo
-                //             {
-                //                 SealInId = item.SealInId,
-                //                 SealOutId = sealout.Id,
-                //                 SealBetween = item.SealBetween,
-                //                 Pack = item.Pack,
-                //                 SealType = item.SealType,
-                //                 SealTypeName = item.SealTypeName,
-                //                 SealItemList = item.SealItemList
-                //             };
-
-                //             //seal In Id
-                //             if (item.SealType == 1) //ซีลปกติ
-                //             {
-                //                 var id = item.SealInId;
-                //                 sealInIdList.Add(Convert.ToInt32(id));
-                //             }
-                //             if (item.SealType == 2) //ซีลพิเศษ
-                //             {
-                //                 //insert SealItem ซีลพิเศษ
-                //                 var sealItemModel = new SealItem
-                //                 {
-                //                     SealNo = item.SealBetween,
-                //                     Type = 2, //ปกติ
-                //                     IsUsed = true,
-                //                     Status = 1 //ซีลใช้งานได้ปกติ
-                //                 };
-                //                 //sealItemsExtra.Add(sealItemModel);
-                //                 Context.SealItem.AddRange(sealItemModel);
-                //                 Context.SaveChanges();
-                //                 //Add Seal Extra to SealOutInfo
-
-                //                 sealOutInfoModel = new SealOutInfo
-                //                 {
-                //                     SealInId = 0,
-                //                     SealOutId = sealout.Id,
-                //                     SealBetween = item.SealBetween,
-                //                     Pack = item.Pack,
-                //                     SealType = item.SealType,
-                //                     SealTypeName = item.SealTypeName,
-                //                     SealItemList = item.SealItemList
-                //                 };
-                //             }
-
-                //             sealOutInfoList.Add(sealOutInfoModel);
-                //         }
-                //         Context.SealOutInfo.AddRange(sealOutInfoList);
-                //         var save = await Context.SaveChangesAsync();
-                //         if (save > 0)
-                //         {
-
-                //             string sql = @"UPDATE dbo.SealIn
-                //                         SET IsActive = 1
-                //                         WHERE SealIn.Id IN (SELECT distinct SealInId From SealOutInfo WHERE SealOutInfo.SealOutId =" + sealout.Id + ")";
-                //             SqlDatabase.Exec_NonQuery(sql);
-
-
-                //             sql = @"UPDATE dbo.SealItem
-                //                     SET IsUsed = 1
-                //                     WHERE SealItem.Id IN 
-                //                     (SELECT distinct SealItemId FROM SealItem
-                //                     INNER JOIN SealInTransaction
-                //                     ON SealItem.Id = SealInTransaction.SealItemId
-                //                     INNER JOIN SealOutInfo
-                //                     ON SealInTransaction.SealInId = SealOutInfo.SealInId
-                //                     WHERE SealOutInfo.SealOutId ="+sealout.Id+")";
-                //             SqlDatabase.Exec_NonQuery(sql);
-                //         }
-                //     }
-                // }
 
                 return Ok(new { result = sealout, success = true, message = "เพิ่มข้อมูล  เรียบร้อยแล้ว" });
             }

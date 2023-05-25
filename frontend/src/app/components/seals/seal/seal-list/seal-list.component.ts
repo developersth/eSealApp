@@ -48,6 +48,14 @@ export class SealListComponent implements OnInit {
   isDisabled(date: NgbDateStruct, current: { month: number }) {
     return date.month !== current.month;
   }
+  getColor(status:number):string{
+    console.log(status);
+    if(status ===1){
+      return 'success';
+    }else if(status ===2){
+      return 'danger';
+    }
+  }
   addData(){
 
   }

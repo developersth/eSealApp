@@ -18,7 +18,7 @@
                 <label class="font-medium-2">ทะเบียนรถ</label>
                 <div class="input-group mb-2">
                   <div class="input-group-prepend">
-                    <button class="btn btn-secondary" type="button"><i class="ft ft-truck"></i></button>
+                    <button class="btn btn-warning" type="button"><i class="ft ft-truck"></i></button>
                   </div>
 
                   <ng-select class="font-medium-2" [items]="mTruck" [virtualScroll]="true" bindLabel="truckHead"
@@ -48,7 +48,7 @@
                 <label class="font-medium-2">คิวอาร์โค้ด</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <button class="btn btn-secondary" type="button"><i class="ft ft-file-text"></i></button>
+                    <button class="btn btn-secondary" type="button"><i class="fa fa-qrcode"></i></button>
                   </div>
                   <ng-select class="font-medium-2" [items]="itemSealBetWeen" (change)="selectEvent()" [virtualScroll]="true"
                     [clearable]="true" bindLabel="sealBetween" bindValue="sealInId" placeholder="ค้นหา แสกน QR CODE"
@@ -58,6 +58,24 @@
                     </ng-template>
                   </ng-select>
 
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <label class="font-medium-2">หมายเลขซีลพิเศษ(ถ้ามี)</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-success" type="button"><i class="ft ft-file-text"></i></button>
+                  </div>
+                  <ng-select class="font-medium-2" [items]="itemSealExtra" (change)="selectSealExtra()" [virtualScroll]="true"
+                    [clearable]="true" bindLabel="sealNo" bindValue="id" placeholder="เลือกหมายเลขซีลพิเศษ"
+                    [(ngModel)]="cbSealExtra">
+                    <ng-template ng-option-tmp let-item="item" let-index="index">
+                      {{item.sealNo}}
+                    </ng-template>
+                  </ng-select>
+                  <div class="input-group-prepend">
+                    <button class="btn btn-info" type="button" (click)="addTruck()"><i class="fa fa-plus"></i></button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -87,14 +105,14 @@
               </tbody>
 
             </table>
-            <button class="btn btn-info btn-outline" (click)="addListSealExtra()"><i class="ft ft-plus"></i> เพิ่มรายการซีลพิเศษ</button>
+            <!-- <button class="btn btn-info btn-outline" (click)="addListSealExtra()"><i class="ft ft-plus"></i> เพิ่มรายการซีลพิเศษ</button> -->
             <tr>
               <td class="font-medium-2">จำนวนซีลรวมทั้งหมด</td>
               <td class="font-medium-2"> {{subTotalSeal()}} ตัว</td>
             </tr>
-            <table *ngIf="sealItemExtraList.length!=0" class="table">
+            <table *ngIf="mSealExtra.length!=0" class="table ">
               <thead>
-                <tr>
+                <tr class="bg-success" style="color: white;">
                   <th scope="col">ลำดับ</th>
                   <th scope="col">หมายเลยซีลพิเศษ</th>
                   <th scope="col">ประเภทซีล</th>
@@ -102,20 +120,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of sealItemExtraList;let idx = index">
+                <tr *ngFor="let item of mSealExtra;let idx = index">
                   <td class="font-medium-3">{{idx+1}}</td>
                   <td class="font-medium-3">
-                    <ng-select class="font-medium-2" [items]="item.sealNo" (change)="selectEvent()" [virtualScroll]="true"
-                    [clearable]="true" bindLabel="sealBetween" bindValue="id" placeholder="หมายเลขซีลพิเศษ"
-                    [(ngModel)]="selectedOptionsQRCode">
-                    <ng-template ng-option-tmp let-item="item" let-index="index">
-                      {{item.sealNo}}
-                    </ng-template>
-                  </ng-select>
+                     {{item.sealNo}}
                   </td>
-                  <td class="font-medium-3">{{item.sealTypeName}}</td>
+                  <td class="font-medium-3">{{item.type==2?'พิเศษ':''}}</td>
                   <td class="font-medium-3">
-                    <btn class="btn btn-danger" (click)="removeItem(item)"><i class="fa fa-trash"></i></btn>
+                    <btn class="btn btn-danger" (click)="removeItemExtra(item)"><i class="fa fa-trash"></i></btn>
                   </td>
                 </tr>
               </tbody>
@@ -126,7 +138,7 @@
               <div class="col-lg-3 col-md-6">
                 <button type="button" (click)="onSubmit()" class="btn btn-primary btn-lg mr-2"><i
                     class="ft-check-square mr-1"></i>บันทึกข้อมูล</button>
-                <button type="button" class="btn btn-secondary btn-lg"><i class="ft-x mr-1"></i>ยกเลิก</button>
+                <button type="button" (click)="onClickBack()" class="btn btn-secondary btn-lg"><i class="ft-x mr-1"></i>ยกเลิก</button>
               </div>
             </div>
           </div>

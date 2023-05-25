@@ -34,7 +34,7 @@
               <tr *ngFor="let item of mSealOut;let i = index">
                 <th scope="row">{{i+1}}</th>
                 <td>
-                  <div *ngFor="let sealItem of mArray[i]">
+                  <div *ngFor="let sealItem of mSealList[i]">
                     <p>{{sealItem.sealNo}}</p>
                   </div>
                 <td>
@@ -44,26 +44,29 @@
               <tr>
                 <td class="item"></td>
                 <td class="description">รวมทั้งหมด</td>
-                <td class="pack"> ตัว</td>
+                <td class="pack"> {{sealTotal}} ตัว</td>
               </tr>
-              <!-- <tr *ngIf="data['sealItemExtra']">
-                <td colspan="3">ซีลประเภทพิเศษ</td>
-              </tr>
-              <tr *ngFor="let item of data['sealItemExtra'];let i = index">
-                <th scope="row">{{i+1}}</th>
-                <td class="description">
-                  <p *ngFor="let sealNoItem of item['sealNoItem']">
-                    {{sealNoItem.sealNo}}
-                  </p>
-                </td>
-                <td class="pack">{{item.pack}}</td>
-              </tr> -->
             </tbody>
-            <!-- <tr *ngIf="mSealOut[0].sealTotalExtra>0">
-              <td class="item"></td>
-              <td class="sealno">รวมทั้งหมด</td>
-              <td class="pack">{{ data['sealTotalExtra'] }} ตัว</td>
-            </tr> -->
+          </table>
+          <table *ngIf="mSealExtraList.length" class="table table-bordered table-strip">
+            <thead>
+              <tr>
+                <th>ลำดับ</th>
+                <th>หมายเลขซีลพิเศษ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of mSealExtraList;let i = index">
+                <th scope="row">{{i+1}}</th>
+                <td>
+                  {{item.sealNo}}
+                </td>
+              </tr>
+              <tr>
+                <td class="description">รวมทั้งหมด</td>
+                <td class="pack"> {{sealTotalExtra}} ตัว</td>
+              </tr>
+            </tbody>
           </table>
           <p class="centered">
            ผู้ตรวจสอบ ...............................................

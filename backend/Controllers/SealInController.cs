@@ -145,11 +145,11 @@ namespace backend.Controllers
 
         // POST api/<SealInController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SealInTodo[] sealIn)
+        public async Task<IActionResult> Post([FromBody] RequestSealIn[] request)
         {
             try
             {
-                foreach (var item in sealIn)
+                foreach (var item in request)
                 {
                     // Add a new sealin
                     var newSealIn = new SealIn
@@ -206,7 +206,7 @@ namespace backend.Controllers
                 }
 
 
-                return Ok(new { result = sealIn, message = "Create SealIn Successfully" });
+                return Ok(new { result = request, message = "Create SealIn Successfully" });
             }
             catch (Exception error)
             {

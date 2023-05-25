@@ -107,7 +107,10 @@
                         <td>{{ item.id }}</td>
                         <td>{{ item.sealNo }}</td>
                         <td>{{ item.typeName }}</td>
-                        <td>{{ item.statusName }}</td>
+                        <td>
+                          <span  class="badge badge-{{getColor(item.status)}}">{{item.statusName}} </span>
+                        </td>
+
                         <td>{{ item.created|date: 'yyyy/MM/dd HH:mm' }}</td>
                         <td>{{ item.createdBy }}</td>
                         <td>{{ item.updatedBy }}</td>

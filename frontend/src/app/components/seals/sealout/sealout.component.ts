@@ -25,6 +25,8 @@ import { NgOption } from "@ng-select/ng-select";
 import { Truck } from "app/models/truck.model";
 import { SealIn } from "app/models/seal-in.model";
 import { stringify } from "querystring";
+import { Seals } from "../../../models/seals.model";
+import { Location } from '@angular/common';
 
 @Component({
   selector: "app-sealout",
@@ -45,21 +47,25 @@ export class SealoutComponent implements OnInit {
     public toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private modalService: NgbModal,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private location: Location
   ) {
     this.getId = this.activateRoute.snapshot.paramMap.get("id");
   }
   swal = swalFunctions;
   keyword = "name";
   @Input() txtSealTotal: number =0 ;
+  @Input() txtSealTotalExtra: number =0 ;
   @Input() txtSealExtraTotal: number = 0;
   @Input() txtTruckId: string;
-  @Input() sealNoExt: any[] = [];
   @Input() sealItemExtraList: any[] = [];
+  @Input() cbSealExtra:number = 0;
   selectedOptionsQRCode: any[] = [];
   itemSealBetWeen: any[] = [];
   itemSealOutList: any[] = [];
+  itemSealExtra: any[] = [];
   mTruck: Truck[];
+  mSealExtra:Seals[]=[];
 
   //seal no item
   sealNoItem: any[] = [];
@@ -95,17 +101,10 @@ export class SealoutComponent implements OnInit {
     }
     return true;
   }
-  genSealExtra(txt: number) {
-    this.sealNoExt = [];
-    if (this.txtSealExtraTotal) {
-      let vCount: number = this.txtSealExtraTotal;
-      for (let index = 0; index < vCount; index++) {
-        this.sealNoExt.push({
-          id: this.generator(),
-          sealNo: "",
-        });
-      }
-    }
+  getSealExtra(){
+    this.service.getSealExtra().subscribe((res:any) => {
+      this.itemSealExtra =res.result;
+    });
   }
   selectTruckSeal() {
     if (this.txtTruckId) {
@@ -117,11 +116,7 @@ export class SealoutComponent implements OnInit {
       }
     }
   }
-  delSealExtra(index) {
-    if (this.sealNoExt.length > 1) {
-      this.sealNoExt.splice(index, 1);
-    }
-  }
+
 
   selectEvent() {
     let sealInId = this.selectedOptionsQRCode;
@@ -143,7 +138,7 @@ export class SealoutComponent implements OnInit {
           pack: result.pack,
           sealType: 1,
           sealTypeName: "ปกติ",
-          sealItemList:JSON.stringify(res.result)
+          sealList:JSON.stringify(res.result)
         });
 
       });
@@ -152,7 +147,21 @@ export class SealoutComponent implements OnInit {
     }
     // do something with selected item
   }
+  selectSealExtra() {
+    let id = this.cbSealExtra;
+    const result = this.mSealExtra.find((item) => item.id === id);
+    if (result) {
+      this.toastr.warning("มีหมายเลขซีลนี้ในตารางแล้ว");
+      return false;
+    }
+    this.service.getSealExtraById(id).subscribe((result:any) => {
+      if (result) {
+        this.mSealExtra.push(result.result[0]);
+      }
+    })
+  }
   addListSealExtra() {
+    this.getSealExtra();
     this.sealItemExtraList.push({
       id: 0,
       sealNo: "",
@@ -161,10 +170,15 @@ export class SealoutComponent implements OnInit {
       sealType: 2,
       sealTypeName: "พิเศษ",
     });
+
   }
   removeItem(item: any) {
     let index = this.itemSealOutList.indexOf(item);
     this.itemSealOutList.splice(index, 1);
+  }
+  removeItemExtra(item: any) {
+    let index = this.mSealExtra.indexOf(item);
+    this.mSealExtra.splice(index, 1);
   }
 
   onChangeSearch(val: string) {
@@ -322,15 +336,6 @@ export class SealoutComponent implements OnInit {
         this.txtSealExtraTotal = response.sealTotalExtra;
         this.txtTruckId = response.truckId;
         this.itemSealOutList = response.sealItem;
-        this.sealNoExt = [];
-        if (response.sealItemExtra) {
-          response.sealItemExtra.forEach((el) => {
-            this.sealNoExt.push({
-              id: el.id,
-              sealNo: el.sealNoItem[0].sealNo,
-            });
-          });
-        }
       });
     }
   }
@@ -361,7 +366,7 @@ export class SealoutComponent implements OnInit {
       truckId: result.truckId,
       truckName: `${result.truckHead}/${result.truckTail}`,
       sealItemList:JSON.stringify(this.itemSealOutList)  ,
-      sealItemExtraList:JSON.stringify(this.sealItemExtraList) ,
+      sealExtraList:JSON.stringify(this.mSealExtra) ,
     };
     this.service.updateSealOut(this.getId, JSON.stringify(body)).subscribe(
       (res: any) => {
@@ -376,6 +381,7 @@ export class SealoutComponent implements OnInit {
       }
     );
   }
+
   addData() {
     this.spinner.show(undefined, {
       type: "ball-triangle-path",
@@ -392,19 +398,20 @@ export class SealoutComponent implements OnInit {
 
     const body = {
       sealTotal: this.txtSealTotal,
-      sealTotalExtra: this.txtSealExtraTotal,
+      sealTotalExtra: this.mSealExtra.length,
       truckId: result.truckId,
       truckName: truckName,
       sealOutInfo:this.itemSealOutList,
-      createdBy: "System",
-      updatedBy: "System",
+      sealExtraList:JSON.stringify(this.mSealExtra) ,
+      createdBy: this.service.getFullNameLocalAuthen(),
+      updatedBy: this.service.getFullNameLocalAuthen(),
     };
     console.log(body);
     this.service.addSealOut(JSON.stringify(body)).subscribe(
       (res: any) => {
         this.spinner.hide();
         this.swal.showDialog("success", "เพิ่มข้อมูลสำเร็จแล้ว");
-        this.showRecript(res);
+        this.showRecript(res.result);
         this.router.navigate(["/seals/sealoutlist"]);
       },
       (error: any) => {
@@ -419,12 +426,16 @@ export class SealoutComponent implements OnInit {
       size: "md",
     };
     const modalRef = this.modalService.open(RecriptComponent, ngbModalOptions);
-    modalRef.componentInstance.id = item._id;
+    modalRef.componentInstance.id = item.id;
     modalRef.componentInstance.data = item;
   }
   ngOnInit(): void {
     this.getSeaBetWeen();
     this.getTruck();
+    this.getSealExtra();
     this.bindData();
+  }
+  onClickBack() {
+    this.location.back();
   }
 }

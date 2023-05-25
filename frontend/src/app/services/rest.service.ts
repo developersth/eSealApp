@@ -11,15 +11,17 @@ import { User } from "../models/user.model";
 import { Truck } from "../models/truck.model";
 import { Response } from "../models/response.model";
 
-const headers = new HttpHeaders().set("Content-Type", "application/json");
+
 @Injectable()
 export class RestService {
   constructor(private http: HttpClient) {}
   private readonly apiUrl = `${environment.apiUrl}`;
+  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   private httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/pdf" }),
     responseType: "arraybuffer" as "json",
   };
+
   //----------------------------------------------------------------
   private sealInUrl = `${this.apiUrl}/sealin`;
   private sealUrl = `${this.apiUrl}/Seal`;
@@ -28,6 +30,13 @@ export class RestService {
   private truckUrl = `${this.apiUrl}/truck`;
 
 
+  //----------------------------------------------------------------
+  getFullNameLocalAuthen() {
+    return localStorage.getItem(environment.fullNameLocalAuthen);
+  }
+  getToken() {
+    return localStorage.getItem(environment.keyLocalAuthenInfo);
+  }
   //----------------------------------------------------------------
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.userUrl}/GetUser`);
@@ -63,9 +72,9 @@ export class RestService {
   //----------------------------------------------------------------
   addSeal(items: any): Observable<any> {
     let item = JSON.stringify(items);
-    return this.http.post<any>(`${this.sealInUrl}`, item, { headers });
+    return this.http.post<any>(`${this.sealInUrl}`, item, { headers:this.headers });
   }
-  getSeal(
+  getSealIn(
     isActive: string,
     columnSearch: string,
     searchTerm: string,
@@ -74,16 +83,16 @@ export class RestService {
   ): Observable<any> {
     return this.http.get<any[]>(
       `${this.sealInUrl}?pIsActive=${isActive}&pColumnSearch=${columnSearch}&searchTerm=${searchTerm}&pStartDate=${startDate}&pEndDate=${endDate}`,
-      { headers }
+      { headers:this.headers }
     );
   }
   getSeaBetWeen(): Observable<any> {
     return this.http.get<any[]>(`${this.sealInUrl}/GetSealBetWeen`, {
-      headers,
+      headers:this.headers,
     });
   }
   deleteSeal(id: string): Observable<any> {
-    return this.http.delete<any[]>(`${this.sealInUrl}/${id}`, { headers });
+    return this.http.delete<any[]>(`${this.sealInUrl}/${id}`, { headers:this.headers });
   }
   deleteSealAll(itemId: string[]): Observable<any> {
     const deleteRequests = itemId.map((itemId) => this.deleteSeal(itemId));
@@ -95,28 +104,34 @@ export class RestService {
   }
   getSealItemBySealInId(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.sealUrl}/BySealInId/${id}`, {
-      headers,
+      headers:this.headers,
     });
+  }
+  getSealExtra(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra`,{headers:this.headers});
+  }
+  getSealExtraById(id:number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra/${id}`,{headers:this.headers});
   }
   //----------------------------------------------------------------
   deleteSealOut(id: string): Observable<any> {
-    return this.http.delete<any[]>(`${this.sealOutUrl}/${id}`, { headers });
+    return this.http.delete<any[]>(`${this.sealOutUrl}/${id}`, { headers:this.headers });
   }
   addSealOut(item: any): Observable<any> {
     return this.http.post<any>(`${this.sealOutUrl}`, item, {
-      headers,
+      headers:this.headers,
     });
   }
   updateSealOut(id: string, item: any): Observable<any> {
     return this.http.put<any>(`${this.sealOutUrl}/${id}`, item, {
-      headers,
+      headers:this.headers,
     });
   }
   getSealOutById(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, { headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, { headers:this.headers });
   }
   getReportReceipt(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers:this.headers });
   }
   getSealOutAll(
     isCancel: string,
@@ -129,7 +144,7 @@ export class RestService {
     return this.http.get<any[]>(
       `${this.sealOutUrl}?pIsActive=${isCancel}&pColumnSearch=${columnSearch}&searchTerm=${searchTerm}&pStartDate=${startDate}&pEndDate=${endDate}`,
       {
-        headers,
+        headers:this.headers,
       }
     );
   }

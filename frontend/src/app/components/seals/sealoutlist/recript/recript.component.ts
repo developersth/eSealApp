@@ -28,7 +28,10 @@ export class RecriptComponent implements OnInit {
   truckName:string;
   created:Date;
   mSealOut:SealOut[]=[];
-  mArray: Seals[] = [];
+  mSealList: Seals[] = [];
+  mSealExtraList: Seals[] = [];
+  sealTotal:number = 0;
+  sealTotalExtra:number = 0;
   ngOnInit(): void {
     //this.data = [];
     this.getData();
@@ -37,18 +40,32 @@ export class RecriptComponent implements OnInit {
     // this.service.getSealOutById(this.id).subscribe((res: any) => {
     //   this.data = res.result;
     // });
-    this.service.getSealOutById(this.id).subscribe(
+   //sealOut
+   this.service.getSealOutById(this.id).subscribe((res: any) => {
+    this.truckName = res.result.truckName;
+    this.created =res.result.created;
+    this.sealTotal =res.result.sealTotal;
+    this.sealTotalExtra =res.result.sealTotalExtra;
+    if(res.result.sealExtraList!=null){
+      this.mSealExtraList =JSON.parse(res.result.sealExtraList);
+    }
+   });
+    this.service.getReportReceipt(this.id).subscribe(
       data => {
         // console.log(JSON.stringify(data.result));
+        console.log(this.id);
         this.mSealOut = data.result;
         this.mSealOut.forEach(item =>
           {
-            if(item.sealList!='[]'){
-              this.mArray.push(JSON.parse(item.sealExtraList));
+            if(item.sealList!=null){
+              this.mSealList.push(JSON.parse(item.sealList));
             }
           }
         );
-        console.log(this.mArray);
+        //sealExtra
+        if(data.result!=null){
+          //this.mSealExtraList =JSON.parse(data.result);
+        }
 
       },
       error => {

@@ -15,8 +15,9 @@ export class AuthService {
 
   token: string;
   private readonly apiUrl = `${environment.apiUrl}/auth`;
-  private readonly tokenKey = "jwt";
-  private readonly fullName = "fullName";
+  //private readonly tokenKey = "jwt";
+  private readonly keyLocalAuthenInfo = environment.keyLocalAuthenInfo;
+  private readonly fullNameLocalAuthen = environment.fullNameLocalAuthen;
   //public isLoggedIn: boolean = false; // กำหนดสถานะล็อกอินเริ่มต้นเป็น false
   public redirectUrl: string; // กำหนดตัวแปรสำหรับเก็บ url ที่จะลิ้งค์ไป
 
@@ -51,8 +52,8 @@ export class AuthService {
     return  this.http.post<string>(`${this.apiUrl}/login`, payload).pipe(
       delay(500),
       tap((response: any) => {
-        localStorage.setItem(this.tokenKey, response.token);
-        localStorage.setItem(this.fullName, response.user.name);
+        localStorage.setItem(this.keyLocalAuthenInfo, response.token);
+        localStorage.setItem(this.fullNameLocalAuthen, response.user.name);
       }),
       tap(() => this.isAuthenticatedSubject.next(true))
     );
@@ -74,8 +75,8 @@ export class AuthService {
   //   return true;
   // }
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.fullName);
+    localStorage.removeItem(this.keyLocalAuthenInfo);
+    localStorage.removeItem(this.fullNameLocalAuthen);
     this.isAuthenticatedSubject.next(false);
   }
 
@@ -83,7 +84,7 @@ export class AuthService {
     return !!this.getToken();
   }
   isAuthenticated(): boolean {
-    const token = localStorage.getItem(this.tokenKey);
+    const token = localStorage.getItem(this.keyLocalAuthenInfo);
     return token !== null;
     //return true;
   }
@@ -91,7 +92,10 @@ export class AuthService {
   isAuthenticated$(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
   }
+  getFullNameLocalAuthen() {
+    return localStorage.getItem(this.fullNameLocalAuthen);
+  }
   getToken() {
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem(this.keyLocalAuthenInfo);
   }
 }

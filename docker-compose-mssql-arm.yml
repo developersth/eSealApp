@@ -13,7 +13,8 @@ services:
       TZ: Asia/Bangkok
     restart: always
     volumes:
-      # - /data/mssql:/var/opt/mssql
+      # - ./data/mssql:/var/opt/mssql
+      # - ./scripts:/scripts
       - database-volume:/var/opt/mssql
     networks:
       - app-network

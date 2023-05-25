@@ -11,6 +11,7 @@ services:
       ACCEPT_EULA: 1
       TZ: Asia/Bangkok
     volumes:
+      - ./scripts:/scripts
       - database-volume:/var/opt/mssql
     networks:
       - app-network

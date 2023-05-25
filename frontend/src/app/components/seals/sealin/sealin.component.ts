@@ -78,7 +78,13 @@ export class SealinComponent implements OnInit {
     this.window = window;
     this.now = new Date();
   }
-
+  getColor(status:number):string{
+    if(status ===1){
+      return 'success';
+    }else if(status ===2){
+      return 'danger';
+    }
+  }
   pageChanged(event: any): void {
     this.page = event.page;
   }
@@ -155,7 +161,7 @@ export class SealinComponent implements OnInit {
     let startDate: string = `${this.dtStart.year}-${this.dtStart.month}-${this.dtStart.day}`;
     let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
     this.service
-      .getSeal(this.isActive,this.columnSearch, this.searchTerm, startDate, endDate)
+      .getSealIn(this.isActive,this.columnSearch, this.searchTerm, startDate, endDate)
       .subscribe((res: any) => {
         this.sealInItem = res.result;
       });

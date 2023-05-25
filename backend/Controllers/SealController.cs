@@ -90,6 +90,65 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error });
             }
         }
+        [HttpGet("GetSealExtra")]
+        public ActionResult GetSealExtra()
+        {
+            try
+            {
+                var result = Context.Seals.Where(p => p.Status == 1 && p.Type == 2); //ยังไม่ได้ใช้งานและซีลพิเศษ
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(new { result = result.ToList(), message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log GetSealIn: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
+        [HttpGet("GetSealExtra/{id}")]
+        public ActionResult GetSealExtra(int id)
+        {
+            try
+            {
+                    var result = from s in Context.Seals
+                             join st in Context.SealTypes on s.Type equals st.Id into joinedSealTypes
+                             from js in joinedSealTypes.DefaultIfEmpty()
+                             join ss in Context.SealStatus
+                             on s.Status equals ss.Id into joinedSealStatus
+                             from jss in joinedSealStatus.DefaultIfEmpty()
+                             where s.Id == id 
+                             && s.Status ==1
+                             && s.Type ==2
+                             select new
+                             {
+                                 Id = s.Id,
+                                 SealNo = s.SealNo,
+                                 Type = s.Type,
+                                 TypeName = js.TypeName,
+                                 Status = s.Status,
+                                 StatusName = jss.Name,
+                                 CreatedBy = s.CreatedBy,
+                                 UpdatedBy = s.UpdatedBy,
+                                 Created = s.Created,
+                                 Updated = s.Updated,
+                             };
+              
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(new { result = result.ToList(), message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log GetSealIn: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
 
         [HttpGet("BySealInId/{id}")]
         public ActionResult GetBySealInId(string id)
@@ -97,15 +156,25 @@ namespace backend.Controllers
             try
             {
                 var result = from info in Context.SealInInfo
-                             join seal in Context.Seals on info.SealId equals seal.Id
+                             join s in Context.Seals on info.SealId equals s.Id
+                             join st in Context.SealTypes on s.Type equals st.Id into joinedSealTypes
+                             from js in joinedSealTypes.DefaultIfEmpty()
+                             join ss in Context.SealStatus
+                             on s.Status equals ss.Id into joinedSealStatus
+                             from jss in joinedSealStatus.DefaultIfEmpty()
                              where info.SealInId == id
                              select new
                              {
-                                 Id = seal.Id,
-                                 SealNo = seal.SealNo,
-                                 Type = seal.Type,
-                                 Status = seal.Status,
-                                 Created = seal.Created
+                                 Id = s.Id,
+                                 SealNo = s.SealNo,
+                                 Type = s.Type,
+                                 TypeName = js.TypeName,
+                                 Status = s.Status,
+                                 StatusName = jss.Name,
+                                 CreatedBy = s.CreatedBy,
+                                 UpdatedBy = s.UpdatedBy,
+                                 Created = s.Created,
+                                 Updated = s.Updated,
                              };
 
                 if (result == null)
@@ -126,11 +195,11 @@ namespace backend.Controllers
 
         // POST api/<SealInController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SealInTodo[] sealIn)
+        public async Task<IActionResult> Post([FromBody] Seals[] requst)
         {
             try
             {
-                return Ok(new { result = sealIn, message = "Create SealIn Successfully" });
+                return Ok(new { result = requst, message = "Create SealIn Successfully" });
             }
             catch (Exception error)
             {

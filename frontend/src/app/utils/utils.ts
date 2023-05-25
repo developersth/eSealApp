@@ -38,7 +38,9 @@ export class Utils {
               id: 0,
               sealNo: (currentNumber + index).toString(),
               type: 1,
+              typeName:'ปกติ',
               status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
               createdBy: "System",
               updatedBy: "System",
             });
@@ -57,7 +59,9 @@ export class Utils {
               id: 0,
               sealNo: (currentNumber + index).toString(),
               type: 1,
+              typeName:'ปกติ',
               status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
               createdBy: "System",
               updatedBy: "System",
             });
@@ -83,7 +87,9 @@ export class Utils {
             id: 0,
             sealNo: currentNumber.toString(),
             type: 1,
+            typeName:'ปกติ',
             status: 1,
+            statusName:'ยังไม่ได้ใช้งาน',
             createdBy: "System",
             updatedBy: "System",
           });
@@ -108,7 +114,9 @@ export class Utils {
               id: 0,
               sealNo: (currentNumber + index).toString(),
               type: 1,
+              typeName:'ปกติ',
               status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
               createdBy: "System",
               updatedBy: "System",
             });
@@ -127,7 +135,9 @@ export class Utils {
             id: 0,
             sealNo: currentNumber.toString(),
             type: 1,
+            typeName:'ปกติ',
             status: 1,
+            statusName:'ยังไม่ได้ใช้งาน',
             createdBy: "System",
             updatedBy: "System",
           });
@@ -143,7 +153,9 @@ export class Utils {
               id: 0,
               sealNo: (currentNumber + index).toString(),
               type: 1,
+              typeName:'ปกติ',
               status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
               createdBy: "System",
               updatedBy: "System",
             });

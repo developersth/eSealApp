@@ -9,6 +9,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { LISTITEMS } from '../data/template-search';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { environment } from 'environments/environment';
 @Component({
   selector: "app-navbar",
   templateUrl: "./navbar.component.html",
@@ -44,7 +45,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   control = new UntypedFormControl();
 
   public config: any = {};
-
+  private readonly keyLocalAuthenInfo = environment.keyLocalAuthenInfo;
+  private readonly fullNameLocalAuthen = environment.fullNameLocalAuthen;
   constructor(public translate: TranslateService,
     private layoutService: LayoutService,
     private router: Router,
@@ -75,12 +77,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getfullName(){
-    let fullName= localStorage.getItem('fullName');
-    if (fullName){
-      return fullName;
-    }else{
-      return '';
-    }
+   return this.authservice.getFullNameLocalAuthen();
   }
   ngAfterViewInit() {
 

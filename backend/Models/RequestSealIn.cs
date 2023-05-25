@@ -1,6 +1,6 @@
 namespace backend.Models
 {
-      public class SealInTodo
+      public class RequestSealIn
     {
         public string? SealBetween { get; set; }
         public int? Pack { get; set; }
