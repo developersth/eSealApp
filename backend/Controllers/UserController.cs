@@ -51,6 +51,7 @@ namespace backend.Controllers
                                 Username = u.Username,
                                 Name = u.Name,
                                 Email = u.Email,
+                                RoleId = u.RoleId,
                                 RoleName = ju.Name,
                                 IsActive = u.IsActive,
                                 Created = u.Created,
@@ -92,7 +93,7 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Users users)
         {
-            var result = await Context.Users.FindAsync(id);
+          var result = await Context.Users.FindAsync(id);
             if (result == null)
             {
                 return BadRequest();
@@ -109,7 +110,7 @@ namespace backend.Controllers
                     result.Password = users.Password;
                     users.Password = Crypto.HashPassword(users.Password);
                 }
-                Context.Users.Update(result);
+               // Context.Users.Update(result);
                 await Context.SaveChangesAsync();
                 return Ok(new { result = "", message = "edit successfully" });
             }

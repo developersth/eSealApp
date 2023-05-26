@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import * as swalFunctions from "../../../../shared/services/sweetalert.service";
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from 'app/services/rest.service';
+import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
+import { NgxSpinnerService } from "ngx-spinner";
+import { SealModalComponent } from '../seal-modal/seal-modal.component';
 @Component({
   selector: 'app-seal-list',
   templateUrl: './seal-list.component.html',
@@ -20,7 +23,11 @@ export class SealListComponent implements OnInit {
   filterItems:any[] = [];
   keyword:string = "";
   now: Date = new Date();
-  constructor(private service:RestService) { }
+  constructor(
+    private service:RestService,
+    private modalService: NgbModal,
+    private spinner: NgxSpinnerService
+    ) { }
 
   ngOnInit(): void {
     this.selectToday();
@@ -49,15 +56,98 @@ export class SealListComponent implements OnInit {
     return date.month !== current.month;
   }
   getColor(status:number):string{
-    console.log(status);
     if(status ===1){
       return 'success';
     }else if(status ===2){
       return 'danger';
+    }else{
+      return 'secondary';
     }
   }
-  addData(){
-
+  addData() {
+    let ngbModalOptions: NgbModalOptions = {
+      backdrop: "static",
+      size: "md",
+    };
+    const modalRef = this.modalService.open(SealModalComponent, ngbModalOptions);
+    modalRef.componentInstance.id = 0; // should be the id
+    modalRef.componentInstance.data = {
+      sealNo: '',
+      type: 0,
+      status: 0,
+    }; // should be the data
+    modalRef.result
+      .then((result) => {
+        this.spinner.show(undefined, {
+          type: "ball-triangle-path",
+          size: "medium",
+          bdColor: "rgba(0, 0, 0, 0.8)",
+          color: "#fff",
+          fullScreen: true,
+        });
+        //initial user for body
+        const body = {
+          sealNo: result.sealNo,
+          type: result.type,
+          status: result.status,
+          createdBy: this.service.getFullNameLocalAuthen(),
+          updatedBy: this.service.getFullNameLocalAuthen(),
+        };
+        this.service.addSeal(body).subscribe(
+          (res: any) => {
+            this.spinner.hide();
+            this.swal.showDialog("success", "เพิ่มข้อมูลสำเร็จแล้ว");
+            this.getData();
+          },
+          (error: any) => {
+            this.spinner.hide();
+            this.swal.showDialog("error", "เกิดข้อผิดพลาด : " + error);
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  editData(item:any) {
+    let ngbModalOptions: NgbModalOptions = {
+      backdrop: "static",
+      size: "md",
+    };
+    const modalRef = this.modalService.open(SealModalComponent, ngbModalOptions);
+    modalRef.componentInstance.id = item.id; // should be the id
+    modalRef.componentInstance.data = item;
+    modalRef.result
+      .then((result) => {
+        this.spinner.show(undefined, {
+          type: "ball-triangle-path",
+          size: "medium",
+          bdColor: "rgba(0, 0, 0, 0.8)",
+          color: "#fff",
+          fullScreen: true,
+        });
+        //initial user for body
+        const body = {
+          sealNo: result.sealNo,
+          type: result.type,
+          status: result.status,
+          updatedBy: this.service.getFullNameLocalAuthen(),
+        };
+        this.service.updateSeal(item.id,body).subscribe(
+          (res: any) => {
+            this.spinner.hide();
+            this.swal.showDialog("success", "แก้ไขข้อมูลสำเร็จแล้ว");
+            this.getData();
+          },
+          (error: any) => {
+            this.spinner.hide();
+            this.swal.showDialog("error", "เกิดข้อผิดพลาด : " + error);
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   searchItem() {
     this.currentPage = 1; // รีเซ็ตหน้าเป็นหน้าที่ 1 เมื่อทำการกรองข้อมูล
@@ -81,9 +171,19 @@ export class SealListComponent implements OnInit {
   getData(){
     let startDate: string = `${this.dtStart.year}-${this.dtStart.month}-${this.dtStart.day}`;
     let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
+    this.spinner.show(undefined, {
+      type: "ball-triangle-path",
+      size: "medium",
+      bdColor: "rgba(0, 0, 0, 0.8)",
+      color: "#fff",
+      fullScreen: true,
+    });
     this.service.getSeals(startDate,endDate).subscribe((res: any) => {
       this.data = res.result;
       this.searchItem();
+      this.spinner.hide();
+    }, (err: any) => {
+      this.spinner.hide();
     });
   }
   clearTextSearch(){

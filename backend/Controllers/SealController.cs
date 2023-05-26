@@ -34,6 +34,7 @@ namespace backend.Controllers
                             join ss in Context.SealStatus
                             on s.Status equals ss.Id into joinedSealStatus
                             from jss in joinedSealStatus.DefaultIfEmpty()
+                            orderby s.Id descending
                             select new
                             {
                                 Id = s.Id,
@@ -195,23 +196,51 @@ namespace backend.Controllers
 
         // POST api/<SealInController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Seals[] requst)
+        public async Task<IActionResult> Post([FromBody] Seals requst)
         {
             try
             {
-                return Ok(new { result = requst, message = "Create SealIn Successfully" });
+                var exist = Context.Seals.FirstOrDefault(s=>s.SealNo==requst.SealNo);
+                if (exist != null)
+                {
+                    return Ok(new { result = "",success=false, message = "มีหมายเลขซีลนี้ในระบบแล้ว" });
+                }
+                await Context.Seals.AddAsync(requst);
+                await Context.SaveChangesAsync();
+                return Ok(new { result = requst,success=true, message = "" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Create Seal: {error}");
+                return StatusCode(500, new { result = "", message = error.Message });
+            }
+        }
+
+        // PUT api/<SealInController>/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Seals requst)
+        {
+             try
+            {
+                var result = Context.Seals.FirstOrDefault(s=>s.Id==id);
+                if (result == null)
+                {
+                    return Ok(new { result = "",success=false, message = "มีหมายเลขซีลนี้ในระบบแล้ว" });
+                }
+                result.SealNo = requst.SealNo;
+                result.Type = requst.Type;
+                result.Status = requst.Status;
+                result.UpdatedBy = requst.UpdatedBy;
+                result.Updated = DateTime.Now;
+                Context.Seals.Update(result);
+                await Context.SaveChangesAsync();
+                return Ok(new { result = requst,success=true, message = "Create SealIn Successfully" });
             }
             catch (Exception error)
             {
                 _logger.LogError($"Log CreateProduct: {error}");
                 return StatusCode(500, new { result = "", message = error });
             }
-        }
-
-        // PUT api/<SealInController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
         }
 
         // DELETE api/<SealInController>/5

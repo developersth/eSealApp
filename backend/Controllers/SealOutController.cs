@@ -117,6 +117,46 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error });
             }
         }
+        [HttpGet("GetSealOutInfo/{SealOutId}")]
+        public IActionResult GetSealOutInfo(string SealOutId)
+        {
+            try
+            {
+                var result = from so in Context.SealOut
+                             join info in Context.SealOutInfo on so.Id equals info.SealOutId
+                             where so.SealOutId == SealOutId
+                             select new
+                             {
+                                 Id = so.Id,
+                                 SealTotal = so.SealTotal,
+                                 SealTotalExtra = so.SealTotalExtra,
+                                 TruckId = so.TruckId,
+                                 TruckName = so.TruckName,
+                                 IsCancel = so.IsCancel,
+                                 SealBetWeen = info.SealBetween,
+                                 Pack = info.Pack,
+                                 SealType = info.SealType,
+                                 SealTypeName = info.SealTypeName,
+                                 SealList = info.SealList,
+                                 Created = info.Created
+                             };
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(new { result = result, message = "request successfully" });
+                }
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get: {error}");
+                return StatusCode(500, new { result = "", message = error.Message });
+            }
+        }
+
         [HttpGet("ShowReceipt/{id}")]
         public IActionResult ShowReceipt(int id)
         {

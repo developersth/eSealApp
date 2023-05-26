@@ -1,1 +1,42 @@
-<p>seal-modal works!</p>
+<div class="modal-header bg-info">
+  <h4 class="modal-title text-lg-left">ข้อมูลซีล # {{ id != 0 ? 'Edit' : 'Add'}} </h4>
+  <button type="button" class="btn btn-danger" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    x
+  </button>
+</div>
+<div class="modal-body sealin-modal">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="container">
+    <div class="form-row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>หมายเลขซีล:</label>
+          <input for="sealNo" type="text"  required formControlName="sealNo" class="form-control" >
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="name">ประเภทซีล:</label>
+          <select class="form-control" formControlName="type">
+            <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+         </select>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="name">สถานะ:</label>
+          <select class="form-control" formControlName="status">
+            <option *ngFor="let item of status" [value]="item.id">{{item.name}}</option>
+         </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer seal-modal-footer">
+      <!-- <button class="btn btn-danger"  aria-label="Close" (click)="activeModal.dismiss('Cross click')">ยกเลิก</button> -->
+      <button type="submit"  class="btn btn-primary btn-save">
+        {{ id != 0 ? 'แก้ไขข้อมูล' : 'เพิ่มข้อมูล'}}
+      </button>
+    </div>
+    </div>
+  </form>
+</div>

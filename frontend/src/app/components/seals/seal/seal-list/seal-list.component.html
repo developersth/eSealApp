@@ -102,6 +102,7 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <ngx-spinner></ngx-spinner>
                       <tr
                         *ngFor="let item of filterItems| paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
                         <td>{{ item.id }}</td>
@@ -118,7 +119,7 @@
                           <a class="btn btn-primary" (click)="editData(item)">
                             <i class="fa fa-pencil">แก้ไข</i>
                           </a>
-                          <button class="btn btn-danger" (click)="deleteTruck(item.truckId)">
+                          <button class="btn btn-danger" (click)="deleteData(item.id)">
                             <i class="fa fa-trash">ลบ</i>
                           </button>
                         </td>

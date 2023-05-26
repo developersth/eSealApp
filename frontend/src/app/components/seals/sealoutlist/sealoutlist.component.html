@@ -133,7 +133,10 @@
                     <td>{{ item.created| date: 'yyyy-MM-dd HH:mm'}}</td>
                     <td>
                       <button class="btn btn-info" (click)="printSlip(item)"><i class="ft ft-printer"></i></button>
-                      <button class="btn btn-success" routerLink="/seals/sealout/{{item.id}}"><i class="ft ft-edit"></i></button>
+                      <button class="btn btn-secondary" (click)="showSealOutInfo(sealOutInfoModal,item)"><i
+                          class="ft ft-repeat"></i></button>
+                      <button class="btn btn-success" routerLink="/seals/sealout/{{item.id}}"><i
+                          class="ft ft-edit"></i></button>
                       <button (click)="deleteData(item.id)" class="btn btn-danger"><i class="ft ft-trash"></i></button>
                     </td>
                   </tr>
@@ -149,6 +152,24 @@
               </div>
             </ul> -->
             </div>
+            <!--Modal with Default options starts-->
+            <ng-template #sealOutInfoModal let-modal>
+              <div class="modal-header">
+                <h4 class="modal-title">เปลี่ยนซีล</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-bordered table-striped table-hover">
+
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="modal.dismiss()">ปิด</button>
+              </div>
+            </ng-template>
+            <!--Modal with Default options ends-->
           </div>
         </div>
       </div>

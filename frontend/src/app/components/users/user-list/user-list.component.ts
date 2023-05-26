@@ -5,6 +5,7 @@ import { NgbModal, NgbModalOptions } from "@ng-bootstrap/ng-bootstrap";
 import { UserEditComponent } from "../user-edit/user-edit.component";
 import { NgxSpinnerService } from "ngx-spinner";
 import * as swalFunctions from "../../../shared/services/sweetalert.service";
+import { Roles } from "app/models/roles.model";
 
 @Component({
   selector: "app-user-list",
@@ -13,8 +14,10 @@ import * as swalFunctions from "../../../shared/services/sweetalert.service";
   providers:[RestService]
 })
 export class UserListComponent implements OnInit {
-  users: any[];
-  user: User;
+  users: User[];
+  txtNA:string= 'ไม่ระบุ';
+
+
   swal = swalFunctions;
 
   constructor(
@@ -26,10 +29,10 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.getUsers();
   }
-
   getUsers() {
     this.service.getUsers().subscribe((user:any) => {
       this.users = user.result;
+      console.log(this.users);
     });
   }
   deleteUser(id: string) {
@@ -62,7 +65,7 @@ export class UserListComponent implements OnInit {
       password: "",
       name: "",
       email: "",
-      role: { name: "user" },
+      roleId: 0,
       isActive: true,
     }; // should be the data
     modalRef.result
@@ -81,9 +84,7 @@ export class UserListComponent implements OnInit {
           name: result.name,
           email: result.email,
           isActive: result.isActive,
-          role: {
-            name: result.role,
-          },
+          roleId: result.roleId,
         };
         this.service.createUser(body).subscribe(
           (res: any) => {
@@ -109,7 +110,9 @@ export class UserListComponent implements OnInit {
     const modalRef = this.modalService.open(UserEditComponent, ngbModalOptions);
     modalRef.componentInstance.id = item.id; // should be the id
     modalRef.componentInstance.data = item;
+    console.log(modalRef.componentInstance.data);
     modalRef.result
+
       .then((result) => {
         this.spinner.show(undefined, {
           type: "ball-triangle-path",
@@ -124,12 +127,14 @@ export class UserListComponent implements OnInit {
           password: result.password,
           name: result.name,
           email: result.email,
+          roleId: result.roleId,
           isActive: result.isActive,
-          role: {
-            name: result.role,
-          },
+          /*roleId: {
+            name: result.roleId,
+          },*/
         };
-        this.service.updateUser(item._id, body).subscribe(
+        console.log(result.roleId);
+        this.service.updateUser(item.id, body).subscribe(
           (res: any) => {
             this.spinner.hide();
             this.swal.showDialog("success", "แก้ไขข้อมูลสำเร็จแล้ว");

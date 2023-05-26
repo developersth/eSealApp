@@ -74,6 +74,7 @@ export class RecriptComponent implements OnInit {
     );
 
   }
+
   getDatetimeNow() {
     return new Date();
   }

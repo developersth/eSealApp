@@ -12,7 +12,7 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230523064009_InitialCreate")]
+    [Migration("20230526135432_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -184,6 +184,9 @@ namespace backend.Migrations
                         .HasDefaultValueSql("0");
 
                     b.Property<string>("SealExtraList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealOutId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SealTotal")

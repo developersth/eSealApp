@@ -27,10 +27,11 @@
         </div>
         <div class="form-group">
           <label for="type">ประเภทผู้ใช้งาน:</label>
-          <div class="input-group mb-3">
-            <select  class="custom-select" formControlName="roleId"  id="inputGroupSelect">
-              <option selected value="0">--ไม่ระบุ--</option>
-              <option *ngFor="let item of rols" [value]="item.roleId">{{item.name}}</option>
+          <div class="input-group">
+            <select  class="form-control" formControlName="roleId"  id="inputGroupSelect" >
+                <option value=0>ไม่ระบุ</option>
+                <option *ngFor="let item of roles" [value]="item.id">{{item.name}}
+                </option>
             </select>
           </div>
         </div>

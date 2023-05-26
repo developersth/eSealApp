@@ -87,6 +87,7 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    SealOutId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SealTotal = table.Column<int>(type: "int", nullable: true),
                     SealTotalExtra = table.Column<int>(type: "int", nullable: true),
                     SealExtraList = table.Column<string>(type: "nvarchar(max)", nullable: true),

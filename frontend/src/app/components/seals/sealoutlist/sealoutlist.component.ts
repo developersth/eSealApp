@@ -14,6 +14,7 @@ import { SealOut } from "../../../models/seal-out.model";
 import { forEach } from "core-js/core/array";
 import { RecriptComponent } from "./recript/recript.component";
 import { map } from "rxjs/operators";
+import { Seals } from "app/models/seals.model";
 
 let swal = swalFunctions;
 @Component({
@@ -57,6 +58,8 @@ export class SealOutListComponent implements OnInit {
   now:Date = new Date();
   columnSearch = "";
   isCancel:string = "";
+  mSealOut:SealOut[]=[];
+  mSealList: Seals[] = [];
   pageChanged(event: any): void {
     this.page = event.page;
   }
@@ -134,6 +137,17 @@ export class SealOutListComponent implements OnInit {
           );
         }
       });
+  }
+  showSealOutInfo(content:any,item: any) {
+    const modalOptions: NgbModalOptions = {
+      keyboard: false,
+      centered: false,
+      size: 'xl',
+    };
+    this.openModal(content,modalOptions);
+  }
+  openModal(content: any,modalOptions:any) {
+    this.modalService.open(content, modalOptions);
   }
   printSlip(item: any) {
     let ngbModalOptions: NgbModalOptions = {

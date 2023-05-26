@@ -8,6 +8,7 @@ import { forEach } from "core-js/core/array";
 
 //----------------------------------------------------------------
 import { User } from "../models/user.model";
+import { Roles } from "app/models/roles.model";
 import { Truck } from "../models/truck.model";
 import { Response } from "../models/response.model";
 
@@ -28,7 +29,7 @@ export class RestService {
   private sealOutUrl = `${this.apiUrl}/sealout`;
   private userUrl = `${this.apiUrl}/user`;
   private truckUrl = `${this.apiUrl}/truck`;
-
+  private rolesUrl = `${this.apiUrl}/roles`;
 
   //----------------------------------------------------------------
   getFullNameLocalAuthen() {
@@ -38,6 +39,10 @@ export class RestService {
     return localStorage.getItem(environment.keyLocalAuthenInfo);
   }
   //----------------------------------------------------------------
+  getRoles():Observable<Roles[]>{
+    return this.http.get<Roles[]>(`${this.rolesUrl}/GetRoles`);
+  }
+  //----------------------------------------------------------------
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.userUrl}/GetUser`);
   }
@@ -45,7 +50,7 @@ export class RestService {
     return this.http.get<User>(`${this.userUrl}/${id}`);
   }
   createUser(body: any): Observable<User> {
-    return this.http.post<User>(`${this.userUrl}`, body);
+    return this.http.post<User>(`${this.userUrl}/register`, body);
   }
   updateUser(id: string, body: any): Observable<User> {
     return this.http.put<User>(`${this.userUrl}/${id}`, body);
@@ -70,7 +75,7 @@ export class RestService {
     return this.http.delete(`${this.truckUrl}/${id}`);
   }
   //----------------------------------------------------------------
-  addSeal(items: any): Observable<any> {
+  addSealIn(items: any): Observable<any> {
     let item = JSON.stringify(items);
     return this.http.post<any>(`${this.sealInUrl}`, item, { headers:this.headers });
   }
@@ -112,6 +117,14 @@ export class RestService {
   }
   getSealExtraById(id:number): Observable<any[]> {
     return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra/${id}`,{headers:this.headers});
+  }
+  addSeal(items: any): Observable<any> {
+    let item = JSON.stringify(items);
+    return this.http.post<any>(`${this.sealUrl}`, item, { headers:this.headers });
+  }
+  updateSeal(id:number,items: any): Observable<any> {
+    let item = JSON.stringify(items);
+    return this.http.put<any>(`${this.sealUrl}/${id}`, item, { headers:this.headers });
   }
   //----------------------------------------------------------------
   deleteSealOut(id: string): Observable<any> {
