@@ -54,6 +54,7 @@ namespace backend.Database
             {
                 entity.Property(e => e.Type).HasDefaultValueSql("1");
                 entity.Property(e => e.Type).HasDefaultValueSql("1");
+                entity.Property(e => e.IsActive).HasDefaultValueSql("0");
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });

@@ -158,6 +158,13 @@ export class RestService {
   getSealStatus(): Observable<any> {
     return this.http.get<any[]>(`${this.sealUrl}/GetSealStatus`, { headers:this.headers });
   }
+  sealChange(items: any): Observable<any> {
+    let item = JSON.stringify(items);
+    console.log(item);
+    return this.http.post<any>(`${this.sealOutUrl}/SealChange`, item, {
+      headers:this.headers,
+    });
+  }
   getSealOutAll(
     isCancel: string,
     columnSearch: string,

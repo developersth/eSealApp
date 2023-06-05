@@ -43,6 +43,7 @@ namespace backend.Controllers
                                 TypeName = js.TypeName,
                                 Status = s.Status,
                                 StatusName = jss.Name,
+                                IsActive =s.IsActive,
                                 CreatedBy = s.CreatedBy,
                                 UpdatedBy = s.UpdatedBy,
                                 Created = s.Created,
@@ -97,7 +98,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Seals.Where(p => p.Status == 2 &&p.Type==1); //ยังไม่ได้ใช้งาน
+                var result = Context.Seals.Where(p => p.Status == 4 &&p.Type==1 &&p.IsActive==false); //ยังไม่ได้ใช้งาน ซีลทดแทน
 
                 if (result == null)
                 {
@@ -116,7 +117,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.SealStatus.Where(p => p.Id != 1 && p.Id != 2 && p.Id != 5); //ยังไม่ได้ใช้งาน
+                var result = Context.SealStatus.Where(p => p.Id != 1  && p.Id != 4); //ยังไม่ได้ใช้งาน
 
                 if (result == null)
                 {
@@ -269,6 +270,7 @@ namespace backend.Controllers
                 result.SealNo = requst.SealNo;
                 result.Type = requst.Type;
                 result.Status = requst.Status;
+                result.IsActive =requst.IsActive;
                 result.UpdatedBy = requst.UpdatedBy;
                 result.Updated = DateTime.Now;
                 Context.Seals.Update(result);

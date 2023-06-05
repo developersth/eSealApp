@@ -31,18 +31,18 @@ export class SealModalComponent implements OnInit {
       { id: 2, name: "พิเศษ" },
     ];
     this.status = [
-      { id: 1, name: "ยังไม่ได้ใช้งาน" },
-      { id: 2, name: "ใช้งานแล้ว" },
-      { id: 3, name: "ซีลชำรุด" },
-      { id: 4, name: "ซีลสูญหาย" },
-      { id:5, name: "ซีลทดแทน" },
+      { id: 1, name: "พร้อมใช้งาน" },
+      { id: 2, name: "ซีลชำรุด" },
+      { id: 3, name: "ซีลสูญหาย" },
+      { id: 4, name: "ซีลทดแทน" },
     ];
   }
   private buildItemForm(item) {
     this.form = this.formBuilder.group({
       sealNo: [item.sealNo || "", Validators.required],
       type: [item.type||1],
-      status: [item.status||1]
+      status: [item.status||1],
+      isActive: [item.isActive||0]
     });
   }
   onSubmit() {

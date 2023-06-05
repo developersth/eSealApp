@@ -75,6 +75,7 @@ export class SealListComponent implements OnInit {
       sealNo: '',
       type: 0,
       status: 0,
+      isActive: 0,
     }; // should be the data
     modalRef.result
       .then((result) => {
@@ -90,6 +91,7 @@ export class SealListComponent implements OnInit {
           sealNo: result.sealNo,
           type: result.type,
           status: result.status,
+          isActive:result.isActive,
           createdBy: this.service.getFullNameLocalAuthen(),
           updatedBy: this.service.getFullNameLocalAuthen(),
         };
@@ -131,6 +133,7 @@ export class SealListComponent implements OnInit {
           sealNo: result.sealNo,
           type: result.type,
           status: result.status,
+          isActive:result.isActive,
           updatedBy: this.service.getFullNameLocalAuthen(),
         };
         this.service.updateSeal(item.id,body).subscribe(

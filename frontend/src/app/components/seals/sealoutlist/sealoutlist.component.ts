@@ -18,7 +18,7 @@ import { Seals } from "app/models/seals.model";
 import { SealOutInfo } from "app/models/seal-out-info";
 import { ToastrService } from "ngx-toastr";
 
-let swal = swalFunctions;
+
 @Component({
   selector: "app-sealoutlist",
   templateUrl: "./sealoutlist.component.html",
@@ -30,6 +30,7 @@ let swal = swalFunctions;
 })
 export class SealOutListComponent implements OnInit {
   window: any;
+  swal = swalFunctions;
   private mediaQueryList: MediaQueryList;
   constructor(
     private modalService: NgbModal,
@@ -133,17 +134,17 @@ export class SealOutListComponent implements OnInit {
   }
 
   deleteData(id: string) {;
-    swal
+    this.swal
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
       .then((res) => {
         if (res) {
           this.service.deleteSealOut(id).subscribe(
             (res: any) => {
-              swal.showDialog("success", "ลบข้อมูลเรียบร้อยแล้วแล้ว");
+              this.swal.showDialog("success", "ลบข้อมูลเรียบร้อยแล้วแล้ว");
               this.getSeal();
             },
             (error: any) => {
-              swal.showDialog("error", "เกิดข้อผิดพลาด:" + error);
+              this.swal.showDialog("error", "เกิดข้อผิดพลาด:" + error);
             }
           );
         }
@@ -207,7 +208,8 @@ export class SealOutListComponent implements OnInit {
       sealId: item.id,
       sealOutId: sealOutId,
       sealInId: sealInId,
-      sealNo:item.sealNo,
+      sealNoOld:item.sealNo,
+      sealNoNew:'',
       remarkId:3,
       remarks:'',
       remarkOther:''
@@ -219,5 +221,28 @@ export class SealOutListComponent implements OnInit {
   }
   selectStatus(id:string){
     console.log(id);
+  }
+  submitFormSealChange(){
+    if (this.itemSealChange.length===0){
+      this.swal.showDialog("warning", "การแจ้งเตือน:กรุณาเลือกหมายเลขซีลที่ต้องการเปลี่ยนด้วยครับ");
+      return;
+    }
+    this.service.sealChange(this.itemSealChange).subscribe(
+      (res: any) => {
+        this.spinner.hide();
+        if (res.success) {
+          this.swal.showDialog("success", res.message);
+        } else {
+          this.swal.showDialog(
+            "warning",
+            "เกิดข้อผิดพลาด : " + res.message
+          );
+        }
+      },
+      (error: any) => {
+        this.spinner.hide();
+        this.swal.showDialog("error", "เกิดข้อผิดพลาด : " + error);
+      }
+    );
   }
 }

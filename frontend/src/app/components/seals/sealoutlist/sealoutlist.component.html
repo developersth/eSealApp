@@ -180,7 +180,7 @@
                             <label>{{item.sealNo}}</label><br />
                           </td>
                           <td>
-                            <button class="btn btn-info btn-sm" (click)="addItemSealChange(sealOutId,item.sealInId,item)">เลือก</button>
+                            <button class="btn btn-info btn-sm" (click)="addItemSealChange(sealOutId,item.sealInId,item)">>></button>
                           </td>
 
                       </tr>
@@ -192,27 +192,27 @@
                     <table class="table table">
                       <thead>
                         <tr>
-                          <th>หมายเลขซีลเก่า</th>
-                          <th>หมายเลขซีลใหม่</th>
+                          <th>เลขซีลเก่า</th>
+                          <th>เลขซีลใหม่</th>
                           <th>สาเหตุที่เปลี่ยน</th>
                           <th>#</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let item of itemSealChange;let i = index">
-                          <td>
-                            {{item.sealNo}}
+                          <td style="width: 20%;">
+                            {{item.sealNoOld}}
 
                           </td>
-                          <td>
+                          <td style="width: 30%;">
                             <ng-select [items]="sealItem" [virtualScroll]="true" bindLabel="sealNo"
-                              bindValue="id" [(ngModel)]="item.id" placeholder="เลือกหมายเลขซีลใหม่">
+                              bindValue="sealNo" [(ngModel)]="item.sealNoNew" placeholder="เลือกหมายเลขซีลใหม่">
                               <ng-template ng-option-tmp let-item="item" let-index="index">
                                 {{item.sealNo}}
                               </ng-template>
                             </ng-select>
                           </td>
-                          <td>
+                          <td style="width: 30%;">
                             <select class="form-control" [(ngModel)]="item.remarkId" (change)="selectStatus(item.remarkId)">
                               <option *ngFor="let s of status" [value]="s.id">{{s.name}}</option>
                               <option  value="0">--สาเหตุอื่นๆ--</option>
@@ -223,7 +223,7 @@
 
                             </div>
                           </td>
-                          <td>
+                          <td style="width: 5%;">
                             <btn class="btn btn-danger" (click)="removeItem(item)"><i class="fa fa-trash"></i></btn>
                           </td>
                         </tr>
@@ -235,7 +235,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" (click)="modal.dismiss()">ปิด</button>
-                <button (click)="submitForm()" class="btn btn-primary btn-save">
+                <button (click)="submitFormSealChange()" class="btn btn-primary btn-save">
                 บันทึก
                 </button>
               </div>

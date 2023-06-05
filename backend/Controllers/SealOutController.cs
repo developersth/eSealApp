@@ -295,7 +295,7 @@ namespace backend.Controllers
                                      select s).ToList();
                         foreach (Seals p in query)
                         {
-                            p.Status = 2;
+                            p.IsActive = true;
 
                             //SealOutInfoList
                             var modelList = new SealOutInfoList
@@ -324,6 +324,13 @@ namespace backend.Controllers
             }
         }
 
+        [HttpPost("SealChange")]
+        public async Task<IActionResult> SealChange([FromBody] SealChanges[] request)
+        {
+             var result = Context.SealChanges.AddRangeAsync(request);
+             await Context.SaveChangesAsync();
+             return Ok(new { result = "", success = true, message = "เปลียนหมายเลขซีล  เรียบร้อยแล้ว" });
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

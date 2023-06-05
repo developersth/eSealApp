@@ -94,6 +94,7 @@
                         <th>รหัส</th>
                         <th>หมายเลขซีล</th>
                         <th>ประเภทซีล</th>
+                        <th>การใช้งาน</th>
                         <th>สถานะ</th>
                         <th>วันที่สร้าง</th>
                         <th>สร้างโดย</th>
@@ -108,6 +109,10 @@
                         <td>{{ item.id }}</td>
                         <td>{{ item.sealNo }}</td>
                         <td>{{ item.typeName }}</td>
+                        <td>
+                          <span *ngIf="!item.isActive" class="badge badge-success">ยังไม่ได้ใช้งาน</span>
+                          <span *ngIf="item.isActive" class="badge badge-danger">ใช้งานแล้ว</span>
+                        </td>
                         <td>
                           <span  class="badge badge-{{getColor(item.status)}}">{{item.statusName}} </span>
                         </td>
