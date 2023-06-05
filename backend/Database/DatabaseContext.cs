@@ -26,7 +26,8 @@ namespace backend.Database
         public virtual DbSet<SealOutInfo> SealOutInfo { get; set; }
         public virtual DbSet<SealInInfo> SealInInfo { get; set; }
         public virtual DbSet<Drivers> Drivers { get; set; }
-
+        public virtual DbSet<SealOutInfoList> SealOutInfoList { get; set; }
+        public virtual DbSet<SealChanges> SealChanges { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -59,7 +60,7 @@ namespace backend.Database
 
             modelBuilder.Entity<Trucks>(entity =>
             {
-                entity.HasKey(e=>e.TruckId);
+                entity.HasKey(e => e.TruckId);
                 entity.Property(e => e.IsActive).HasDefaultValueSql("1");
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
@@ -82,11 +83,21 @@ namespace backend.Database
 
             modelBuilder.Entity<Drivers>(entity =>
             {
-                entity.HasKey(e=>e.DriverId);
+                entity.HasKey(e => e.DriverId);
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
 
+            modelBuilder.Entity<SealOutInfoList>(entity =>
+          {
+              entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
+              entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
+          });
+            modelBuilder.Entity<SealChanges>(entity =>
+                {
+                    entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
+                    entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
+                });
 
             OnModelCreatingPartial(modelBuilder);
         }

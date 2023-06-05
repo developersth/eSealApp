@@ -29,8 +29,8 @@ services:
     ports:
       - 5000:5000
     restart: always
-    volumes:
-      - dotnet-volume:/app/wwwroot
+    # volumes:
+    #   - dotnet-volume:/app/wwwroot
     environment:
       - ConnectionStrings__ConnectionSQLServer=Server=database;user id=sa; password=yourStrong(!)Password; Database=esso;TrustServerCertificate=True;
       - Jwt__Key=DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4

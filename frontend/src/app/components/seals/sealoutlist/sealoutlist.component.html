@@ -121,7 +121,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let item of sealItem | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                  <tr *ngFor="let item of sealOutItem | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
                     <td>
                       <ng-container>
                         <input type="checkbox" [(ngModel)]="item.checked">
@@ -155,18 +155,89 @@
             <!--Modal with Default options starts-->
             <ng-template #sealOutInfoModal let-modal>
               <div class="modal-header">
-                <h4 class="modal-title">เปลี่ยนซีล</h4>
+                <h4 class="modal-title">เปลี่ยนซีล {{sealOutId}}</h4>
                 <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <table class="table table-bordered table-striped table-hover">
+                <div class="row">
+                  <div class="col-md-5">
+                    <table class="table table-bordered  table-hover">
+                      <thead>
+                        <tr>
+                          <th>รหัสซีลนำเข้า</th>
+                          <th>หมายเลขซีล</th>
+                          <th>#</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of mSealOutInfoList;let idx = index">
+                          <td>
+                            {{item.sealInId}}
+                          </td>
+                          <td>
+                            <label>{{item.sealNo}}</label><br />
+                          </td>
+                          <td>
+                            <button class="btn btn-info btn-sm" (click)="addItemSealChange(sealOutId,item.sealInId,item)">เลือก</button>
+                          </td>
 
-                </table>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                  <div class="col-md-7">
+                    <table class="table table">
+                      <thead>
+                        <tr>
+                          <th>หมายเลขซีลเก่า</th>
+                          <th>หมายเลขซีลใหม่</th>
+                          <th>สาเหตุที่เปลี่ยน</th>
+                          <th>#</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of itemSealChange;let i = index">
+                          <td>
+                            {{item.sealNo}}
+
+                          </td>
+                          <td>
+                            <ng-select [items]="sealItem" [virtualScroll]="true" bindLabel="sealNo"
+                              bindValue="id" [(ngModel)]="item.id" placeholder="เลือกหมายเลขซีลใหม่">
+                              <ng-template ng-option-tmp let-item="item" let-index="index">
+                                {{item.sealNo}}
+                              </ng-template>
+                            </ng-select>
+                          </td>
+                          <td>
+                            <select class="form-control" [(ngModel)]="item.remarkId" (change)="selectStatus(item.remarkId)">
+                              <option *ngFor="let s of status" [value]="s.id">{{s.name}}</option>
+                              <option  value="0">--สาเหตุอื่นๆ--</option>
+                            </select>
+                            <div *ngIf="item.remarkId==0">
+                              <label>ระบุสาเหตุ</label>
+                              <input class="form-control" placeholder="กรุณาระบุสาเหตุ" [(ngModel)]="item.remarkOther" />
+
+                            </div>
+                          </td>
+                          <td>
+                            <btn class="btn btn-danger" (click)="removeItem(item)"><i class="fa fa-trash"></i></btn>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" (click)="modal.dismiss()">ปิด</button>
+                <button (click)="submitForm()" class="btn btn-primary btn-save">
+                บันทึก
+                </button>
               </div>
             </ng-template>
             <!--Modal with Default options ends-->

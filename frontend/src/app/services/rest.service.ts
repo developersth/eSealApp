@@ -143,8 +143,20 @@ export class RestService {
   getSealOutById(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, { headers:this.headers });
   }
+  getSealOutInfoList(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfoList/${id}`, { headers:this.headers });
+  }
   getReportReceipt(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers:this.headers });
+  }
+  getSealOutInfo(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfo/${id}`, { headers:this.headers });
+  }
+  getSealChange(): Observable<any> {
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealChange`, { headers:this.headers });
+  }
+  getSealStatus(): Observable<any> {
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealStatus`, { headers:this.headers });
   }
   getSealOutAll(
     isCancel: string,

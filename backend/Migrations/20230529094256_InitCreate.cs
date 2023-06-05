@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,6 +40,25 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SealChanges",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SealOutId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SealInId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SealNoOld = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SealNoNew = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Remarks = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SealChanges", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -112,7 +131,7 @@ namespace backend.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SealOutId = table.Column<int>(type: "int", nullable: false),
+                    SealOutId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SealInId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SealBetween = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Pack = table.Column<int>(type: "int", nullable: true),
@@ -125,6 +144,24 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SealOutInfo", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SealOutInfoList",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SealOutId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SealInId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    sealId = table.Column<int>(type: "int", nullable: true),
+                    SealNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SealOutInfoList", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -234,6 +271,9 @@ namespace backend.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
+                name: "SealChanges");
+
+            migrationBuilder.DropTable(
                 name: "SealIn");
 
             migrationBuilder.DropTable(
@@ -244,6 +284,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "SealOutInfo");
+
+            migrationBuilder.DropTable(
+                name: "SealOutInfoList");
 
             migrationBuilder.DropTable(
                 name: "Seals");

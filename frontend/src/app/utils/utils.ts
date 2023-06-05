@@ -1,14 +1,17 @@
-import { Injectable } from "@angular/core";
+import { Component, Injectable, NgModule } from "@angular/core";
 import { SealIn } from "app/models/seal-in.model";
 import { Seals } from "app/models/seals.model";
 import { Observable, of } from "rxjs";
-
+import { RestService } from "../services/rest.service";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 @Injectable()
 export class Utils {
   sealIn: any[]=[];
   seal: Seals[];
   sealPack: number[] = [3, 4, 5];
-  constructor() {}
+  constructor(
+    private service: RestService
+  ) {}
 
   calculateSealNumber(
     typePack: number, //1=3,4,5 2=3,3=4,5=5
@@ -41,8 +44,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: "System",
-              updatedBy: "System",
+              createdBy: this.service.getFullNameLocalAuthen(),
+              updatedBy: this.service.getFullNameLocalAuthen(),
             });
           }
           this.sealIn.push({
@@ -50,8 +53,8 @@ export class Utils {
             sealList: this.seal,
             pack: currentSize,
             isActive: false,
-            createdBy: "System",
-            updatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
         } else if (currentEnd - currentNumber === 2) {
           for (let index = 0; index < 2; index++) {
@@ -62,8 +65,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: "System",
-              updatedBy: "System",
+              createdBy: this.service.getFullNameLocalAuthen(),
+              updatedBy: this.service.getFullNameLocalAuthen(),
             });
           }
           this.sealIn.push({
@@ -71,16 +74,16 @@ export class Utils {
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: "System",
-            updatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
           this.sealIn.push({
             sealBetween: (currentNumber + 1).toString(),
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: "System",
-            UpdatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
         } else if (currentEnd - currentNumber === 1) {
           this.seal.push({
@@ -90,16 +93,16 @@ export class Utils {
             typeName:'ปกติ',
             status: 1,
             statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: "System",
-            updatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
           this.sealIn.push({
             sealBetween: currentNumber.toString(),
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: "System",
-            UpdatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
         }
       }
@@ -117,8 +120,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: "System",
-              updatedBy: "System",
+              createdBy: this.service.getFullNameLocalAuthen(),
+              updatedBy: this.service.getFullNameLocalAuthen(),
             });
           }
           this.sealIn.push({
@@ -126,8 +129,8 @@ export class Utils {
             sealList: this.seal,
             pack: currentSize,
             isActive: false,
-            createdBy: "System",
-            UpdatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
         } else if (currentEnd - currentNumber === 1) {
           sealBetween = `${currentNumber}`;
@@ -138,8 +141,8 @@ export class Utils {
             typeName:'ปกติ',
             status: 1,
             statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: "System",
-            updatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
           this.sealIn.push({
             sealBetween: sealBetween,
@@ -156,8 +159,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: "System",
-              updatedBy: "System",
+              createdBy: this.service.getFullNameLocalAuthen(),
+              updatedBy: this.service.getFullNameLocalAuthen(),
             });
           }
           this.sealIn.push({
@@ -165,16 +168,16 @@ export class Utils {
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: "System",
-            UpdatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
           this.sealIn.push({
             sealBetween: (currentNumber + 1).toString(),
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: "System",
-            UpdatedBy: "System",
+            createdBy: this.service.getFullNameLocalAuthen(),
+            updatedBy: this.service.getFullNameLocalAuthen(),
           });
         } else if (currentNumber + currentSize > currentEnd) {
           this.sealPack.forEach((pack: number) => {
@@ -185,8 +188,8 @@ export class Utils {
                 sealList: this.seal,
                 pack: pack,
                 isActive: false,
-                createdBy: "System",
-                UpdatedBy: "System",
+                createdBy: this.service.getFullNameLocalAuthen(),
+                updatedBy: this.service.getFullNameLocalAuthen(),
               });
             }
           });

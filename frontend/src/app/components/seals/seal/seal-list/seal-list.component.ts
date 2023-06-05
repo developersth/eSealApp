@@ -159,12 +159,12 @@ export class SealListComponent implements OnInit {
       // กรณีมีคำค้นหา ให้กรองข้อมูลตามคำค้นหา
       this.filterItems = this.data.filter(
         (item) =>
-          item.id.toString().includes(this.keyword) ||
-          item.sealNo.toString().includes(this.keyword) ||
-          item.typeName.toString().includes(this.keyword) ||
-          item.statusName.toString().includes(this.keyword) ||
-          item.createdBy.toString().includes(this.keyword) ||
-          item.updatedBy.toString().includes(this.keyword)
+          item.id?.toString().toLowerCase().includes(this.keyword) ||
+          item.sealNo?.toString().toLowerCase().includes(this.keyword) ||
+          item.typeName?.toString().toLowerCase().includes(this.keyword) ||
+          item.statusName?.toString().toLowerCase().includes(this.keyword) ||
+          item.createdBy?.toString().toLowerCase().includes(this.keyword) ||
+          item.updatedBy?.toString().toLowerCase().includes(this.keyword)
       );
     }
   }
@@ -179,15 +179,16 @@ export class SealListComponent implements OnInit {
       fullScreen: true,
     });
     this.service.getSeals(startDate,endDate).subscribe((res: any) => {
+      this.spinner.hide();
       this.data = res.result;
       this.searchItem();
-      this.spinner.hide();
     }, (err: any) => {
       this.spinner.hide();
     });
   }
   clearTextSearch(){
     this.keyword ='';
+    this.getData();
   }
 
 }

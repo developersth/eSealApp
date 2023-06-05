@@ -18,6 +18,7 @@ import { SealOutListComponent } from './sealoutlist/sealoutlist.component';
 import { RecriptComponent } from './sealoutlist/recript/recript.component';
 import { SealListComponent } from './seal/seal-list/seal-list.component';
 import { SealModalComponent } from './seal/seal-modal/seal-modal.component';
+import { RestService } from '../../services/rest.service';
 @NgModule({
   declarations: [
     SealinComponent,
@@ -41,6 +42,7 @@ import { SealModalComponent } from './seal/seal-modal/seal-modal.component';
     QRCodeModule,
     DatePipe,
     NgSelectModule,
-  ]
+  ],
+  providers:[RestService]
 })
 export class SealsModule { }

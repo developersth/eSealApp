@@ -91,6 +91,45 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error });
             }
         }
+
+        [HttpGet("GetSealChange")]
+        public ActionResult GetSealChange()
+        {
+            try
+            {
+                var result = Context.Seals.Where(p => p.Status == 2 &&p.Type==1); //ยังไม่ได้ใช้งาน
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(new { result = result, message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log GetSealIn: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
+        [HttpGet("GetSealStatus")]
+        public ActionResult GetSealStatus()
+        {
+            try
+            {
+                var result = Context.SealStatus.Where(p => p.Id != 1 && p.Id != 2 && p.Id != 5); //ยังไม่ได้ใช้งาน
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(new { result = result, message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log GetSealIn: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
         [HttpGet("GetSealExtra")]
         public ActionResult GetSealExtra()
         {
@@ -115,15 +154,15 @@ namespace backend.Controllers
         {
             try
             {
-                    var result = from s in Context.Seals
+                var result = from s in Context.Seals
                              join st in Context.SealTypes on s.Type equals st.Id into joinedSealTypes
                              from js in joinedSealTypes.DefaultIfEmpty()
                              join ss in Context.SealStatus
                              on s.Status equals ss.Id into joinedSealStatus
                              from jss in joinedSealStatus.DefaultIfEmpty()
-                             where s.Id == id 
-                             && s.Status ==1
-                             && s.Type ==2
+                             where s.Id == id
+                             && s.Status == 1
+                             && s.Type == 2
                              select new
                              {
                                  Id = s.Id,
@@ -137,7 +176,7 @@ namespace backend.Controllers
                                  Created = s.Created,
                                  Updated = s.Updated,
                              };
-              
+
                 if (result == null)
                 {
                     return NotFound();
@@ -200,14 +239,14 @@ namespace backend.Controllers
         {
             try
             {
-                var exist = Context.Seals.FirstOrDefault(s=>s.SealNo==requst.SealNo);
+                var exist = Context.Seals.FirstOrDefault(s => s.SealNo == requst.SealNo);
                 if (exist != null)
                 {
-                    return Ok(new { result = "",success=false, message = "มีหมายเลขซีลนี้ในระบบแล้ว" });
+                    return Ok(new { result = "", success = false, message = "มีหมายเลขซีลนี้ในระบบแล้ว" });
                 }
                 await Context.Seals.AddAsync(requst);
                 await Context.SaveChangesAsync();
-                return Ok(new { result = requst,success=true, message = "" });
+                return Ok(new { result = requst, success = true, message = "" });
             }
             catch (Exception error)
             {
@@ -220,12 +259,12 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Seals requst)
         {
-             try
+            try
             {
-                var result = Context.Seals.FirstOrDefault(s=>s.Id==id);
+                var result = Context.Seals.FirstOrDefault(s => s.Id == id);
                 if (result == null)
                 {
-                    return Ok(new { result = "",success=false, message = "มีหมายเลขซีลนี้ในระบบแล้ว" });
+                    return Ok(new { result = "", success = false, message = "มีหมายเลขซีลนี้ในระบบแล้ว" });
                 }
                 result.SealNo = requst.SealNo;
                 result.Type = requst.Type;
@@ -234,7 +273,7 @@ namespace backend.Controllers
                 result.Updated = DateTime.Now;
                 Context.Seals.Update(result);
                 await Context.SaveChangesAsync();
-                return Ok(new { result = requst,success=true, message = "Create SealIn Successfully" });
+                return Ok(new { result = requst, success = true, message = "Create SealIn Successfully" });
             }
             catch (Exception error)
             {

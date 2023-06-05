@@ -78,6 +78,44 @@ namespace backend.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("backend.Models.SealChanges", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealInId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealNoNew")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealNoOld")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealOutId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.HasKey("id");
+
+                    b.ToTable("SealChanges");
+                });
+
             modelBuilder.Entity("backend.Models.SealIn", b =>
                 {
                     b.Property<int>("Id")
@@ -236,8 +274,8 @@ namespace backend.Migrations
                     b.Property<string>("SealList")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SealOutId")
-                        .HasColumnType("int");
+                    b.Property<string>("SealOutId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SealType")
                         .HasColumnType("int");
@@ -253,6 +291,41 @@ namespace backend.Migrations
                     b.HasKey("id");
 
                     b.ToTable("SealOutInfo");
+                });
+
+            modelBuilder.Entity("backend.Models.SealOutInfoList", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("SealInId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealOutId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int?>("sealId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.ToTable("SealOutInfoList");
                 });
 
             modelBuilder.Entity("backend.Models.SealStatus", b =>

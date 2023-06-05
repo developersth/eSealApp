@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, ViewChild, Input } from "@angular/core";
 
 import {
   NgbDateStruct,
@@ -15,6 +15,8 @@ import { forEach } from "core-js/core/array";
 import { RecriptComponent } from "./recript/recript.component";
 import { map } from "rxjs/operators";
 import { Seals } from "app/models/seals.model";
+import { SealOutInfo } from "app/models/seal-out-info";
+import { ToastrService } from "ngx-toastr";
 
 let swal = swalFunctions;
 @Component({
@@ -32,7 +34,8 @@ export class SealOutListComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private service: RestService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    public toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +43,7 @@ export class SealOutListComponent implements OnInit {
     this.getSeal();
     this.window = window;
     this.now = new Date();
+
   }
 
   displayMonths = 2;
@@ -53,13 +57,20 @@ export class SealOutListComponent implements OnInit {
   closeResult: string;
   checkedAll: boolean = false;
   sealNo: string;
-  sealItem: SealOut[] = [];
+  sealOutItem: SealOut[] = [];
   filterItems: SealOut[] = [];
   now:Date = new Date();
   columnSearch = "";
   isCancel:string = "";
-  mSealOut:SealOut[]=[];
+  mSealOutInfoList:any[]=[];
   mSealList: Seals[] = [];
+  itemSealChange:any[] = [];
+  sealItem:any[] = [];
+  status:any[];
+  sealId:number = 0;
+  sealOutId:string = '';
+  @Input() txtSealId:number=3;
+
   pageChanged(event: any): void {
     this.page = event.page;
   }
@@ -68,7 +79,7 @@ export class SealOutListComponent implements OnInit {
     this.getSeal();
   }
   checkAllItems() {
-    for (let item of this.sealItem) {
+    for (let item of this.sealOutItem) {
       if (this.checkedAll) {
         item.checked = true;
       } else {
@@ -117,7 +128,7 @@ export class SealOutListComponent implements OnInit {
     let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
     this.service
       .getSealOutAll(this.isCancel,this.columnSearch, this.searchTerm, startDate, endDate).subscribe((res: any) => {
-      this.sealItem = res.result;
+      this.sealOutItem = res.result;
     });
   }
 
@@ -138,7 +149,20 @@ export class SealOutListComponent implements OnInit {
         }
       });
   }
+  getSealOutInfoList(id:string){
+    this.service.getSealOutInfoList(id).subscribe(
+      data => {
+        this.mSealOutInfoList = data.result;
+      },
+      error => {
+        console.log(JSON.stringify(error));
+      }
+    );
+  }
   showSealOutInfo(content:any,item: any) {
+    //debugger;
+    this.getSealOutInfoList(item.sealOutId);
+    this.sealOutId =item.sealOutId;
     const modalOptions: NgbModalOptions = {
       keyboard: false,
       centered: false,
@@ -160,5 +184,40 @@ export class SealOutListComponent implements OnInit {
   }
   sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  getSealChange(){
+    this.service.getSealChange().subscribe((data) =>{
+      this.sealItem = data.result;
+    });
+  }
+  getSealStatus(){
+    this.service.getSealStatus().subscribe((data) =>{
+      this.status = data.result;
+    });
+  }
+  addItemSealChange(sealOutId:string,sealInId:string,item: any) {
+    const result = this.itemSealChange.find((p) => p.sealNo=== item.sealNo);
+    if (result){
+      this.toastr.warning("มีหมายเลขซีลนี้ในตารางแล้ว");
+      return false;
+    }
+    this.getSealChange();
+    this.getSealStatus();
+    this.itemSealChange.push({
+      sealId: item.id,
+      sealOutId: sealOutId,
+      sealInId: sealInId,
+      sealNo:item.sealNo,
+      remarkId:3,
+      remarks:'',
+      remarkOther:''
+    })
+  }
+  removeItem(item: any) {
+    let index = this.itemSealChange.indexOf(item);
+    this.itemSealChange.splice(index, 1);
+  }
+  selectStatus(id:string){
+    console.log(id);
   }
 }

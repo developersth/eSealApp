@@ -94,6 +94,29 @@ namespace backend.Controllers
             }
         }
 
+      [HttpGet("GetSealOutInfoList/{SealOutId}")]
+        public IActionResult GetSealOutInfoList(string SealOutId)
+        {
+            try
+            {
+                var result = Context.SealOutInfoList.Where(s => s.SealOutId == SealOutId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(new { result = result.ToList(), message = "request successfully" });
+                }
+
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -123,11 +146,13 @@ namespace backend.Controllers
             try
             {
                 var result = from so in Context.SealOut
-                             join info in Context.SealOutInfo on so.Id equals info.SealOutId
+                             join info in Context.SealOutInfo on so.SealOutId equals info.SealOutId
                              where so.SealOutId == SealOutId
                              select new
                              {
                                  Id = so.Id,
+                                 SealOutId = so.SealOutId,
+                                 SealInId = info.SealInId,
                                  SealTotal = so.SealTotal,
                                  SealTotalExtra = so.SealTotalExtra,
                                  TruckId = so.TruckId,
@@ -163,7 +188,7 @@ namespace backend.Controllers
             try
             {
                 var result = from so in Context.SealOut
-                             join info in Context.SealOutInfo on so.Id equals info.SealOutId
+                             join info in Context.SealOutInfo on so.SealOutId equals info.SealOutId
                              where so.Id == id
                              select new
                              {
@@ -230,27 +255,28 @@ namespace backend.Controllers
                 if (result > 0 && model.SealOutInfo != null)
                 {
                     //update Id Format
-                    sealout.SealOutId = Utilities.GennerateId("S0", sealout.Id);
+                    sealout.SealOutId = Utilities.GennerateId("SO", sealout.Id);
                     Context.Update(sealout);
-                    List<SealOutInfo> sealOutInfoList = new List<SealOutInfo>();
+                    List<SealOutInfo> sealOutInfo = new List<SealOutInfo>();
                     List<string> sealInId = new List<string>();
+                    List<SealOutInfoList> sealOutInfoList = new List<SealOutInfoList>();
                     foreach (var item in model.SealOutInfo)
                     {
 
                         var sealOutInfoModel = new SealOutInfo
                         {
                             SealInId = item.SealInId,
-                            SealOutId = sealout.Id,
+                            SealOutId = sealout.SealOutId,
                             SealBetween = item.SealBetween,
                             Pack = item.Pack,
                             SealType = item.SealType,
                             SealTypeName = item.SealTypeName,
                             SealList = item.SealList
                         };
-                        sealOutInfoList.Add(sealOutInfoModel);
+                        sealOutInfo.Add(sealOutInfoModel);
                         sealInId.Add(item.SealInId);
                     }
-                    Context.SealOutInfo.AddRange(sealOutInfoList);
+                    Context.SealOutInfo.AddRange(sealOutInfo);
                     foreach (var id in sealInId)
                     {
                         //update status = 2 ใช้งานแล้ว sealIn
@@ -270,10 +296,21 @@ namespace backend.Controllers
                         foreach (Seals p in query)
                         {
                             p.Status = 2;
+
+                            //SealOutInfoList
+                            var modelList = new SealOutInfoList
+                            {
+                                SealOutId =sealout.SealOutId,
+                                SealInId=id,
+                                sealId=p.Id,
+                                SealNo=p.SealNo
+                            };
+                            sealOutInfoList.Add(modelList);
                         }
+                        
                     }
 
-
+                    await Context.SealOutInfoList.AddRangeAsync(sealOutInfoList);
                     await Context.SaveChangesAsync();
                 }
 
@@ -300,8 +337,10 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    var sealOutInfo = Context.SealOutInfo.Where(p => p.SealOutId == result.Id);
+                    var sealOutInfo = Context.SealOutInfo.Where(p => p.SealOutId == result.SealOutId);
+                    var sealOutInfoList = Context.SealOutInfoList.Where(p => p.SealOutId == result.SealOutId);
 
+                    Context.SealOutInfoList.RemoveRange(sealOutInfoList);
                     Context.SealOutInfo.RemoveRange(sealOutInfo);
                     Context.SealOut.Remove(result);
                     await Context.SaveChangesAsync();

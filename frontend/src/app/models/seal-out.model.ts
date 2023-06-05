@@ -1,5 +1,7 @@
 export class SealOut {
   public id: number;
+  public sealOutId: string;
+  public sealInId: string;
   public sealTotal: number;
   public sealTotalExtra: number;
   public sealList:string;
