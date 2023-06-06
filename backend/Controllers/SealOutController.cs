@@ -341,18 +341,22 @@ namespace backend.Controllers
                     query.Updated = DateTime.Now;
 
                     //update status sealOid
-                    findSealOld.Status = r.RemarkId;
+                    if (r.RemarkId == null)
+                        findSealOld.Status = 3;
+                    else
+                        findSealOld.Status = r.RemarkId;
+
                     findSealOld.Updated = DateTime.Now;
-                    findSealOld.UpdatedBy =r.UpdatedBy;
+                    findSealOld.UpdatedBy = r.UpdatedBy;
                     //update active sealNew
                     findSealNew.IsActive = true;
-                    findSealNew.Updated =DateTime.Now;
-                    findSealNew.UpdatedBy =r.UpdatedBy;
+                    findSealNew.Updated = DateTime.Now;
+                    findSealNew.UpdatedBy = r.UpdatedBy;
                     //update SealInInfo
-                    findSealInInfo.SealId =findSealNew.Id;
+                    findSealInInfo.SealId = findSealNew.Id;
                     findSealInInfo.SealNo = findSealNew.SealNo;
-                    findSealInInfo.UpdaetedBy =r.UpdatedBy;
-                    findSealInInfo.Updated =DateTime.Now;
+                    findSealInInfo.UpdaetedBy = r.UpdatedBy;
+                    findSealInInfo.Updated = DateTime.Now;
 
                 }
             }
