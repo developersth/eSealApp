@@ -372,17 +372,17 @@ namespace backend.Controllers
                     findSealInInfo.SealNo = findSealNew.SealNo;
                     findSealInInfo.UpdaetedBy = r.UpdatedBy;
                     findSealInInfo.Updated = DateTime.Now;
-
+                    var modelList = new SealChanges
+                    {
+                        SealOutId = r.SealOutId,
+                        SealInId = r.SealInId,
+                        SealNoOld = r.SealNoOld,
+                        SealNoNew = r.SealNoNew,
+                        Remarks = remarkName
+                    };
+                    sealChangeList.Add(modelList);
                 }
-                var modelList = new SealChanges
-                {
-                    SealOutId = r.SealOutId,
-                    SealInId = r.SealInId,
-                    SealNoOld = r.SealNoOld,
-                    SealNoNew = r.SealNoNew,
-                    Remarks = remarkName
-                };
-                sealChangeList.Add(modelList);
+
             }
             var result = Context.SealChanges.AddRangeAsync(sealChangeList);
             await Context.SaveChangesAsync();
