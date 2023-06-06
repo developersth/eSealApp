@@ -164,6 +164,7 @@ export class SealOutListComponent implements OnInit {
   }
   showSealOutInfo(content:any,item: any) {
     //debugger;
+    this.itemSealChange=[];
     this.getSealOutInfoList(item.sealOutId);
     this.sealOutId =item.sealOutId;
     const modalOptions: NgbModalOptions = {
@@ -218,7 +219,7 @@ export class SealOutListComponent implements OnInit {
       sealIdOld:item.id,
       sealNoOld:item.sealNo,
       sealNoNew:'',
-      remarkId:3,
+      remarkId:2,
       remarks:'',
       remarkOther:'',
       createdBy:this.user,

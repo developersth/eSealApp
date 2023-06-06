@@ -26,5 +26,9 @@ export const Full_ROUTES: Routes = [
   {
     path: 'settings',
     loadChildren: () => import('../../components/settings/settings.module').then(m => m.SettingsModule)
+  },
+  {
+    path: 'reports',
+    loadChildren: () => import('../../components/report/report.module').then(m => m.ReportModule)
   }
 ];

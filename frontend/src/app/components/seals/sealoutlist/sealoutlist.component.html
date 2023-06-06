@@ -213,13 +213,13 @@
                             </ng-select>
                           </td>
                           <td style="width: 30%;">
-                            <select class="form-control" [(ngModel)]="item.remarkId" (change)="selectStatus(item.remarkId)">
+                            <select class="form-control" [(ngModel)]="item.remarkId"   (change)="selectStatus(item.remarkId)">
                               <option *ngFor="let s of status" [value]="s.id">{{s.name}}</option>
                               <option  value="0">--สาเหตุอื่นๆ--</option>
                             </select>
                             <div *ngIf="item.remarkId==0">
                               <label>ระบุสาเหตุ</label>
-                              <input class="form-control" placeholder="กรุณาระบุสาเหตุ" [(ngModel)]="item.remarkOther" />
+                              <input class="form-control" placeholder="กรุณาระบุสาเหตุ" [(ngModel)]="item.remarks" />
 
                             </div>
                           </td>

@@ -325,8 +325,9 @@ namespace backend.Controllers
         }
 
         [HttpPost("SealChange")]
-        public async Task<IActionResult> SealChange([FromBody] SealChanges[] request)
+        public async Task<IActionResult> SealChange([FromBody] RequestSealChanges[] request)
         {
+            List<SealChanges> sealChangeList = new List<SealChanges>();
             //update SealOutInfoList
             foreach (var r in request)
             {
@@ -334,6 +335,8 @@ namespace backend.Controllers
                 var findSealNew = Context.Seals.FirstOrDefault(s => s.SealNo == r.SealNoNew);
                 var findSealOld = Context.Seals.FirstOrDefault(s => s.SealNo == r.SealNoOld);
                 var findSealInInfo = Context.SealInInfo.FirstOrDefault(a => a.SealInId == r.SealInId && a.SealNo == r.SealNoOld);
+                int? remarkId = 0;
+                string? remarkName = string.Empty;
                 if (query != null && findSealNew != null && findSealOld != null && findSealInInfo != null)
                 {
                     query.sealId = findSealNew.Id;
@@ -341,10 +344,22 @@ namespace backend.Controllers
                     query.Updated = DateTime.Now;
 
                     //update status sealOid
-                    if (r.RemarkId == null)
-                        findSealOld.Status = 3;
+                    if (r.RemarkId == 0)
+                    {
+                        var sealStatus = new SealStatus { Name = r.Remarks };
+                        var remark = Context.SealStatus.Add(sealStatus);
+                        Context.SaveChanges();
+                        findSealOld.Status = sealStatus.Id;
+                        remarkId = sealStatus.Id;
+                        remarkName = r.Remarks;
+                    }
                     else
+                    {
+                        var querySealStatus = Context.SealStatus.FirstOrDefault(a => a.Id == r.RemarkId);
                         findSealOld.Status = r.RemarkId;
+                        remarkId = r.RemarkId;
+                        remarkName = querySealStatus.Name;
+                    }
 
                     findSealOld.Updated = DateTime.Now;
                     findSealOld.UpdatedBy = r.UpdatedBy;
@@ -359,9 +374,17 @@ namespace backend.Controllers
                     findSealInInfo.Updated = DateTime.Now;
 
                 }
+                var modelList = new SealChanges
+                {
+                    SealOutId = r.SealOutId,
+                    SealInId = r.SealInId,
+                    SealNoOld = r.SealNoOld,
+                    SealNoNew = r.SealNoNew,
+                    Remarks = remarkName
+                };
+                sealChangeList.Add(modelList);
             }
-
-            var result = Context.SealChanges.AddRangeAsync(request);
+            var result = Context.SealChanges.AddRangeAsync(sealChangeList);
             await Context.SaveChangesAsync();
             return Ok(new { result = "", success = true, message = "เปลียนหมายเลขซีล  เรียบร้อยแล้ว" });
         }
