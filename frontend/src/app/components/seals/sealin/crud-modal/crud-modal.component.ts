@@ -21,7 +21,7 @@ export class CrudModalComponent implements OnInit {
   //@Input() data:Seal[]=[];
   private sealPack: number[] = [3, 4, 5];
   private seals: any[] = [];
-  cbSealPack: number = 1;
+  @Input() cbSealPack:any;
   Object: any;
   sealItem: any[] = [];
   constructor(
@@ -33,9 +33,8 @@ export class CrudModalComponent implements OnInit {
 
   ngOnInit() {
     this.data = []
+    this.cbSealPack ="1";
   }
-
-
 
   calculateSeal() {
     if (parseInt(this.sealTotal) > 1000) {
@@ -51,7 +50,7 @@ export class CrudModalComponent implements OnInit {
       fullScreen: true,
     });
     this.data =[];
-    this.util.calculateSealNumber(this.cbSealPack,parseInt(this.sealTotal), parseFloat(this.sealStartNo)).pipe(delay(200)).subscribe(
+    this.util.calculateSealNumber(parseInt(this.cbSealPack),parseInt(this.sealTotal), parseFloat(this.sealStartNo)).pipe(delay(200)).subscribe(
       (res: any) => {
         this.data = res;
         this.spinner.hide();

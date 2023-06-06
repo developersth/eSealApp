@@ -35,6 +35,7 @@ export class SealModalComponent implements OnInit {
       { id: 2, name: "ซีลชำรุด" },
       { id: 3, name: "ซีลสูญหาย" },
       { id: 4, name: "ซีลทดแทน" },
+      { id:5, name: "ตีซีลผิดช่อง" }
     ];
   }
   private buildItemForm(item) {
@@ -42,7 +43,7 @@ export class SealModalComponent implements OnInit {
       sealNo: [item.sealNo || "", Validators.required],
       type: [item.type||1],
       status: [item.status||1],
-      isActive: [item.isActive||0]
+      isActive: [item.isActive||false]
     });
   }
   onSubmit() {

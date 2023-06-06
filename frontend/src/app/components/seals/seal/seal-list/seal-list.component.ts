@@ -75,7 +75,7 @@ export class SealListComponent implements OnInit {
       sealNo: '',
       type: 0,
       status: 0,
-      isActive: 0,
+      isActive: false,
     }; // should be the data
     modalRef.result
       .then((result) => {

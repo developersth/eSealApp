@@ -4,11 +4,14 @@ import { Seals } from "app/models/seals.model";
 import { Observable, of } from "rxjs";
 import { RestService } from "../services/rest.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { type } from "os";
 @Injectable()
 export class Utils {
   sealIn: any[]=[];
   seal: Seals[];
   sealPack: number[] = [3, 4, 5];
+  statusName :string='พร้อมใช้งาน';
+  user:string=this.service.getFullNameLocalAuthen();
   constructor(
     private service: RestService
   ) {}
@@ -30,6 +33,7 @@ export class Utils {
     this.sealIn = [];
     for (let i = 0; i < total; i++) {
      this.seal = [];
+     console.log(typeof typePack);
       //pack 3
       if (typePack === 2) {
         currentSize = 3;
@@ -44,7 +48,7 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.service.getFullNameLocalAuthen(),
+              createdBy: this.user,
               updatedBy: this.service.getFullNameLocalAuthen(),
             });
           }

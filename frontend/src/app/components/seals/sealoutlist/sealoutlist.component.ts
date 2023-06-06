@@ -3,6 +3,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild, Input } from "@angular
 import {
   NgbDateStruct,
   NgbModal,
+  NgbModalRef,
   NgbModalOptions,
   ModalDismissReasons,
 } from "@ng-bootstrap/ng-bootstrap";
@@ -31,6 +32,7 @@ import { ToastrService } from "ngx-toastr";
 export class SealOutListComponent implements OnInit {
   window: any;
   swal = swalFunctions;
+  modalRef: NgbModalRef;
   private mediaQueryList: MediaQueryList;
   constructor(
     private modalService: NgbModal,
@@ -71,7 +73,7 @@ export class SealOutListComponent implements OnInit {
   sealId:number = 0;
   sealOutId:string = '';
   @Input() txtSealId:number=3;
-
+  user :string =this.service.getFullNameLocalAuthen();
   pageChanged(event: any): void {
     this.page = event.page;
   }
@@ -172,7 +174,12 @@ export class SealOutListComponent implements OnInit {
     this.openModal(content,modalOptions);
   }
   openModal(content: any,modalOptions:any) {
-    this.modalService.open(content, modalOptions);
+    this.modalRef= this.modalService.open(content, modalOptions);
+  }
+  closeModal() {
+    if (this.modalRef) {
+      this.modalRef.close();
+    }
   }
   printSlip(item: any) {
     let ngbModalOptions: NgbModalOptions = {
@@ -208,11 +215,14 @@ export class SealOutListComponent implements OnInit {
       sealId: item.id,
       sealOutId: sealOutId,
       sealInId: sealInId,
+      sealIdOld:item.id,
       sealNoOld:item.sealNo,
       sealNoNew:'',
       remarkId:3,
       remarks:'',
-      remarkOther:''
+      remarkOther:'',
+      createdBy:this.user,
+      updatedBy:this.user
     })
   }
   removeItem(item: any) {
@@ -227,9 +237,17 @@ export class SealOutListComponent implements OnInit {
       this.swal.showDialog("warning", "การแจ้งเตือน:กรุณาเลือกหมายเลขซีลที่ต้องการเปลี่ยนด้วยครับ");
       return;
     }
+    const result = this.itemSealChange.find((p) => p.sealNoNew === "");
+    if (result) {
+      this.toastr.warning("กรุณากรอก หมายเลขซีลใหม่ด้วยครับ");
+      return;
+    }
+
+    debugger;
     this.service.sealChange(this.itemSealChange).subscribe(
       (res: any) => {
         this.spinner.hide();
+        this.closeModal();
         if (res.success) {
           this.swal.showDialog("success", res.message);
         } else {
@@ -240,6 +258,7 @@ export class SealOutListComponent implements OnInit {
         }
       },
       (error: any) => {
+        this.closeModal();
         this.spinner.hide();
         this.swal.showDialog("error", "เกิดข้อผิดพลาด : " + error);
       }

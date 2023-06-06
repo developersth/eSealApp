@@ -94,7 +94,7 @@ namespace backend.Controllers
             }
         }
 
-      [HttpGet("GetSealOutInfoList/{SealOutId}")]
+        [HttpGet("GetSealOutInfoList/{SealOutId}")]
         public IActionResult GetSealOutInfoList(string SealOutId)
         {
             try
@@ -244,9 +244,9 @@ namespace backend.Controllers
                 {
                     foreach (var item in jsonObject)
                     {
-                        Int32 id =item.id;
-                        var sealNoExtra = Context.Seals.FirstOrDefault(a=>a.Id==id);
-                        sealNoExtra.Status =2;
+                        Int32 id = item.id;
+                        var sealNoExtra = Context.Seals.FirstOrDefault(a => a.Id == id);
+                        sealNoExtra.Status = 2;
                         Context.Seals.Update(sealNoExtra);
                     }
                 }
@@ -300,14 +300,14 @@ namespace backend.Controllers
                             //SealOutInfoList
                             var modelList = new SealOutInfoList
                             {
-                                SealOutId =sealout.SealOutId,
-                                SealInId=id,
-                                sealId=p.Id,
-                                SealNo=p.SealNo
+                                SealOutId = sealout.SealOutId,
+                                SealInId = id,
+                                sealId = p.Id,
+                                SealNo = p.SealNo
                             };
                             sealOutInfoList.Add(modelList);
                         }
-                        
+
                     }
 
                     await Context.SealOutInfoList.AddRangeAsync(sealOutInfoList);
@@ -327,9 +327,39 @@ namespace backend.Controllers
         [HttpPost("SealChange")]
         public async Task<IActionResult> SealChange([FromBody] SealChanges[] request)
         {
-             var result = Context.SealChanges.AddRangeAsync(request);
-             await Context.SaveChangesAsync();
-             return Ok(new { result = "", success = true, message = "เปลียนหมายเลขซีล  เรียบร้อยแล้ว" });
+            //update SealOutInfoList
+            foreach (var r in request)
+            {
+                var query = Context.SealOutInfoList.FirstOrDefault(a => a.SealOutId == r.SealOutId && a.SealInId == r.SealInId && a.SealNo == r.SealNoOld);
+                var findSealNew = Context.Seals.FirstOrDefault(s => s.SealNo == r.SealNoNew);
+                var findSealOld = Context.Seals.FirstOrDefault(s => s.SealNo == r.SealNoOld);
+                var findSealInInfo = Context.SealInInfo.FirstOrDefault(a => a.SealInId == r.SealInId && a.SealNo == r.SealNoOld);
+                if (query != null && findSealNew != null && findSealOld != null && findSealInInfo != null)
+                {
+                    query.sealId = findSealNew.Id;
+                    query.SealNo = findSealNew.SealNo;
+                    query.Updated = DateTime.Now;
+
+                    //update status sealOid
+                    findSealOld.Status = r.RemarkId;
+                    findSealOld.Updated = DateTime.Now;
+                    findSealOld.UpdatedBy =r.UpdatedBy;
+                    //update active sealNew
+                    findSealNew.IsActive = true;
+                    findSealNew.Updated =DateTime.Now;
+                    findSealNew.UpdatedBy =r.UpdatedBy;
+                    //update SealInInfo
+                    findSealInInfo.SealId =findSealNew.Id;
+                    findSealInInfo.SealNo = findSealNew.SealNo;
+                    findSealInInfo.UpdaetedBy =r.UpdatedBy;
+                    findSealInInfo.Updated =DateTime.Now;
+
+                }
+            }
+
+            var result = Context.SealChanges.AddRangeAsync(request);
+            await Context.SaveChangesAsync();
+            return Ok(new { result = "", success = true, message = "เปลียนหมายเลขซีล  เรียบร้อยแล้ว" });
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
