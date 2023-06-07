@@ -200,4 +200,30 @@ export class RestService {
   getSealChanges(startDate: string,endDate: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.reportUrl}/GetSealChanges?pStartDate=${startDate}&pEndDate=${endDate}`);
   }
+  exportSealChanges(startDate: string,endDate: string) {
+    let apiEndpoint = `${this.reportUrl}/ExportSealChanges?pStartDate=${startDate}&pEndDate=${endDate}`;
+    this.http.get(apiEndpoint, { responseType: 'blob' }).subscribe((response: any) => {
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      // สร้างลิงก์ดาวน์โหลด
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      let new_date: Date = new Date();
+      link.download = `report_SealChange_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`; // ใช้ชื่อไฟล์ที่ได้รับจากเซิร์ฟเวอร์ หากไม่สามารถรับชื่อไฟล์ได้ให้ใช้ชื่อเริ่มต้นเป็น "SealChanges.xlsx"
+      link.click();
+    });
+  }
+  exportRemaining(startDate: string,endDate: string) {
+    let apiEndpoint = `${this.reportUrl}/ExportRemaining?pStartDate=${startDate}&pEndDate=${endDate}`;
+    this.http.get(apiEndpoint, { responseType: 'blob' }).subscribe((response: any) => {
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      // สร้างลิงก์ดาวน์โหลด
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      let new_date: Date = new Date();
+      link.download = `report_SealRemaining_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`; // ใช้ชื่อไฟล์ที่ได้รับจากเซิร์ฟเวอร์ หากไม่สามารถรับชื่อไฟล์ได้ให้ใช้ชื่อเริ่มต้นเป็น "SealChanges.xlsx"
+      link.click();
+    });
+  }
 }

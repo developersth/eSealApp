@@ -13,7 +13,7 @@
           </div>
           </div>
         </div>
-        
+
         <div class="card-content">
           <div class="card-body">
             <div class="form-row mb-2">
@@ -50,7 +50,7 @@
                       <div class="input-group-text" (click)="dpEnd.toggle()">
                         <i class="ft ft-calendar" style="cursor: pointer;"></i>
                       </div>
-                     <!-----> 
+                     <!----->
                     </div>
                     <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
                       let-disabled="disabled">
@@ -62,9 +62,13 @@
                   </div>
                 </div>
               </div>
-            <div class="form-group col-md-3"> 
-              <br/> 
-              <button (click)="getSealChanges()" class="btn btn-primary">ค้นหา </button>
+            <div class="form-group col-md-3">
+              <label>ค้นหา</label>
+              <div class="form-inline">
+                <button (click)="getSealChanges()" class="btn btn-primary">ค้นหา </button>|
+                <button  class="btn btn-success" (click)="exportExcel()"><i class="fa-solid fa-file-excel"> นำออก</i></button>
+              </div>
+
             </div>
             <div class="table-responsive">
               <table class="table table-bordered table-strip">
@@ -85,9 +89,9 @@
                     <td>{{ sealchange.created | date: 'yyyy-MM-dd / HH:mm' }}</td>
                     <td>{{ sealchange.truckName }}</td>
                     <td>{{ sealchange.sealNoOld }}</td>
-                    <td>{{ sealchange.sealNoNew }}</td>  
-                    <td>{{ sealchange.remarks }}</td>  
-                    <td>{{ sealchange.updatedby }}</td> 
+                    <td>{{ sealchange.sealNoNew }}</td>
+                    <td>{{ sealchange.remarks }}</td>
+                    <td>{{ sealchange.updatedby }}</td>
                   </tr>
                 </tbody>
               </table>

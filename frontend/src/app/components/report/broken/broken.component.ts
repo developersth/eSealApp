@@ -25,7 +25,7 @@ export class BrokenComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.selectToday(); 
+    this.selectToday();
     this.getSealChanges();
   }
 
@@ -41,7 +41,7 @@ export class BrokenComponent implements OnInit {
   isDisabled(date: NgbDateStruct, current: { month: number }) {
     return date.month !== current.month;
   }
-  
+
   isWeekend(date: NgbDateStruct) {
     const d = new Date(date.year, date.month - 1, date.day);
     return d.getDay() === 0 || d.getDay() === 6;
@@ -60,6 +60,11 @@ export class BrokenComponent implements OnInit {
       month: tomorrow.getMonth() + 1,
       day: tomorrow.getDate(),
     };
+  }
+  exportExcel(){
+    let startDate: string = `${this.dtStart.year}-${this.dtStart.month}-${this.dtStart.day}`;
+    let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
+    this.service.exportSealChanges(startDate, endDate);
   }
 
 }
