@@ -5,6 +5,7 @@ export class SealOut {
   public sealTotal: number;
   public sealTotalExtra: number;
   public sealList:string;
+  public pack:number;
   public sealExtraList:string;
   public truckId: number;
   public truckName: string;
@@ -19,6 +20,7 @@ export class SealOut {
   constructor() {
      this.sealTotal= 0;
      this.sealTotalExtra= 0;
+     this.pack =0;
      this.truckId= 0;
      this.truckName= 'x';
      this.sealList='';

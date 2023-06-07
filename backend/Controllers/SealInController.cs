@@ -55,6 +55,7 @@ namespace backend.Controllers
                                     select new SealIn
                                     {
                                         Id = s.Id,
+                                        SealInId = s.SealInId,
                                         SealBetween = s.SealBetween,
                                         Pack = s.Pack,
                                         IsActive = s.IsActive,

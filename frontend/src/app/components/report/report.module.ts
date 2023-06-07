@@ -9,12 +9,13 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { DatePipe } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ReportRouteModule } from './report-routing.module';
-import { BrokenComponent } from './broken/broken.component';
 import { RemainingComponent } from './remaining/remaining.component';
+import { RestService } from 'app/services/rest.service';
+import { BrokenComponent } from './broken/broken.component';
 @NgModule({
   declarations: [
-    BrokenComponent,
     RemainingComponent,
+    BrokenComponent
   ],
   imports: [
     CommonModule,
@@ -28,6 +29,7 @@ import { RemainingComponent } from './remaining/remaining.component';
     NgxPaginationModule,
     ReportRouteModule
 
-  ]
+  ],
+  providers:[RestService]
 })
 export class ReportModule { }

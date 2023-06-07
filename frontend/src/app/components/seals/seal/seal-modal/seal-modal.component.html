@@ -11,14 +11,14 @@
       <div class="col-md-12">
         <div class="form-group">
           <label>หมายเลขซีล:</label>
-          <input for="sealNo" type="text"  required formControlName="sealNo" class="form-control" >
+          <input for="sealNo" type="text"  required formControlName="sealNo" placeholder="899999" class="form-control" >
         </div>
       </div>
       <div class="col-md-12">
         <div class="form-group">
           <label for="name">ประเภทซีล:</label>
           <select class="form-control" formControlName="type">
-            <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+            <option *ngFor="let type of sealTypes" [value]="type.id">{{type.typeName}}</option>
          </select>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <div class="form-group">
           <label for="name">สถานะ:</label>
           <select class="form-control" formControlName="status">
-            <option *ngFor="let item of status" [value]="item.id">{{item.name}}</option>
+            <option *ngFor="let status of sealStatus" [value]="status.id">{{status.name}}</option>
          </select>
         </div>
       </div>

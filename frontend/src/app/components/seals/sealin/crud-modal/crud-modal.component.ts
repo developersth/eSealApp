@@ -21,7 +21,7 @@ export class CrudModalComponent implements OnInit {
   //@Input() data:Seal[]=[];
   private sealPack: number[] = [3, 4, 5];
   private seals: any[] = [];
-  @Input() cbSealPack:any;
+  @Input() cbSealPack: string;
   Object: any;
   sealItem: any[] = [];
   constructor(
@@ -33,38 +33,65 @@ export class CrudModalComponent implements OnInit {
 
   ngOnInit() {
     this.data = []
-    this.cbSealPack ="1";
+    this.cbSealPack = "1";
+  }
+
+  CheckInvalid(){
+    if(this.sealStartNo == null || this.sealTotal == null) {
+      if (this.sealStartNo == null && this.sealTotal == null){
+        this.toast.warning("กรุณากรอกข้อมูล");
+      }
+      else if(this.sealTotal == null){
+        this.toast.warning("กรุณากรอกจำนวนซีล");
+      }
+      else{
+        this.toast.warning("กรุณาหมายเลขซีล");
+      }
+      return false;
+    }
+    if (parseInt(this.sealTotal) > 1000) {
+      this.toast.warning("ระบุจำนวนซีลไม่เกิน 1000")
+      return false;
+    }
+    if(parseInt(this.sealTotal)%parseInt(this.cbSealPack)!=0){
+      this.toast.warning("กรุณากรอกจำนวนซีลให้สอดคล้องกับแพ็คซีล");
+      return false;
+    }
+    return true;
   }
 
   calculateSeal() {
-    if (parseInt(this.sealTotal) > 1000) {
-      this.toast.warning("สามารถระบุจำนวนซีลได้ไม่เกิน 1000")
+    if(this.CheckInvalid()){
+      if (!this.data) return;
+      this.spinner.show(undefined, {
+        type: "ball-triangle-path",
+        size: "medium",
+        bdColor: "rgba(0, 0, 0, 0.8)",
+        color: "#fff",
+        fullScreen: true,
+      });
+      this.data =[];
+      this.util.calculateSealNumber(parseInt(this.cbSealPack),parseInt(this.sealTotal), parseFloat(this.sealStartNo)).pipe(delay(200)).subscribe(
+        (res: any) => {
+          this.data = res;
+          this.spinner.hide();
+        },
+        (error: any) => {
+          console.log(error.message)
+          this.spinner.hide();
+        }
+      );
+    }
+    else{
       return;
     }
-    if (!this.data) return;
-    this.spinner.show(undefined, {
-      type: "ball-triangle-path",
-      size: "medium",
-      bdColor: "rgba(0, 0, 0, 0.8)",
-      color: "#fff",
-      fullScreen: true,
-    });
-    this.data =[];
-    this.util.calculateSealNumber(parseInt(this.cbSealPack),parseInt(this.sealTotal), parseFloat(this.sealStartNo)).pipe(delay(200)).subscribe(
-      (res: any) => {
-        this.data = res;
-        this.spinner.hide();
-      },
-      (error: any) => {
-        console.log(error.message)
-        this.spinner.hide();
-      }
-    );
   }
+
   removeData(item) {
     var index = this.data.indexOf(item);
     this.data.splice(index, 1);
   }
+
   submitForm() {
     // let body={
     //   sealBetween :this.data["sealBetween"],
@@ -72,6 +99,11 @@ export class CrudModalComponent implements OnInit {
     //   isActive :this.data["isActive"],
     //   sealItem :this.data["sealItem"],
     // }
-    this.activeModal.close(this.data);
+    if(this.CheckInvalid()){
+      this.activeModal.close(this.data);
+    }
+    else{
+      return;
+    }
   }
 }

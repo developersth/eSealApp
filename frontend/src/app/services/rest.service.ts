@@ -11,6 +11,8 @@ import { User } from "../models/user.model";
 import { Roles } from "app/models/roles.model";
 import { Truck } from "../models/truck.model";
 import { Response } from "../models/response.model";
+import { SealTypes } from "app/models/seal-types.model";
+import { SealStatus } from "app/models/seal-status.model";
 
 
 @Injectable()
@@ -30,6 +32,7 @@ export class RestService {
   private userUrl = `${this.apiUrl}/user`;
   private truckUrl = `${this.apiUrl}/truck`;
   private rolesUrl = `${this.apiUrl}/roles`;
+  private reportUrl = `${this.apiUrl}/report`;
 
   //----------------------------------------------------------------
   getFullNameLocalAuthen() {
@@ -96,14 +99,21 @@ export class RestService {
       headers:this.headers,
     });
   }
-  deleteSeal(id: string): Observable<any> {
+  deleteSealIn(id: string): Observable<any> {
     return this.http.delete<any[]>(`${this.sealInUrl}/${id}`, { headers:this.headers });
   }
   deleteSealAll(itemId: string[]): Observable<any> {
-    const deleteRequests = itemId.map((itemId) => this.deleteSeal(itemId));
+    const deleteRequests = itemId.map((itemId) => this.deleteSealIn(itemId));
     return forkJoin(deleteRequests);
   }
   //----------------------------------------------------------------
+  getTypes():Observable<SealTypes[]>{
+    return this.http.get<SealTypes[]>(`${this.sealUrl}/GetTypes`);
+  }
+
+  getStatus():Observable<SealStatus[]>{
+    return this.http.get<SealStatus[]>(`${this.sealUrl}/GetStatus`);
+  }
   getSeals( startDate: string,endDate: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.sealUrl}?pStartDate=${startDate}&pEndDate=${endDate}`);
   }
@@ -125,6 +135,9 @@ export class RestService {
   updateSeal(id:number,items: any): Observable<any> {
     let item = JSON.stringify(items);
     return this.http.put<any>(`${this.sealUrl}/${id}`, item, { headers:this.headers });
+  }
+  deleteSeal(id: string): Observable<any> {
+    return this.http.delete<any[]>(`${this.sealUrl}/${id}`, { headers:this.headers });
   }
   //----------------------------------------------------------------
   deleteSealOut(id: string): Observable<any> {
@@ -179,5 +192,12 @@ export class RestService {
         headers:this.headers,
       }
     );
+  }
+  //---------------------------------------------------------------- report
+  GetRemaining( startDate: string,endDate: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.reportUrl}/GetRemaining?pStartDate=${startDate}&pEndDate=${endDate}`);
+  }
+  getSealChanges(startDate: string,endDate: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.reportUrl}/GetSealChanges?pStartDate=${startDate}&pEndDate=${endDate}`);
   }
 }

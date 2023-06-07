@@ -215,7 +215,7 @@ export class SealinComponent implements OnInit {
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
       .then((res) => {
         if (res) {
-          this.service.deleteSeal(id).subscribe(
+          this.service.deleteSealIn(id).subscribe(
             (res: any) => {
               swal.showDialog("success", "ลบข้อมูลเรียบร้อยแล้วแล้ว");
               this.getSeal();

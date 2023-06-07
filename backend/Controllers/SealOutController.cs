@@ -155,6 +155,7 @@ namespace backend.Controllers
                                  SealInId = info.SealInId,
                                  SealTotal = so.SealTotal,
                                  SealTotalExtra = so.SealTotalExtra,
+                                 SealExtraList =so.SealExtraList,
                                  TruckId = so.TruckId,
                                  TruckName = so.TruckName,
                                  IsCancel = so.IsCancel,
@@ -378,7 +379,9 @@ namespace backend.Controllers
                         SealInId = r.SealInId,
                         SealNoOld = r.SealNoOld,
                         SealNoNew = r.SealNoNew,
-                        Remarks = remarkName
+                        Remarks = remarkName,
+                        CreatedBy=r.CreatedBy,
+                        UpdatedBy=r.UpdatedBy,
                     };
                     sealChangeList.Add(modelList);
                 }

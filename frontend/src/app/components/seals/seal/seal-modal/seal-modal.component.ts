@@ -4,6 +4,8 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { RestService } from "app/services/rest.service";
 import { ToastrService } from "ngx-toastr";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { SealTypes } from "app/models/seal-types.model";
+import { SealStatus } from "app/models/seal-status.model";
 @Component({
   selector: "app-seal-modal",
   templateUrl: "./seal-modal.component.html",
@@ -13,8 +15,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 export class SealModalComponent implements OnInit {
   id: number = 0;
   form: FormGroup;
-  types: any[];
-  status: any[];
+  sealTypes: SealTypes;
+  sealStatus: SealStatus;
   data:any[];
   constructor(
     public activeModal: NgbActiveModal,
@@ -26,17 +28,19 @@ export class SealModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildItemForm(this.data);
-    this.types = [
-      { id: 1, name: "ปกติ" },
-      { id: 2, name: "พิเศษ" },
-    ];
-    this.status = [
-      { id: 1, name: "พร้อมใช้งาน" },
-      { id: 2, name: "ซีลชำรุด" },
-      { id: 3, name: "ซีลสูญหาย" },
-      { id: 4, name: "ซีลทดแทน" },
-      { id:5, name: "ตีซีลผิดช่อง" }
-    ];
+    this.getTypes();
+    this.getStatus();
+  }
+  getTypes() {
+    this.service.getTypes().subscribe((res:any) => {
+      this.sealTypes = res.result;
+    });
+  }
+
+  getStatus() {
+    this.service.getStatus().subscribe((res:any) => {
+      this.sealStatus = res.result;
+    });
   }
   private buildItemForm(item) {
     this.form = this.formBuilder.group({

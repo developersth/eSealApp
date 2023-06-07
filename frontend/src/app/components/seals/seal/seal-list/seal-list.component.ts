@@ -193,5 +193,22 @@ export class SealListComponent implements OnInit {
     this.keyword ='';
     this.getData();
   }
+  deleteData(id: string){
+    this.swal
+      .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
+      .then((res) => {
+        if (res) {
+          this.service.deleteSeal(id).subscribe(
+            (res: any) => {
+              this.swal.showDialog("success", "ลบข้อมูลเรียบร้อยแล้วแล้ว");
+              this.getData();
+            },
+            (error: any) => {
+              this.swal.showDialog("error", "เกิดข้อผิดพลาด:" + error);
+            }
+          );
+        }
+      });
+  }
 
 }

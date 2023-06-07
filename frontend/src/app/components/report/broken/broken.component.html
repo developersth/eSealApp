@@ -13,14 +13,65 @@
           </div>
           </div>
         </div>
-
+        
         <div class="card-content">
           <div class="card-body">
+            <div class="form-row mb-2">
+              <div class="form-group col-md-2">
+                <label for="form-action-3">จากวันที่</label>
+                <div class="form-inline">
+                  <div class="input-group" style="width: 100%;">
+                    <input class="form-control" readonly (click)="dpStart.toggle()" placeholder="dd-mm-yyyy" name="dp"
+                    [(ngModel)]="dtStart" ngbDatepicker [dayTemplate]="customDay" [markDisabled]="isDisabled"
+                      #dpStart="ngbDatepicker">
+                    <div class="input-group-append">
+                      <div class="input-group-text" (click)="dpStart.toggle()">
+                        <i class="ft ft-calendar" style="cursor: pointer;"></i>
+                      </div>
+                    </div>
+                    <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
+                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
+                        [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="form-action-4">ถึงวันที่</label>
+                <div class="form-inline">
+                  <div class="input-group" style="width: 100%;">
+                    <input class="form-control" readonly (click)="dpEnd.toggle()" placeholder="dd-mm-yyyy" name="dp"
+                    [(ngModel)]="dtEnd"  ngbDatepicker [dayTemplate]="customDay" [markDisabled]="isDisabled"
+                      #dpEnd="ngbDatepicker">
+                    <div class="input-group-append">
+                      <div class="input-group-text" (click)="dpEnd.toggle()">
+                        <i class="ft ft-calendar" style="cursor: pointer;"></i>
+                      </div>
+                     <!-----> 
+                    </div>
+                    <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
+                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
+                        [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            <div class="form-group col-md-3"> 
+              <br/> 
+              <button (click)="getSealChanges()" class="btn btn-primary">ค้นหา </button>
+            </div>
             <div class="table-responsive">
               <table class="table table-bordered table-strip">
                 <thead>
                   <tr>
                     <th>ลำดับ</th>
+                    <th>วันที่/เวลา</th>
                     <th>ทะเบียนรถ</th>
                     <th>ซีลเสีย</th>
                     <th>ซีลใหม่</th>
@@ -29,45 +80,14 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>72-7535</td>
-                    <td>896241</td>
-                    <td>896245</td>
-                    <td>ซีลชำรุด</td>
-                    <td>Administrator</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>72-7535 / 72-8562</td>
-                    <td>896242</td>
-                    <td>896245</td>
-                    <td>ซีลชำรุด</td>
-                    <td>Administrator</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>72-7535 / 73-8651</td>
-                    <td>896243</td>
-                    <td>896245</td>
-                    <td>ซีลชำรุด</td>
-                    <td>Administrator</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td>72-7535</td>
-                    <td>896244</td>
-                    <td>896245</td>
-                    <td>ซีลชำรุด</td>
-                    <td>Administrator</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">5</th>
-                    <td>72-7777 / 73-7899</td>
-                    <td>896245</td>
-                    <td>896245</td>
-                    <td>ซีลชำรุด</td>
-                    <td>Administrator</td>
+                  <tr *ngFor="let sealchange of sealchanges">
+                    <td>{{ sealchange.id }}</td>
+                    <td>{{ sealchange.created | date: 'yyyy-MM-dd / HH:mm' }}</td>
+                    <td>{{ sealchange.truckName }}</td>
+                    <td>{{ sealchange.sealNoOld }}</td>
+                    <td>{{ sealchange.sealNoNew }}</td>  
+                    <td>{{ sealchange.remarks }}</td>  
+                    <td>{{ sealchange.updatedby }}</td> 
                   </tr>
                 </tbody>
               </table>

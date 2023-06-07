@@ -22,7 +22,7 @@ export const HROUTES: RouteInfo[] = [
   {
     path: 'reports', title: 'รายงาน', icon: 'ft-file-text', class: 'dropdown nav-item has-sub', isExternalLink: false,
     submenu: [
-      { path: '/reports/remaining', title: 'รางานคงเหลือ', icon: 'ft-arrow-down submenu-icon', class: '', isExternalLink: false, submenu: [] },
+      { path: '/reports/remaining', title: 'รายงานซีลประจำวัน', icon: 'ft-arrow-down submenu-icon', class: '', isExternalLink: false, submenu: [] },
       { path: '/reports/broken', title: 'รายงานซีลชำรุด', icon: 'ft-arrow-up submenu-icon', class: '', isExternalLink: false, submenu: [] },
     ]
   },

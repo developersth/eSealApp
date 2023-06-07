@@ -153,6 +153,7 @@ export class SealOutListComponent implements OnInit {
       });
   }
   getSealOutInfoList(id:string){
+    console.log(id);
     this.service.getSealOutInfoList(id).subscribe(
       data => {
         this.mSealOutInfoList = data.result;

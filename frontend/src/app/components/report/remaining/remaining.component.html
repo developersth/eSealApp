@@ -1,41 +1,81 @@
-<section id="users">
+<div class="row justify-content-between">
+  <div class="col-10">
+    <div class="content-header">รายงานซีลประจำวัน</div>
+  </div>
+</div>
+<section id="row">
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <div class="card-header bg-success layout-dark">
-          <div class="row justify-content-between">
-            <div class="col-10">
-              <div class="content-header" style="color: white;">รายงานตรวจสอบซีลคงเหลือแต่ละวัน</div>
-          </div>
-          <div class="col-2">
-            <div class="my-1">
-            </div>
-          </div>
-          </div>
-        </div>
-
         <div class="card-content">
           <div class="card-body">
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label for="form-action-3">จากวันที่</label>
+                <div class="form-inline">
+                  <div class="input-group" style="width: 100%;">
+                    <input class="form-control" readonly (click)="dpStart.toggle()" placeholder="dd/mm/yyyy" name="dp"
+                      [(ngModel)]="dtStart" ngbDatepicker [dayTemplate]="customDay" [markDisabled]="isDisabled"
+                      #dpStart="ngbDatepicker">
+                    <div class="input-group-append">
+                      <div class="input-group-text" (click)="dpStart.toggle()">
+                        <i class="ft ft-calendar" style="cursor: pointer;"></i>
+                      </div>
+                    </div>
+                    <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
+                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
+                        [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="form-action-4">ถึงวันที่</label>
+                <div class="form-inline">
+                  <div class="input-group" style="width: 100%;">
+                    <input class="form-control" readonly (click)="dpEnd.toggle()" placeholder="dd/mm/yyyy" name="dp"
+                      [(ngModel)]="dtEnd" ngbDatepicker [dayTemplate]="customDay" [markDisabled]="isDisabled"
+                      #dpEnd="ngbDatepicker">
+                    <div class="input-group-append">
+                      <div class="input-group-text" (click)="dpEnd.toggle()">
+                        <i class="ft ft-calendar" style="cursor: pointer;"></i>
+                      </div>
+                      <button (click)="getData()" class="btn btn-primary">ค้นหา </button>
+                    </div>
+                    <ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected"
+                      let-disabled="disabled">
+                      <span class="custom-day" [class.weekend]="isWeekend(date)" [class.bg-primary]="selected"
+                        [class.hidden]="date.month !== currentMonth" [class.text-muted]="disabled">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="table-responsive">
               <table class="table table-bordered table-strip">
                 <thead>
                   <tr>
                     <th>วันที่</th>
-                    <th>จำนวนซีลเริ่มต้น</th>
-                    <th>จ่ายไป(ซีล)</th>
-                    <th>ซีลใส่เพิ่ม</th>
-                    <th>ซีลชำรุด</th>
-                    <th>ยอดคงเหลือ</th>
+                    <th>จำนวนซีลเริ่มต้น (ตัว)</th>
+                    <th>จำนวนซีลเริ่มจ่ายไป (ตัว)</th>
+                    <th>จำนวนซีลใส่เพิ่ม (ตัว)</th>
+                    <th>จำนวนซีลชำรุด (ตัว)</th>
+                    <th>ยอดคงเหลือ (ตัว)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th>2023/05/18</th>
-                    <td>3000</td>
-                    <td>2500</td>
-                    <td>2500</td>
-                    <td>200</td>
-                    <td>50</td>
+                  <tr *ngFor="let item of data">
+                    <td>{{item.reportDate}}</td>
+                    <td>{{item.sealStart}}</td>
+                    <td>{{item.sealIsActive}}</td>
+                    <td>{{item.sealAdditional}}</td>
+                    <td>{{item.sealBroken}}</td>
+                    <td>{{item.sealBalances}}</td>
                   </tr>
                 </tbody>
               </table>

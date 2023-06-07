@@ -33,12 +33,12 @@ export class Utils {
     this.sealIn = [];
     for (let i = 0; i < total; i++) {
      this.seal = [];
-     console.log(typeof typePack);
       //pack 3
-      if (typePack === 2) {
+      if (typePack === 3) {
         currentSize = 3;
+        console.log(total%currentSize);
         sealBetween = `${currentNumber}-${currentNumber + currentSize - 1}`;
-
+        //console.log(typePack);
         if (currentNumber + currentSize <= currentEnd) {
           for (let index = 0; index < currentSize; index++) {
             this.seal.push({
@@ -49,7 +49,7 @@ export class Utils {
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
               createdBy: this.user,
-              updatedBy: this.service.getFullNameLocalAuthen(),
+              updatedBy: this.user,
             });
           }
           this.sealIn.push({
@@ -57,8 +57,8 @@ export class Utils {
             sealList: this.seal,
             pack: currentSize,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
         } else if (currentEnd - currentNumber === 2) {
           for (let index = 0; index < 2; index++) {
@@ -69,8 +69,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.service.getFullNameLocalAuthen(),
-              updatedBy: this.service.getFullNameLocalAuthen(),
+              createdBy: this.user,
+              updatedBy: this.user,
             });
           }
           this.sealIn.push({
@@ -78,16 +78,16 @@ export class Utils {
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
           this.sealIn.push({
             sealBetween: (currentNumber + 1).toString(),
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
         } else if (currentEnd - currentNumber === 1) {
           this.seal.push({
@@ -97,16 +97,168 @@ export class Utils {
             typeName:'ปกติ',
             status: 1,
             statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
           this.sealIn.push({
             sealBetween: currentNumber.toString(),
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+        }
+      }
+      //pack4
+      else if (typePack === 4) {
+        currentSize = 4;
+        sealBetween = `${currentNumber}-${currentNumber + currentSize - 1}`;
+        console.log(typePack);
+        if (currentNumber + currentSize <= currentEnd) {
+          for (let index = 0; index < currentSize; index++) {
+            this.seal.push({
+              id: 0,
+              sealNo: (currentNumber + index).toString(),
+              type: 1,
+              typeName:'ปกติ',
+              status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
+              createdBy: this.user,
+              updatedBy: this.user,
+            });
+          }
+          this.sealIn.push({
+            sealBetween: sealBetween,
+            sealList: this.seal,
+            pack: currentSize,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+        } else if (currentEnd - currentNumber === 2) {
+          for (let index = 0; index < 2; index++) {
+            this.seal.push({
+              id: 0,
+              sealNo: (currentNumber + index).toString(),
+              type: 1,
+              typeName:'ปกติ',
+              status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
+              createdBy: this.user,
+              updatedBy: this.user,
+            });
+          }
+          this.sealIn.push({
+            sealBetween: currentNumber.toString(),
+            sealList: this.seal,
+            pack: 1,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+          this.sealIn.push({
+            sealBetween: (currentNumber + 1).toString(),
+            sealList: this.seal,
+            pack: 1,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+        } else if (currentEnd - currentNumber === 1) {
+          this.seal.push({
+            id: 0,
+            sealNo: currentNumber.toString(),
+            type: 1,
+            typeName:'ปกติ',
+            status: 1,
+            statusName:'ยังไม่ได้ใช้งาน',
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+          this.sealIn.push({
+            sealBetween: currentNumber.toString(),
+            sealList: this.seal,
+            pack: 1,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+        }
+      }
+      //pack5
+      else if (typePack === 5) {
+        currentSize = 5;
+        sealBetween = `${currentNumber}-${currentNumber + currentSize - 1}`;
+        console.log(typePack);
+        if (currentNumber + currentSize <= currentEnd) {
+          for (let index = 0; index < currentSize; index++) {
+            this.seal.push({
+              id: 0,
+              sealNo: (currentNumber + index).toString(),
+              type: 1,
+              typeName:'ปกติ',
+              status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
+              createdBy: this.user,
+              updatedBy: this.user,
+            });
+          }
+          this.sealIn.push({
+            sealBetween: sealBetween,
+            sealList: this.seal,
+            pack: currentSize,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+        } else if (currentEnd - currentNumber === 2) {
+          for (let index = 0; index < 2; index++) {
+            this.seal.push({
+              id: 0,
+              sealNo: (currentNumber + index).toString(),
+              type: 1,
+              typeName:'ปกติ',
+              status: 1,
+              statusName:'ยังไม่ได้ใช้งาน',
+              createdBy: this.user,
+              updatedBy: this.user,
+            });
+          }
+          this.sealIn.push({
+            sealBetween: currentNumber.toString(),
+            sealList: this.seal,
+            pack: 1,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+          this.sealIn.push({
+            sealBetween: (currentNumber + 1).toString(),
+            sealList: this.seal,
+            pack: 1,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+        } else if (currentEnd - currentNumber === 1) {
+          this.seal.push({
+            id: 0,
+            sealNo: currentNumber.toString(),
+            type: 1,
+            typeName:'ปกติ',
+            status: 1,
+            statusName:'ยังไม่ได้ใช้งาน',
+            createdBy: this.user,
+            updatedBy: this.user,
+          });
+          this.sealIn.push({
+            sealBetween: currentNumber.toString(),
+            sealList: this.seal,
+            pack: 1,
+            isActive: false,
+            createdBy: this.user,
+            updatedBy: this.user,
           });
         }
       }
@@ -124,8 +276,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.service.getFullNameLocalAuthen(),
-              updatedBy: this.service.getFullNameLocalAuthen(),
+              createdBy: this.user,
+              updatedBy: this.user,
             });
           }
           this.sealIn.push({
@@ -133,9 +285,10 @@ export class Utils {
             sealList: this.seal,
             pack: currentSize,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
+        
         } else if (currentEnd - currentNumber === 1) {
           sealBetween = `${currentNumber}`;
           this.seal.push({
@@ -145,8 +298,8 @@ export class Utils {
             typeName:'ปกติ',
             status: 1,
             statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
           this.sealIn.push({
             sealBetween: sealBetween,
@@ -163,8 +316,8 @@ export class Utils {
               typeName:'ปกติ',
               status: 1,
               statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.service.getFullNameLocalAuthen(),
-              updatedBy: this.service.getFullNameLocalAuthen(),
+              createdBy: this.user,
+              updatedBy: this.user,
             });
           }
           this.sealIn.push({
@@ -172,16 +325,16 @@ export class Utils {
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
           this.sealIn.push({
             sealBetween: (currentNumber + 1).toString(),
             sealList: this.seal,
             pack: 1,
             isActive: false,
-            createdBy: this.service.getFullNameLocalAuthen(),
-            updatedBy: this.service.getFullNameLocalAuthen(),
+            createdBy: this.user,
+            updatedBy: this.user,
           });
         } else if (currentNumber + currentSize > currentEnd) {
           this.sealPack.forEach((pack: number) => {
@@ -192,8 +345,8 @@ export class Utils {
                 sealList: this.seal,
                 pack: pack,
                 isActive: false,
-                createdBy: this.service.getFullNameLocalAuthen(),
-                updatedBy: this.service.getFullNameLocalAuthen(),
+                createdBy: this.user,
+                updatedBy: this.user,
               });
             }
           });

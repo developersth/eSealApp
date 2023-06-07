@@ -43,7 +43,7 @@ namespace backend.Controllers
                                 TypeName = js.TypeName,
                                 Status = s.Status,
                                 StatusName = jss.Name,
-                                IsActive =s.IsActive,
+                                IsActive = s.IsActive,
                                 CreatedBy = s.CreatedBy,
                                 UpdatedBy = s.UpdatedBy,
                                 Created = s.Created,
@@ -72,7 +72,35 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error.Message });
             }
         }
+        [HttpGet("GetTypes")]
+        public IActionResult GetTypes()
+        {
+            try
+            {
+                var result = Context.SealTypes.ToList();
+                return Ok(new { result = result, message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get User: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
 
+        [HttpGet("GetStatus")]
+        public IActionResult GetStatus()
+        {
+            try
+            {
+                var result = Context.SealStatus.ToList();
+                return Ok(new { result = result, message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get User: {error}");
+                return StatusCode(500, new { result = "", message = error });
+            }
+        }
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
@@ -98,7 +126,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Seals.Where(p => p.Status == 4 &&p.Type==1 &&p.IsActive==false); //ยังไม่ได้ใช้งาน ซีลทดแทน
+                var result = Context.Seals.Where(p => p.Status == 4 && p.Type == 1 && p.IsActive == false); //ยังไม่ได้ใช้งาน ซีลทดแทน
 
                 if (result == null)
                 {
@@ -117,7 +145,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.SealStatus.Where(p => p.Id != 1  && p.Id != 4); //ยังไม่ได้ใช้งาน
+                var result = Context.SealStatus.Where(p => p.Id != 1 && p.Id != 4); //ยังไม่ได้ใช้งาน
 
                 if (result == null)
                 {
@@ -270,7 +298,7 @@ namespace backend.Controllers
                 result.SealNo = requst.SealNo;
                 result.Type = requst.Type;
                 result.Status = requst.Status;
-                result.IsActive =requst.IsActive;
+                result.IsActive = requst.IsActive;
                 result.UpdatedBy = requst.UpdatedBy;
                 result.Updated = DateTime.Now;
                 Context.Seals.Update(result);
@@ -286,8 +314,24 @@ namespace backend.Controllers
 
         // DELETE api/<SealInController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteSealInfo(int id)
         {
+            try
+            {
+                var result = await Context.Seals.FindAsync(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                Context.Seals.Remove(result);
+                await Context.SaveChangesAsync();
+                return Ok(new { result = "", message = "delete successfully" });
+            }
+            catch (Exception error)
+            {
+
+                return StatusCode(500, new { result = "", message = error });
+            }
         }
     }
 }
