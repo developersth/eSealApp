@@ -44,6 +44,7 @@ namespace backend.Controllers
                                 Status = s.Status,
                                 StatusName = jss.Name,
                                 IsActive = s.IsActive,
+                                IsActiveName =Convert.ToBoolean(s.IsActive) ? "ใช้งานแล้ว" : "ยังไม่ได้ใช้งาน",
                                 CreatedBy = s.CreatedBy,
                                 UpdatedBy = s.UpdatedBy,
                                 Created = s.Created,

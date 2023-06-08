@@ -88,8 +88,8 @@ export class SealoutComponent implements OnInit {
       }
     );
   }
-  isValidChkAddItemSeal(id, pack) {
-    const result = this.itemSealOutList.find((item) => item.id === id);
+  isValidChkAddItemSeal(sealInId, pack) {
+    const result = this.itemSealOutList.find((item) => item.sealInId === sealInId);
     if (result) {
       this.toastr.warning("มีหมายเลขซีลนี้ในตารางแล้ว");
       return false;

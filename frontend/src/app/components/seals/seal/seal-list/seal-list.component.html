@@ -110,8 +110,8 @@
                         <td>{{ item.sealNo }}</td>
                         <td>{{ item.typeName }}</td>
                         <td>
-                          <span *ngIf="!item.isActive" class="badge badge-success">ยังไม่ได้ใช้งาน</span>
-                          <span *ngIf="item.isActive" class="badge badge-danger">ใช้งานแล้ว</span>
+                          <span *ngIf="!item.isActive" class="badge badge-success">{{item.isActiveName}}</span>
+                          <span *ngIf="item.isActive" class="badge badge-danger">{{item.isActiveName}}</span>
                         </td>
                         <td>
                           <span  class="badge badge-warning">{{item.statusName}} </span>

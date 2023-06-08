@@ -80,7 +80,9 @@
                     <td>{{item.reportDate}}</td>
                     <td>{{item.sealStart}}</td>
                     <td>{{item.sealIsActive}}</td>
-                    <td>{{item.sealAdditional}}</td>
+                    <td>
+                      <a routerLink="/seals/seallist"  href="/seals/seallist" target="_blank" class="badge badge-primary badge-pill">{{item.sealAdditional}}</a>
+                    </td>
                     <td>{{item.sealBroken}}</td>
                     <td>{{item.sealBalances}}</td>
                   </tr>

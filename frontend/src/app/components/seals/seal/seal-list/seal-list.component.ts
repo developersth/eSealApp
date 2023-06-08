@@ -165,6 +165,7 @@ export class SealListComponent implements OnInit {
           item.id?.toString().toLowerCase().includes(this.keyword) ||
           item.sealNo?.toString().toLowerCase().includes(this.keyword) ||
           item.typeName?.toString().toLowerCase().includes(this.keyword) ||
+          item.isActiveName?.toString().toLowerCase().includes(this.keyword) ||
           item.statusName?.toString().toLowerCase().includes(this.keyword) ||
           item.createdBy?.toString().toLowerCase().includes(this.keyword) ||
           item.updatedBy?.toString().toLowerCase().includes(this.keyword)
