@@ -1,5 +1,7 @@
-﻿using backend.Database;
+﻿using System.Runtime.CompilerServices;
+using backend.Database;
 using backend.Models;
+using backend.Entity;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -150,72 +152,137 @@ namespace backend.Controllers
         {
             try
             {
-                foreach (var item in request)
+                if (request == null)
+                    return BadRequest("Invalid request");
+
+                using (var dbtransaction = await this.Context.Database.BeginTransactionAsync())
                 {
-                    // Add a new sealin
-                    var newSealIn = new SealIn
-                    {
-                        SealBetween = item.SealBetween,
-                        Pack = item.Pack,
-                        IsActive = false,
-                        CreatedBy = item.CreatedBy,
-                        UpdatedBy = item.UpdatedBy,
 
-                    };
-                    Context.SealIn.Add(newSealIn);
-                    Context.SaveChanges();
-                    //UPdate SealInId              
-                    newSealIn.SealInId = Utilities.GennerateId("SI", newSealIn.Id);
-                    Context.Update(newSealIn);
-                    var result = Context.SaveChanges();
-                    if (result > 0)
+                    try
                     {
-
-                        //Context.SaveChanges();
-                        if (item.SealList != null)
+                        int processCount  = 0;
+                        foreach (var item in request)
                         {
-                            List<Seals> seals = new List<Seals>();
-                            List<SealInInfo> sealInInfo = new List<SealInInfo>();
-                            foreach (var sItem in item.SealList)
+                            // Add a new sealin
+                            var _newSealIn = new SealIn
                             {
-                                var model = new Seals
+                                SealBetween = item.SealBetween,
+                                Pack = item.Pack,
+                                IsActive = false,
+                                CreatedBy = item.CreatedBy,
+                                UpdatedBy = item.UpdatedBy,
+
+                            };
+                            Context.SealIn.Add(_newSealIn);
+                            Context.SaveChanges();
+                            //Update SealInId              
+                            //int lastId = Context.SealIn.Max(u => u.Id) + 1;
+                            //string sealInId = Utilities.GennerateId("SI", _newSealIn.Id);
+                            _newSealIn.SealInId = Utilities.GennerateId("SI", _newSealIn.Id);
+                            Context.Update(_newSealIn);
+                            //var result = Context.SaveChanges();
+                            //Context.SaveChanges();
+                            if (item.SealList != null)
+                            {
+                                List<Seals> seals = new List<Seals>();
+                                List<SealInInfo> sealInInfo = new List<SealInInfo>();
+                                foreach (var sItem in item.SealList)
                                 {
-                                    SealNo = sItem.SealNo,
-                                    Type = 1, //ปกติ
-                                    Status = 1, //ยังไม่ได้ใช้งาน
-                                    CreatedBy = sItem.CreatedBy,
-                                    UpdatedBy = sItem.UpdatedBy,
-                                };
-                                //sealItems.Add(model);
-                                //seals.Add(model);
-                                Context.Seals.Add(model);
-                                Context.SaveChanges();
-                                var modelInfo = new SealInInfo
-                                {
-                                    SealInId = newSealIn.SealInId,
-                                    SealId = model.Id,
-                                    SealNo = model.SealNo
-                                };
-                                sealInInfo.Add(modelInfo);
+                                    var model = new Seals
+                                    {
+                                        SealNo = sItem.SealNo,
+                                        Type = 1, //ปกติ
+                                        Status = 1, //ยังไม่ได้ใช้งาน
+                                        CreatedBy = sItem.CreatedBy,
+                                        UpdatedBy = sItem.UpdatedBy,
+                                    };
+                                    //sealItems.Add(model);
+                                    //seals.Add(model);
+                                    Context.Seals.Add(model);
+                                    Context.SaveChanges();
+                                    var modelInfo = new SealInInfo
+                                    {
+                                        SealInId = _newSealIn.SealInId,
+                                        SealId = model.Id,
+                                        SealNo = model.SealNo
+                                    };
+                                    sealInInfo.Add(modelInfo);
+
+                                }
+                                Context.SealInInfo.AddRange(sealInInfo);
+                                //await Context.SaveChangesAsync();
 
                             }
-                            Context.SealInInfo.AddRange(sealInInfo);
-                            await Context.SaveChangesAsync();
+                            processCount ++;
 
                         }
+                        if (processCount  == request.Length)
+                        {
+                            await this.Context.SaveChangesAsync();
+                            await dbtransaction.CommitAsync();
+                        }
+                        else
+                        {
+                             await dbtransaction.RollbackAsync();
+                        }
                     }
+                    catch (Exception error)
+                    {
+                        await dbtransaction.RollbackAsync();
+                        _logger.LogError($"Log Add SealIn: {error}");
+                        return StatusCode(500, new { result = "", message = error.Message });
+                    }
+
                 }
-
-
                 return Ok(new { result = request, message = "Create SealIn Successfully" });
             }
             catch (Exception error)
             {
-                _logger.LogError($"Log CreateProduct: {error}");
+                _logger.LogError($"Log Add SealIn: {error}");
                 return StatusCode(500, new { result = "", message = error.Message });
             }
         }
+        private async Task<bool> AddSealAndSealInInfo(Seals _seal, string _sealnId)
+        {
+            bool result = false;
+            try
+            {
+                var _existdata = this.Context.Seals.FirstOrDefault(item => item.SealNo == _seal.SealNo);
+                if (_existdata != null)
+                {
+                    result = false;
+                }
+                else
+                {
+                    var _newrecord = new Seals()
+                    {
+                        SealNo = _seal.SealNo,
+                        Type = 1, //ปกติ
+                        Status = 1, //ยังไม่ได้ใช้งาน
+                        CreatedBy = _seal.CreatedBy,
+                        UpdatedBy = _seal.UpdatedBy,
+                    };
+                    await this.Context.Seals.AddAsync(_newrecord);
+                    Context.SaveChanges();
+                    var _sealInInfo = new SealInInfo
+                    {
+                        SealInId = _sealnId,
+                        SealId = _newrecord.Id,
+                        SealNo = _seal.SealNo,
+                        CreatedBy = _seal.CreatedBy,
+                        UpdaetedBy = _seal.UpdatedBy,
+                    };
+                    await this.Context.SealInInfo.AddAsync(_sealInInfo);
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
+            return result;
+        }
         // PUT api/<SealInController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)

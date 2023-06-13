@@ -1,5 +1,6 @@
 ﻿using backend.Database;
 using backend.Models;
+using backend.Entity;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 

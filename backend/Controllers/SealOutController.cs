@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Database;
 using backend.Models;
+using backend.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text.Json;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Drawing;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 namespace backend.Controllers
 {
     [ApiController]
@@ -20,6 +25,7 @@ namespace backend.Controllers
     {
         ILogger<SealOutController> _logger;
         DatabaseContext Context;
+        private readonly IWebHostEnvironment environment;
 
         public IWebHostEnvironment Env { get; }
 
@@ -155,7 +161,7 @@ namespace backend.Controllers
                                  SealInId = info.SealInId,
                                  SealTotal = so.SealTotal,
                                  SealTotalExtra = so.SealTotalExtra,
-                                 SealExtraList =so.SealExtraList,
+                                 SealExtraList = so.SealExtraList,
                                  TruckId = so.TruckId,
                                  TruckName = so.TruckName,
                                  IsCancel = so.IsCancel,
@@ -222,7 +228,63 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error.Message });
             }
         }
-
+        [HttpGet("GeneratePdf/{SealOutId}")]
+        public async Task<IActionResult> GeneratePdf(string SealOutId)
+        {
+            var header = Context.SealOut.FirstOrDefault(s=>s.SealOutId==SealOutId);
+            var detail = from so in Context.SealOut
+                         join info in Context.SealOutInfo on so.SealOutId equals info.SealOutId
+                         where so.SealOutId == SealOutId
+                         select new
+                         {
+                             Id = so.Id,
+                             SealOutId = so.SealOutId,
+                             SealInId = info.SealInId,
+                             SealTotal = so.SealTotal,
+                             SealTotalExtra = so.SealTotalExtra,
+                             SealExtraList = so.SealExtraList,
+                             TruckId = so.TruckId,
+                             TruckName = so.TruckName,
+                             IsCancel = so.IsCancel,
+                             SealBetWeen = info.SealBetween,
+                             Pack = info.Pack,
+                             SealType = info.SealType,
+                             SealTypeName = info.SealTypeName,
+                             SealList = info.SealList,
+                             Created = info.Created
+                         };
+            var document = new PdfDocument();
+            string htmlelement = "<div  style='width:100%';font-family:'Courier New';>";
+            // string imgeurl = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg";
+            //string imgeurl = "https://" + HttpContext.Request.Host.Value + "/Uploads/common/logo.jpeg";
+            string imgeurl = "data:image/png;base64, " + Getbase64string() + "";
+            htmlelement += "<img style='width:80px;height:80%' src='" + imgeurl + "'   />";
+            htmlelement += "<h1>ใบจ่ายซีล</h2>";
+            htmlelement += "<h2>คลังน้ำมันเอสโซ่ ศรีราชา</h2>";
+            if (header != null)
+            {
+                htmlelement += "<h2> รหัสการจ่ายซีล:" + header.SealOutId + " & Invoice Date:" + header.Created.ToString("yyyy/MM/dd") + "</h2>";
+                htmlelement += "<h3> ทะเบียนรถ : " + header.TruckName + "</h3>";
+            }
+            htmlelement += "</div>";
+            PdfGenerator.AddPdfPages(document, htmlelement, PageSize.A4);
+            byte[] response = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                document.Save(ms);
+                response = ms.ToArray();
+            }
+            string fileName = "report-" + DateTime.Now+".pdf";
+            return File(response, "application/pdf", fileName);
+        }
+        [NonAction]
+        public string Getbase64string()
+        {
+            string filepath = this.Env.WebRootPath + "/Uploads/img/logo-esso.png";
+            byte[] imgarray = System.IO.File.ReadAllBytes(filepath);
+            string base64 = Convert.ToBase64String(imgarray);
+            return base64;
+        }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] RequestSealOut model)
         {
@@ -315,7 +377,6 @@ namespace backend.Controllers
                     await Context.SaveChangesAsync();
                 }
 
-
                 return Ok(new { result = sealout, success = true, message = "เพิ่มข้อมูล  เรียบร้อยแล้ว" });
             }
             catch (Exception error)
@@ -380,8 +441,8 @@ namespace backend.Controllers
                         SealNoOld = r.SealNoOld,
                         SealNoNew = r.SealNoNew,
                         Remarks = remarkName,
-                        CreatedBy=r.CreatedBy,
-                        UpdatedBy=r.UpdatedBy,
+                        CreatedBy = r.CreatedBy,
+                        UpdatedBy = r.UpdatedBy,
                     };
                     sealChangeList.Add(modelList);
                 }

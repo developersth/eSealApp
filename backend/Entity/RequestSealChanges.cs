@@ -1,6 +1,5 @@
-namespace backend.Models
+namespace backend.Entity
 {
-
     public partial class RequestSealChanges
     {
         public string? SealOutId { get; set; } //ref Sealout id
