@@ -15,7 +15,26 @@ export class Utils {
   constructor(
     private service: RestService
   ) {}
-
+  addItemSeal(sealNo:string){
+    this.seal.push({
+      id:0,
+      sealNo: sealNo,
+      type: 'ปกติ',
+      status: 1,
+      createdBy: this.user,
+      updatedBy: this.user,
+    });
+  }
+  addItemSealIn(sealBetween:string,currentSize:number){
+    this.sealIn.push({
+      sealBetween: sealBetween,
+      sealList: this.seal,
+      pack: currentSize,
+      isActive: false,
+      createdBy: this.user,
+      updatedBy: this.user,
+    });
+  }
   calculateSealNumber(
     typePack: number, //1=3,4,5 2=3,3=4,5=5
     sealTotal: number,
@@ -36,78 +55,22 @@ export class Utils {
       //pack 3
       if (typePack === 3) {
         currentSize = 3;
-        console.log(total%currentSize);
         sealBetween = `${currentNumber}-${currentNumber + currentSize - 1}`;
         //console.log(typePack);
         if (currentNumber + currentSize <= currentEnd) {
           for (let index = 0; index < currentSize; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal((currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: sealBetween,
-            sealList: this.seal,
-            pack: currentSize,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(sealBetween,currentSize);
         } else if (currentEnd - currentNumber === 2) {
           for (let index = 0; index < 2; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal((currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: (currentNumber + 1).toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(currentNumber.toString(),1);
+          this.addItemSealIn((currentNumber + 1).toString(),1);
         } else if (currentEnd - currentNumber === 1) {
-          this.seal.push({
-            id: 0,
-            sealNo: currentNumber.toString(),
-            type: 1,
-            typeName:'ปกติ',
-            status: 1,
-            statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSeal(currentNumber.toString());
+          this.addItemSealIn(currentNumber.toString(),1);
         }
       }
       //pack4
@@ -117,149 +80,37 @@ export class Utils {
         console.log(typePack);
         if (currentNumber + currentSize <= currentEnd) {
           for (let index = 0; index < currentSize; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal((currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: sealBetween,
-            sealList: this.seal,
-            pack: currentSize,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(sealBetween,currentSize);
         } else if (currentEnd - currentNumber === 2) {
           for (let index = 0; index < 2; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal( (currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: (currentNumber + 1).toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(currentNumber.toString(),1);
+          this.addItemSealIn((currentNumber + 1).toString(),1);
         } else if (currentEnd - currentNumber === 1) {
-          this.seal.push({
-            id: 0,
-            sealNo: currentNumber.toString(),
-            type: 1,
-            typeName:'ปกติ',
-            status: 1,
-            statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSeal(currentNumber.toString());
+          this.addItemSealIn(currentNumber.toString(),1);
         }
       }
       //pack5
       else if (typePack === 5) {
         currentSize = 5;
         sealBetween = `${currentNumber}-${currentNumber + currentSize - 1}`;
-        console.log(typePack);
         if (currentNumber + currentSize <= currentEnd) {
           for (let index = 0; index < currentSize; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal((currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: sealBetween,
-            sealList: this.seal,
-            pack: currentSize,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(sealBetween,currentSize);
         } else if (currentEnd - currentNumber === 2) {
           for (let index = 0; index < 2; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal( (currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: (currentNumber + 1).toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(currentNumber.toString(),1);
+          this.addItemSealIn((currentNumber + 1).toString(),1);
         } else if (currentEnd - currentNumber === 1) {
-          this.seal.push({
-            id: 0,
-            sealNo: currentNumber.toString(),
-            type: 1,
-            typeName:'ปกติ',
-            status: 1,
-            statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
+          this.addItemSealIn(currentNumber.toString(),1);
         }
       }
       //pack 3 4 5
@@ -269,85 +120,26 @@ export class Utils {
 
         if (currentNumber + currentSize <= currentEnd) {
           for (let index = 0; index < currentSize; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal( (currentNumber + index).toString());
           }
-          this.sealIn.push({
-            sealBetween: sealBetween,
-            sealList: this.seal,
-            pack: currentSize,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-        
+          this.addItemSealIn(sealBetween,currentSize);
+
         } else if (currentEnd - currentNumber === 1) {
           sealBetween = `${currentNumber}`;
-          this.seal.push({
-            id: 0,
-            sealNo: currentNumber.toString(),
-            type: 1,
-            typeName:'ปกติ',
-            status: 1,
-            statusName:'ยังไม่ได้ใช้งาน',
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: sealBetween,
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-          });
+          this.addItemSeal(currentNumber.toString());
+          this.addItemSealIn(sealBetween,1);
+
         } else if (currentEnd - currentNumber === 2) {
           for (let index = 0; index < 2; index++) {
-            this.seal.push({
-              id: 0,
-              sealNo: (currentNumber + index).toString(),
-              type: 1,
-              typeName:'ปกติ',
-              status: 1,
-              statusName:'ยังไม่ได้ใช้งาน',
-              createdBy: this.user,
-              updatedBy: this.user,
-            });
+            this.addItemSeal((currentNumber + index).toString());
+            this.addItemSealIn(currentNumber.toString(),1);
+            this.addItemSealIn((currentNumber + 1).toString(),1);
           }
-          this.sealIn.push({
-            sealBetween: currentNumber.toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
-          this.sealIn.push({
-            sealBetween: (currentNumber + 1).toString(),
-            sealList: this.seal,
-            pack: 1,
-            isActive: false,
-            createdBy: this.user,
-            updatedBy: this.user,
-          });
         } else if (currentNumber + currentSize > currentEnd) {
           this.sealPack.forEach((pack: number) => {
             if (currentNumber + pack <= currentEnd) {
               sealBetween = `${currentNumber}-${currentNumber + pack - 1}`;
-              this.sealIn.push({
-                sealBetween: sealBetween,
-                sealList: this.seal,
-                pack: pack,
-                isActive: false,
-                createdBy: this.user,
-                updatedBy: this.user,
-              });
+              this.addItemSealIn(sealBetween,pack);
             }
           });
         }

@@ -19,15 +19,13 @@ namespace backend.Database
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<SealIn> SealIn { get; set; }
         public virtual DbSet<Seals> Seals { get; set; }
-        public virtual DbSet<SealTypes> SealTypes { get; set; }
         public virtual DbSet<SealStatus> SealStatus { get; set; }
         public virtual DbSet<Trucks> Trucks { get; set; }
         public virtual DbSet<SealOut> SealOut { get; set; }
-        public virtual DbSet<SealOutInfo> SealOutInfo { get; set; }
-        public virtual DbSet<SealInInfo> SealInInfo { get; set; }
-        public virtual DbSet<Drivers> Drivers { get; set; }
-        public virtual DbSet<SealOutInfoList> SealOutInfoList { get; set; }
+        public virtual DbSet<SealOutItem> SealOutItem { get; set; }
+        public virtual DbSet<SealInItem> SealInItem { get; set; }
         public virtual DbSet<SealChanges> SealChanges { get; set; }
+        public virtual DbSet<SealOutExtraItem> SealOutExtraItem { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -76,29 +74,23 @@ namespace backend.Database
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
 
-            modelBuilder.Entity<SealOutInfo>(entity =>
+            modelBuilder.Entity<SealOutItem>(entity =>
             {
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
             });
 
-            modelBuilder.Entity<Drivers>(entity =>
-            {
-                entity.HasKey(e => e.DriverId);
-                entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
-                entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
-            });
-
-            modelBuilder.Entity<SealOutInfoList>(entity =>
-          {
-              entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
-              entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
-          });
             modelBuilder.Entity<SealChanges>(entity =>
                 {
                     entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                     entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
                 });
+
+            modelBuilder.Entity<SealOutExtraItem>(entity =>
+            {
+                entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

@@ -152,8 +152,8 @@
                     </td>
                     <td>{{ item.created| date: 'yyyy/MM/dd HH:mm'}}</td>
                     <td>
-                      <button class="btn btn-info" (click)="showQRCode(item,content)"><i
-                          class="ft ft-file"></i></button>
+                      <button  *ngIf="!item.isActive" class="btn btn-info" (click)="showQRCode(item,content)"><i
+                          class="fa fa-print"></i></button>|
                       <button (click)="DeleteData(item.id)" class="btn btn-danger"><i class="ft ft-trash"></i></button>
                     </td>
                   </tr>

@@ -12,8 +12,8 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230606043740_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230619084455_CreateTableSealOutExtraItem")]
+    partial class CreateTableSealOutExtraItem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,41 +24,6 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("backend.Models.Drivers", b =>
-                {
-                    b.Property<int>("DriverId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DriverId"));
-
-                    b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Prefix")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Updated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.HasKey("DriverId");
-
-                    b.ToTable("Drivers");
-                });
 
             modelBuilder.Entity("backend.Models.Roles", b =>
                 {
@@ -83,30 +48,49 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.SealChanges", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<string>("Remarks")
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RemarkId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remarks")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SealIdNew")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SealIdOld")
+                        .HasColumnType("int");
+
                     b.Property<string>("SealInId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SealNoNew")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SealNoOld")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SealOutId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated")
@@ -114,7 +98,11 @@ namespace backend.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.HasKey("id");
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("SealChanges");
                 });
@@ -160,7 +148,7 @@ namespace backend.Migrations
                     b.ToTable("SealIn");
                 });
 
-            modelBuilder.Entity("backend.Models.SealInInfo", b =>
+            modelBuilder.Entity("backend.Models.SealInItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -174,24 +162,25 @@ namespace backend.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SealId")
+                    b.Property<int>("SealId")
                         .HasColumnType("int");
 
                     b.Property<string>("SealInId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SealNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UpdaetedBy")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("SealInInfo");
+                    b.ToTable("SealInItem");
                 });
 
             modelBuilder.Entity("backend.Models.SealOut", b =>
@@ -216,13 +205,10 @@ namespace backend.Migrations
                     b.Property<string>("DriverName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsCancel")
+                    b.Property<bool>("IsCancel")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");
-
-                    b.Property<string>("SealExtraList")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SealOutId")
                         .HasColumnType("nvarchar(max)");
@@ -252,65 +238,24 @@ namespace backend.Migrations
                     b.ToTable("SealOut");
                 });
 
-            modelBuilder.Entity("backend.Models.SealOutInfo", b =>
+            modelBuilder.Entity("backend.Models.SealOutExtraItem", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<int?>("Pack")
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SealId")
                         .HasColumnType("int");
-
-                    b.Property<string>("SealBetween")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SealInId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SealList")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SealOutId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SealType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SealTypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Updated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.HasKey("id");
-
-                    b.ToTable("SealOutInfo");
-                });
-
-            modelBuilder.Entity("backend.Models.SealOutInfoList", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("SealInId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SealNo")
                         .HasColumnType("nvarchar(max)");
@@ -323,12 +268,58 @@ namespace backend.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<int?>("sealId")
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SealOutExtraItem");
+                });
+
+            modelBuilder.Entity("backend.Models.SealOutItem", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Pack")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SealBetween")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealInId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SealOutId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
-                    b.ToTable("SealOutInfoList");
+                    b.ToTable("SealOutItem");
                 });
 
             modelBuilder.Entity("backend.Models.SealStatus", b =>
@@ -340,27 +331,12 @@ namespace backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("SealStatus");
-                });
-
-            modelBuilder.Entity("backend.Models.SealTypes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SealTypes");
                 });
 
             modelBuilder.Entity("backend.Models.Seals", b =>
@@ -390,9 +366,9 @@ namespace backend.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Type")
+                    b.Property<string>("Type")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValueSql("1");
 
                     b.Property<DateTime>("Updated")
@@ -459,18 +435,21 @@ namespace backend.Migrations
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsActive")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RoleId")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Updated")

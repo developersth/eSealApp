@@ -51,7 +51,7 @@ namespace backend.Controllers
                             break;
                         case "sealNo":
                             query = from s in Context.SealIn
-                                    join st in Context.SealInInfo on s.SealInId equals st.SealInId
+                                    join st in Context.SealInItem on s.SealInId equals st.SealInId
                                     join sim in Context.Seals on st.SealId equals sim.Id
                                     where sim.SealNo == searchTerm
                                     select new SealIn
@@ -185,14 +185,20 @@ namespace backend.Controllers
                             if (item.SealList != null)
                             {
                                 List<Seals> seals = new List<Seals>();
-                                List<SealInInfo> sealInInfo = new List<SealInInfo>();
+                                List<SealInItem> sealInInfo = new List<SealInItem>();
                                 foreach (var sItem in item.SealList)
                                 {
+                                    var seal_exists = Context.Seals.FirstOrDefault(a=>a.SealNo== sItem.SealNo);
+                                    if(seal_exists != null)
+                                    {
+                                        await dbtransaction.RollbackAsync();
+                                        return Ok(new { result = "", success = false, message =  $"มีหมายเลขซีล [{seal_exists.SealNo}] ในระบบแล้ว" });
+                                    }
                                     var model = new Seals
                                     {
                                         SealNo = sItem.SealNo,
-                                        Type = 1, //ปกติ
-                                        Status = 1, //ยังไม่ได้ใช้งาน
+                                        Type = "ปกติ", //ปกติ
+                                        Status = 1, //ซีลใช้งาน
                                         CreatedBy = sItem.CreatedBy,
                                         UpdatedBy = sItem.UpdatedBy,
                                     };
@@ -200,16 +206,16 @@ namespace backend.Controllers
                                     //seals.Add(model);
                                     Context.Seals.Add(model);
                                     Context.SaveChanges();
-                                    var modelInfo = new SealInInfo
+                                    var modelItem = new SealInItem
                                     {
                                         SealInId = _newSealIn.SealInId,
                                         SealId = model.Id,
                                         SealNo = model.SealNo
                                     };
-                                    sealInInfo.Add(modelInfo);
+                                    sealInInfo.Add(modelItem);
 
                                 }
-                                Context.SealInInfo.AddRange(sealInInfo);
+                                Context.SealInItem.AddRange(sealInInfo);
                                 //await Context.SaveChangesAsync();
 
                             }
@@ -234,7 +240,7 @@ namespace backend.Controllers
                     }
 
                 }
-                return Ok(new { result = request, message = "Create SealIn Successfully" });
+                return Ok(new { result = request,success = true, message = "Create SealIn Successfully" });
             }
             catch (Exception error)
             {
@@ -257,22 +263,22 @@ namespace backend.Controllers
                     var _newrecord = new Seals()
                     {
                         SealNo = _seal.SealNo,
-                        Type = 1, //ปกติ
+                        Type = "ปกติ", //ปกติ
                         Status = 1, //ยังไม่ได้ใช้งาน
                         CreatedBy = _seal.CreatedBy,
                         UpdatedBy = _seal.UpdatedBy,
                     };
                     await this.Context.Seals.AddAsync(_newrecord);
                     Context.SaveChanges();
-                    var _sealInInfo = new SealInInfo
+                    var _sealInItem = new SealInItem
                     {
                         SealInId = _sealnId,
                         SealId = _newrecord.Id,
                         SealNo = _seal.SealNo,
                         CreatedBy = _seal.CreatedBy,
-                        UpdaetedBy = _seal.UpdatedBy,
+                        UpdatedBy = _seal.UpdatedBy,
                     };
-                    await this.Context.SealInInfo.AddAsync(_sealInInfo);
+                    await this.Context.SealInItem.AddAsync(_sealInItem);
                 }
                 result = true;
             }
@@ -304,18 +310,18 @@ namespace backend.Controllers
 
                 if (result != null)
                 {
-                    var sealInInfo = Context.SealInInfo.Where(p => p.SealInId == result.SealInId).ToList();
-                    if (sealInInfo != null)
+                    var sealInItem = Context.SealInItem.Where(p => p.SealInId == result.SealInId).ToList();
+                    if (sealInItem != null)
                     {
-                        foreach (var item in sealInInfo)
+                        foreach (var item in sealInItem)
                         {
-                            var resultSealItem = Context.Seals.FirstOrDefault(p => p.Id == item.SealId);
-                            Context.Seals.Remove(resultSealItem);
+                            var seals = Context.Seals.FirstOrDefault(p => p.Id == item.SealId);
+                            Context.Seals.Remove(seals);
                         }
                         Context.SaveChanges();
                     }
-                    var sealInTransaction2 = Context.SealInInfo.Where(p => p.SealInId == result.SealInId);
-                    Context.SealInInfo.RemoveRange(sealInTransaction2);
+                    var sealInTransaction2 = Context.SealInItem.Where(p => p.SealInId == result.SealInId);
+                    Context.SealInItem.RemoveRange(sealInTransaction2);
                     Context.SaveChanges();
                 }
                 Context.SealIn.Remove(result);

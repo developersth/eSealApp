@@ -15,9 +15,9 @@ import { SealStatus } from "app/models/seal-status.model";
 export class SealModalComponent implements OnInit {
   id: number = 0;
   form: FormGroup;
-  sealTypes: SealTypes;
+  sealTypes: any[];
   sealStatus: SealStatus;
-  data:any[];
+  data: any[];
   constructor(
     public activeModal: NgbActiveModal,
     public formBuilder: FormBuilder,
@@ -32,26 +32,34 @@ export class SealModalComponent implements OnInit {
     this.getStatus();
   }
   getTypes() {
-    this.service.getTypes().subscribe((res:any) => {
-      this.sealTypes = res.result;
-    });
+    // this.service.getTypes().subscribe((res:any) => {
+    //   this.sealTypes = res.result;
+    // });
+    this.sealTypes = [
+      {
+        typeName: "ปกติ",
+      },
+      {
+        typeName: "พิเศษ",
+      },
+    ];
   }
 
   getStatus() {
-    this.service.getStatus().subscribe((res:any) => {
+    this.service.getStatus().subscribe((res: any) => {
       this.sealStatus = res.result;
     });
   }
   private buildItemForm(item) {
     this.form = this.formBuilder.group({
       sealNo: [item.sealNo || "", Validators.required],
-      type: [item.type||1],
-      status: [item.status||1],
-      isActive: [item.isActive||false]
+      type: [item.type || 'ปกติ'],
+      status: [item.status || 1],
+      isActive: [item.isActive || false],
     });
   }
   onSubmit() {
-    if(this.form.value.sealNo===''){
+    if (this.form.value.sealNo === "") {
       this.toastr.warning("กรุณาระบุหมายเลขซีล ด้วยครับ");
       return;
     }

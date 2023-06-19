@@ -312,13 +312,17 @@ export class SealinComponent implements OnInit {
         });
         this.service.addSealIn(result).subscribe(
           (res: any) => {
+            if(res.success){
+              swal.showDialog("success", "เพิ่มข้อมูลสำเร็จแล้ว");
+              this.getSeal();
+            }else{
+              swal.showDialog("warning", res.message);
+            }
             this.spinner.hide();
-            swal.showDialog("success", "เพิ่มข้อมูลสำเร็จแล้ว");
-            this.getSeal();
           },
           (error: any) => {
             this.spinner.hide();
-            swal.showDialog("error", "เกิดข้อผิดพลาด : " + error);
+            swal.showDialog("error", "เกิดข้อผิดพลาด : " + error.message);
           }
         );
       })

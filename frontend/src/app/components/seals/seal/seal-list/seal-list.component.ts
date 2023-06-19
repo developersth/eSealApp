@@ -98,8 +98,12 @@ export class SealListComponent implements OnInit {
         this.service.addSeal(body).subscribe(
           (res: any) => {
             this.spinner.hide();
-            this.swal.showDialog("success", "เพิ่มข้อมูลสำเร็จแล้ว");
-            this.getData();
+            if(res.success){
+              this.swal.showDialog("success", "เพิ่มข้อมูลสำเร็จแล้ว");
+              this.getData();
+            }else{
+              this.swal.showDialog("warning", res.message);
+            }
           },
           (error: any) => {
             this.spinner.hide();

@@ -26,18 +26,18 @@
             <thead>
               <tr>
                 <th>ลำดับ</th>
-                <th>รหัสซีลนำเข้า</th>
                 <th>หมายเลขซีล</th>
+                <th>แพ็ค</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of mSealOut;let i = index">
                 <th scope="row">{{i+1}}</th>
-                <td>
-                  {{item.sealOutId}}
+                <td class="description">
+                  {{item.sealNo}}
                 </td>
                 <td>
-                  {{item.sealNo}}
+                  {{item.pack}}
                 </td>
               </tr>
               <tr>

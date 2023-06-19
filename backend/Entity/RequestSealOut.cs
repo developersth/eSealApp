@@ -9,7 +9,7 @@ namespace backend.Entity
         public int? TruckId { get; set; }
         public string? TruckName { get; set; }
         public string? SealExtraList {get; set; }
-        public List<SealOutInfo> SealOutInfo {get; set; }
+        public List<SealOutItem>? SealOutItem {get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
     }

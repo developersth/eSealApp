@@ -100,29 +100,29 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("GetSealOutInfoList/{SealOutId}")]
-        public IActionResult GetSealOutInfoList(string SealOutId)
-        {
-            try
-            {
-                var result = Context.SealOutInfoList.Where(s => s.SealOutId == SealOutId);
+        // [HttpGet("GetSealOutInfoList/{SealOutId}")]
+        // public IActionResult GetSealOutInfoList(string SealOutId)
+        // {
+        //     try
+        //     {
+        //         var result = Context.SealOutInfoList.Where(s => s.SealOutId == SealOutId);
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(new { result = result.ToList(), message = "request successfully" });
-                }
+        //         if (result == null)
+        //         {
+        //             return NotFound();
+        //         }
+        //         else
+        //         {
+        //             return Ok(new { result = result.ToList(), message = "request successfully" });
+        //         }
 
-            }
-            catch (Exception error)
-            {
-                _logger.LogError($"Log Get: {error}");
-                return StatusCode(500, new { result = "", message = error });
-            }
-        }
+        //     }
+        //     catch (Exception error)
+        //     {
+        //         _logger.LogError($"Log Get: {error}");
+        //         return StatusCode(500, new { result = "", message = error });
+        //     }
+        // }
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -152,7 +152,7 @@ namespace backend.Controllers
             try
             {
                 var result = from so in Context.SealOut
-                             join info in Context.SealOutInfo on so.SealOutId equals info.SealOutId
+                             join info in Context.SealOutItem on so.SealOutId equals info.SealOutId
                              where so.SealOutId == SealOutId
                              select new
                              {
@@ -161,16 +161,13 @@ namespace backend.Controllers
                                  SealInId = info.SealInId,
                                  SealTotal = so.SealTotal,
                                  SealTotalExtra = so.SealTotalExtra,
-                                 SealExtraList = so.SealExtraList,
                                  TruckId = so.TruckId,
                                  TruckName = so.TruckName,
                                  IsCancel = so.IsCancel,
                                  SealBetWeen = info.SealBetween,
                                  Pack = info.Pack,
-                                 SealType = info.SealType,
-                                 SealTypeName = info.SealTypeName,
-                                 SealList = info.SealList,
-                                 Created = info.Created
+                                 Created = info.Created,
+                                 Updated = info.Updated
                              };
 
                 if (result == null)
@@ -189,28 +186,45 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("ShowReceipt/{id}")]
-        public IActionResult ShowReceipt(int id)
+        [HttpGet("ShowReceiptHeader/{SealOutId}")]
+        public IActionResult ShowReceiptHeader(string SealOutId)
         {
             try
             {
-                var result = from so in Context.SealOut
-                             join info in Context.SealOutInfo on so.SealOutId equals info.SealOutId
-                             where so.Id == id
+                var result =Context.SealOut.FirstOrDefault(a=>a.SealOutId == SealOutId);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(new { result = result, message = "request successfully" });
+                }
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log Get: {error}");
+                return StatusCode(500, new { result = "", message = error.Message });
+            }
+        }
+        [HttpGet("ShowReceiptDetail/{SealOutId}")]
+        public IActionResult ShowReceipt(string SealOutId)
+        {
+            try
+            {
+                var result = from so in Context.SealOutItem
+                             join si in Context.SealInItem on so.SealInId equals si.SealInId
+                             where so.SealOutId == SealOutId
                              select new
                              {
                                  Id = so.Id,
-                                 SealTotal = so.SealTotal,
-                                 SealTotalExtra = so.SealTotalExtra,
-                                 TruckId = so.TruckId,
-                                 TruckName = so.TruckName,
-                                 IsCancel = so.IsCancel,
-                                 SealBetWeen = info.SealBetween,
-                                 Pack = info.Pack,
-                                 SealType = info.SealType,
-                                 SealTypeName = info.SealTypeName,
-                                 SealList = info.SealList,
-                                 Created = info.Created
+                                 SealOutId=so.SealOutId,
+                                 SealInId = si.SealId,
+                                 SealBetween = so.SealBetween,
+                                 Pack = so.Pack,
+                                 SealId =si.SealId,
+                                 SealNo =si.SealNo
                              };
 
                 if (result == null)
@@ -231,9 +245,9 @@ namespace backend.Controllers
         [HttpGet("GeneratePdf/{SealOutId}")]
         public async Task<IActionResult> GeneratePdf(string SealOutId)
         {
-            var header = Context.SealOut.FirstOrDefault(s=>s.SealOutId==SealOutId);
+            var header = Context.SealOut.FirstOrDefault(s => s.SealOutId == SealOutId);
             var detail = from so in Context.SealOut
-                         join info in Context.SealOutInfo on so.SealOutId equals info.SealOutId
+                         join info in Context.SealOutItem on so.SealOutId equals info.SealOutId
                          where so.SealOutId == SealOutId
                          select new
                          {
@@ -242,15 +256,11 @@ namespace backend.Controllers
                              SealInId = info.SealInId,
                              SealTotal = so.SealTotal,
                              SealTotalExtra = so.SealTotalExtra,
-                             SealExtraList = so.SealExtraList,
                              TruckId = so.TruckId,
                              TruckName = so.TruckName,
                              IsCancel = so.IsCancel,
                              SealBetWeen = info.SealBetween,
                              Pack = info.Pack,
-                             SealType = info.SealType,
-                             SealTypeName = info.SealTypeName,
-                             SealList = info.SealList,
                              Created = info.Created
                          };
             var document = new PdfDocument();
@@ -274,7 +284,7 @@ namespace backend.Controllers
                 document.Save(ms);
                 response = ms.ToArray();
             }
-            string fileName = "report-" + DateTime.Now+".pdf";
+            string fileName = "report-" + DateTime.Now + ".pdf";
             return File(response, "application/pdf", fileName);
         }
         [NonAction]
@@ -290,94 +300,107 @@ namespace backend.Controllers
         {
             try
             {
-                var sealout = new SealOut
+                using (var dbtransaction = await this.Context.Database.BeginTransactionAsync())
                 {
-                    SealTotal = model.SealTotal,
-                    SealTotalExtra = model.SealTotalExtra,
-                    TruckId = model.TruckId,
-                    TruckName = model.TruckName,
-                    SealExtraList = model.SealExtraList,
-                    CreatedBy = model.CreatedBy,
-                    UpdatedBy = model.UpdatedBy
-                };
-                Context.SealOut.Add(sealout);
-                //update status seal extra
-                dynamic jsonObject = JsonConvert.DeserializeObject(model.SealExtraList);
-                if (jsonObject.Count > 0)
-                {
-                    foreach (var item in jsonObject)
+                    try
                     {
-                        Int32 id = item.id;
-                        var sealNoExtra = Context.Seals.FirstOrDefault(a => a.Id == id);
-                        sealNoExtra.Status = 2;
-                        Context.Seals.Update(sealNoExtra);
-                    }
-                }
-                var result = await Context.SaveChangesAsync();
-
-                if (result > 0 && model.SealOutInfo != null)
-                {
-                    //update Id Format
-                    sealout.SealOutId = Utilities.GennerateId("SO", sealout.Id);
-                    Context.Update(sealout);
-                    List<SealOutInfo> sealOutInfo = new List<SealOutInfo>();
-                    List<string> sealInId = new List<string>();
-                    List<SealOutInfoList> sealOutInfoList = new List<SealOutInfoList>();
-                    foreach (var item in model.SealOutInfo)
-                    {
-
-                        var sealOutInfoModel = new SealOutInfo
+                        var sealout = new SealOut
                         {
-                            SealInId = item.SealInId,
-                            SealOutId = sealout.SealOutId,
-                            SealBetween = item.SealBetween,
-                            Pack = item.Pack,
-                            SealType = item.SealType,
-                            SealTypeName = item.SealTypeName,
-                            SealList = item.SealList
+                            SealTotal = model.SealTotal,
+                            SealTotalExtra = model.SealTotalExtra,
+                            TruckId = model.TruckId,
+                            TruckName = model.TruckName,
+                            CreatedBy = model.CreatedBy,
+                            UpdatedBy = model.UpdatedBy
                         };
-                        sealOutInfo.Add(sealOutInfoModel);
-                        sealInId.Add(item.SealInId);
-                    }
-                    Context.SealOutInfo.AddRange(sealOutInfo);
-                    foreach (var id in sealInId)
-                    {
-                        //update status = 2 ใช้งานแล้ว sealIn
-                        List<SealIn> results = (from p in Context.SealIn
-                                                where p.SealInId == id
-                                                select p).ToList();
-
-                        foreach (SealIn p in results)
+                        Context.SealOut.Add(sealout);
+                        //update status seal extra
+                        dynamic jsonObject = JsonConvert.DeserializeObject(model.SealExtraList);
+                        if (jsonObject.Count > 0)
                         {
-                            p.IsActive = true;
-                        }
-                        //update seal status = 2 ใช้งานแล้ว
-                        var query = (from info in Context.SealInInfo
-                                     join s in Context.Seals on info.SealId equals s.Id
-                                     where info.SealInId == id
-                                     select s).ToList();
-                        foreach (Seals p in query)
-                        {
-                            p.IsActive = true;
-
-                            //SealOutInfoList
-                            var modelList = new SealOutInfoList
+                            foreach (var item in jsonObject)
                             {
-                                SealOutId = sealout.SealOutId,
-                                SealInId = id,
-                                sealId = p.Id,
-                                SealNo = p.SealNo
-                            };
-                            sealOutInfoList.Add(modelList);
+                                Int32 id = item.id;
+                                var sealExtra = Context.Seals.FirstOrDefault(a => a.Id == id);
+                                sealExtra.Status = 1;
+                                sealExtra.IsActive = true;
+                                sealExtra.Type = "พิเศษ";
+                                Context.Seals.Update(sealExtra);
+                            }
                         }
+                        var result = await Context.SaveChangesAsync();
+                        var processCount = 0;
+                        if (result > 0 && model.SealOutItem != null)
+                        {
+                            //update Id Format
+                            sealout.SealOutId = Utilities.GennerateId("SO", sealout.Id);
+                            Context.Update(sealout);
+                            List<SealOutItem> sealOutInfo = new List<SealOutItem>();
+                            List<string> sealInId = new List<string>();
+                            foreach (var item in model.SealOutItem)
+                            {
+                                var sealOutInfoModel = new SealOutItem
+                                {
+                                    SealInId = item.SealInId,
+                                    SealOutId = sealout.SealOutId,
+                                    SealBetween = item.SealBetween,
+                                    Pack = item.Pack,
+                                    CreatedBy = model.CreatedBy,
+                                    UpdatedBy = model.UpdatedBy
+                                };
+                                sealOutInfo.Add(sealOutInfoModel);
+                                sealInId.Add(item.SealInId);
+                                processCount++;
+                            }
+                            await Context.SealOutItem.AddRangeAsync(sealOutInfo);
+                            //await Context.SaveChangesAsync();
 
+                            foreach (var id in sealInId)
+                            {
+                                //update status = 2 ใช้งานแล้ว sealIn
+                                List<SealIn> results = (from p in Context.SealIn
+                                                        where p.SealInId == id
+                                                        select p).ToList();
+
+                                foreach (SealIn p in results)
+                                {
+                                    p.IsActive = true;
+                                }
+                                //update seal status = 2 ใช้งานแล้ว
+                                var query = (from sealItem in Context.SealInItem
+                                             join s in Context.Seals on sealItem.SealId equals s.Id
+                                             where sealItem.SealInId == id
+                                             select s).ToList();
+                                foreach (Seals p in query)
+                                {
+                                    p.IsActive = true;
+
+                                }
+
+                            }
+
+
+                        }
+                        if (processCount == model.SealOutItem.Count)
+                        {
+                            await Context.SaveChangesAsync();
+                            await dbtransaction.CommitAsync();
+                        }
+                        else
+                        {
+                            await dbtransaction.RollbackAsync();
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        await dbtransaction.RollbackAsync();
+                        _logger.LogError($"Log Add SealOut: {error.Message}");
+                        return StatusCode(500, new { result = "", message = error.Message });
                     }
 
-                    await Context.SealOutInfoList.AddRangeAsync(sealOutInfoList);
-                    await Context.SaveChangesAsync();
                 }
 
-                return Ok(new { result = sealout, success = true, message = "เพิ่มข้อมูล  เรียบร้อยแล้ว" });
+                return Ok(new { result = "", success = true, message = "เพิ่มข้อมูล  เรียบร้อยแล้ว" });
             }
             catch (Exception error)
             {
@@ -393,17 +416,14 @@ namespace backend.Controllers
             //update SealOutInfoList
             foreach (var r in request)
             {
-                var query = Context.SealOutInfoList.FirstOrDefault(a => a.SealOutId == r.SealOutId && a.SealInId == r.SealInId && a.SealNo == r.SealNoOld);
                 var findSealNew = Context.Seals.FirstOrDefault(s => s.SealNo == r.SealNoNew);
                 var findSealOld = Context.Seals.FirstOrDefault(s => s.SealNo == r.SealNoOld);
-                var findSealInInfo = Context.SealInInfo.FirstOrDefault(a => a.SealInId == r.SealInId && a.SealNo == r.SealNoOld);
+                var findSealInItem = Context.SealInItem.FirstOrDefault(a => a.SealInId == r.SealInId && a.SealNo == r.SealNoOld);
                 int? remarkId = 0;
                 string? remarkName = string.Empty;
-                if (query != null && findSealNew != null && findSealOld != null && findSealInInfo != null)
+                if (findSealNew != null && findSealOld != null && findSealInItem != null)
                 {
-                    query.sealId = findSealNew.Id;
-                    query.SealNo = findSealNew.SealNo;
-                    query.Updated = DateTime.Now;
+                    ;
 
                     //update status sealOid
                     if (r.RemarkId == 0)
@@ -430,10 +450,10 @@ namespace backend.Controllers
                     findSealNew.Updated = DateTime.Now;
                     findSealNew.UpdatedBy = r.UpdatedBy;
                     //update SealInInfo
-                    findSealInInfo.SealId = findSealNew.Id;
-                    findSealInInfo.SealNo = findSealNew.SealNo;
-                    findSealInInfo.UpdaetedBy = r.UpdatedBy;
-                    findSealInInfo.Updated = DateTime.Now;
+                    findSealInItem.SealId = findSealNew.Id;
+                    findSealInItem.SealNo = findSealNew.SealNo;
+                    findSealInItem.UpdatedBy = r.CreatedBy;
+                    findSealInItem.Updated = DateTime.Now;
                     var modelList = new SealChanges
                     {
                         SealOutId = r.SealOutId,
@@ -465,11 +485,8 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    var sealOutInfo = Context.SealOutInfo.Where(p => p.SealOutId == result.SealOutId);
-                    var sealOutInfoList = Context.SealOutInfoList.Where(p => p.SealOutId == result.SealOutId);
-
-                    Context.SealOutInfoList.RemoveRange(sealOutInfoList);
-                    Context.SealOutInfo.RemoveRange(sealOutInfo);
+                    var sealOutItem = Context.SealOutItem.Where(p => p.SealOutId == result.SealOutId);
+                    Context.SealOutItem.RemoveRange(sealOutItem);
                     Context.SealOut.Remove(result);
                     await Context.SaveChangesAsync();
                 }

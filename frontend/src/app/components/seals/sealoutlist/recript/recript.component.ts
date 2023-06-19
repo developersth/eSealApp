@@ -50,29 +50,14 @@ export class RecriptComponent implements OnInit {
     this.sealTotal =res.result.sealTotal;
     this.sealTotalExtra =res.result.sealTotalExtra;
     this.sealOutId =res.result.sealOutId;
-    if(res.result.sealExtraList!=null){
-      this.mSealExtraList =JSON.parse(res.result.sealExtraList);
-    }
-
-    //sealoutlist
-    this.service.getSealOutInfoList(this.sealOutId).subscribe(
-      data => {
-        // console.log(JSON.stringify(data.result));
-        this.mSealOut = data.result;
-        console.log(data.result);
-
-      },
-      error => {
-        console.log(JSON.stringify(error));
-      }
-    );
+    this.getReportReceiptDetail(this.sealOutId);
    });
 
   }
-  getSealOutInfoList(id:string){
-    this.service.getSealOutInfoList(id).subscribe(
+  getReportReceiptDetail(id:string){
+    this.service.getReportReceiptDetail(id).subscribe(
       data => {
-        this.mSealOutInfoList = data.result;
+        this.mSealOut = data.result;
       },
       error => {
         console.log(JSON.stringify(error));

@@ -159,6 +159,9 @@ export class RestService {
   getSealOutInfoList(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfoList/${id}`, { headers:this.headers });
   }
+  getReportReceiptDetail(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptDetail/${id}`, { headers:this.headers });
+  }
   getReportReceipt(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers:this.headers });
   }

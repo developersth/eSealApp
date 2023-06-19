@@ -58,7 +58,7 @@ export class SealoutComponent implements OnInit {
   @Input() txtSealTotalExtra: number =0 ;
   @Input() txtSealExtraTotal: number = 0;
   @Input() txtTruckId: string;
-  @Input() sealItemExtraList: any[] = [];
+  @Input() sealItemExtraList: Seals[] = [];
   @Input() cbSealExtra:number = 0;
   selectedOptionsQRCode: any[] = [];
   itemSealBetWeen: any[] = [];
@@ -66,7 +66,7 @@ export class SealoutComponent implements OnInit {
   itemSealExtra: any[] = [];
   mTruck: Truck[];
   mSealExtra:Seals[]=[];
-
+  user:string=this.service.getFullNameLocalAuthen();
   //seal no item
   sealNoItem: any[] = [];
 
@@ -166,9 +166,9 @@ export class SealoutComponent implements OnInit {
       id: 0,
       sealNo: "",
       status:1,
-      statusName:"ยังไม่ได้ใช้งาน",
-      sealType: 2,
-      sealTypeName: "พิเศษ",
+      type: "พิเศษ",
+      createdBy:this.user,
+      updatedBy:this.user
     });
 
   }
@@ -401,7 +401,7 @@ export class SealoutComponent implements OnInit {
       sealTotalExtra: this.mSealExtra.length,
       truckId: result.truckId,
       truckName: truckName,
-      sealOutInfo:this.itemSealOutList,
+      sealOutItem:this.itemSealOutList,
       sealExtraList:JSON.stringify(this.mSealExtra) ,
       createdBy: this.service.getFullNameLocalAuthen(),
       updatedBy: this.service.getFullNameLocalAuthen(),

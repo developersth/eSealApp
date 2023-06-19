@@ -29,9 +29,6 @@ namespace backend.Controllers
                 DateTime startDate = DateTime.Now;
                 DateTime endDate = DateTime.Now;
                 var query = from s in Context.Seals
-                            join st in Context.SealTypes
-                            on s.Type equals st.Id into joinedSealTypes
-                            from js in joinedSealTypes.DefaultIfEmpty()
                             join ss in Context.SealStatus
                             on s.Status equals ss.Id into joinedSealStatus
                             from jss in joinedSealStatus.DefaultIfEmpty()
@@ -41,7 +38,6 @@ namespace backend.Controllers
                                 Id = s.Id,
                                 SealNo = s.SealNo,
                                 Type = s.Type,
-                                TypeName = js.TypeName,
                                 Status = s.Status,
                                 StatusName = jss.Name,
                                 IsActive = s.IsActive,
@@ -74,20 +70,20 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error.Message });
             }
         }
-        [HttpGet("GetTypes")]
-        public IActionResult GetTypes()
-        {
-            try
-            {
-                var result = Context.SealTypes.ToList();
-                return Ok(new { result = result, message = "request successfully" });
-            }
-            catch (Exception error)
-            {
-                _logger.LogError($"Log Get User: {error}");
-                return StatusCode(500, new { result = "", message = error });
-            }
-        }
+        // [HttpGet("GetTypes")]
+        // public IActionResult GetTypes()
+        // {
+        //     try
+        //     {
+        //         var result = Context.SealTypes.ToList();
+        //         return Ok(new { result = result, message = "request successfully" });
+        //     }
+        //     catch (Exception error)
+        //     {
+        //         _logger.LogError($"Log Get User: {error}");
+        //         return StatusCode(500, new { result = "", message = error });
+        //     }
+        // }
 
         [HttpGet("GetStatus")]
         public IActionResult GetStatus()
@@ -128,7 +124,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Seals.Where(p => p.Status == 4 && p.Type == 1 && p.IsActive == false); //ยังไม่ได้ใช้งาน ซีลทดแทน
+                var result = Context.Seals.Where(p => p.Status == 4 && p.Type == "ปกติ" && p.IsActive == false); //ยังไม่ได้ใช้งาน ซีลทดแทน
 
                 if (result == null)
                 {
@@ -166,7 +162,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Seals.Where(p => p.Status == 1 && p.Type == 2); //ยังไม่ได้ใช้งานและซีลพิเศษ
+                var result = Context.Seals.Where(p => p.IsActive == false && p.Type == "พิเศษ"); //ยังไม่ได้ใช้งานและซีลพิเศษ
 
                 if (result == null)
                 {
@@ -186,20 +182,16 @@ namespace backend.Controllers
             try
             {
                 var result = from s in Context.Seals
-                             join st in Context.SealTypes on s.Type equals st.Id into joinedSealTypes
-                             from js in joinedSealTypes.DefaultIfEmpty()
                              join ss in Context.SealStatus
                              on s.Status equals ss.Id into joinedSealStatus
                              from jss in joinedSealStatus.DefaultIfEmpty()
                              where s.Id == id
-                             && s.Status == 1
-                             && s.Type == 2
+                             && s.Type == "พิเศษ"
                              select new
                              {
                                  Id = s.Id,
                                  SealNo = s.SealNo,
                                  Type = s.Type,
-                                 TypeName = js.TypeName,
                                  Status = s.Status,
                                  StatusName = jss.Name,
                                  CreatedBy = s.CreatedBy,
@@ -226,10 +218,8 @@ namespace backend.Controllers
         {
             try
             {
-                var result = from info in Context.SealInInfo
+                var result = from info in Context.SealInItem
                              join s in Context.Seals on info.SealId equals s.Id
-                             join st in Context.SealTypes on s.Type equals st.Id into joinedSealTypes
-                             from js in joinedSealTypes.DefaultIfEmpty()
                              join ss in Context.SealStatus
                              on s.Status equals ss.Id into joinedSealStatus
                              from jss in joinedSealStatus.DefaultIfEmpty()
@@ -239,7 +229,6 @@ namespace backend.Controllers
                                  Id = s.Id,
                                  SealNo = s.SealNo,
                                  Type = s.Type,
-                                 TypeName = js.TypeName,
                                  Status = s.Status,
                                  StatusName = jss.Name,
                                  CreatedBy = s.CreatedBy,
@@ -262,7 +251,6 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error });
             }
         }
-
 
         // POST api/<SealInController>
         [HttpPost]
@@ -305,12 +293,12 @@ namespace backend.Controllers
                 result.Updated = DateTime.Now;
                 Context.Seals.Update(result);
                 await Context.SaveChangesAsync();
-                return Ok(new { result = requst, success = true, message = "Create SealIn Successfully" });
+                return Ok(new { result = requst, success = true, message = "Update Seal Successfully" });
             }
             catch (Exception error)
             {
-                _logger.LogError($"Log CreateProduct: {error}");
-                return StatusCode(500, new { result = "", message = error });
+                _logger.LogError($"Log Update Seal: {error}");
+                return StatusCode(500, new { result = "", message = error.Message });
             }
         }
 

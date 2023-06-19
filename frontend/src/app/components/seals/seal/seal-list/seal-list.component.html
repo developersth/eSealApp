@@ -108,7 +108,7 @@
                         *ngFor="let item of filterItems| paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
                         <td>{{ item.id }}</td>
                         <td>{{ item.sealNo }}</td>
-                        <td>{{ item.typeName }}</td>
+                        <td>{{ item.type }}</td>
                         <td>
                           <span *ngIf="!item.isActive" class="badge badge-success">{{item.isActiveName}}</span>
                           <span *ngIf="item.isActive" class="badge badge-danger">{{item.isActiveName}}</span>
