@@ -138,6 +138,12 @@ export class Utils {
         } else if (currentNumber + currentSize > currentEnd) {
           this.sealPack.forEach((pack: number) => {
             if (currentNumber + pack <= currentEnd) {
+              this.seal = [];
+              sealBetween = `${currentNumber}-${currentNumber + pack - 1}`;
+              this.addItemSealIn(sealBetween,pack);
+              for (let i = 0; i < pack; i++) {
+                this.addItemSeal((currentNumber+i).toString());
+              }
               sealBetween = `${currentNumber}-${currentNumber + pack - 1}`;
               this.addItemSealIn(sealBetween,pack);
             }

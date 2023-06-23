@@ -34,7 +34,6 @@ export class BrokenComponent implements OnInit {
     let endDate: string = `${this.dtEnd.year}-${this.dtEnd.month}-${this.dtEnd.day}`;
     this.service.getSealChanges(startDate, endDate).subscribe((sealchange:any) => {
       this.sealchanges = sealchange.result;
-      console.log(this.sealchanges);
     });
   }
 

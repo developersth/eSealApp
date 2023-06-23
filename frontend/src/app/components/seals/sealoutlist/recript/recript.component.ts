@@ -44,15 +44,14 @@ export class RecriptComponent implements OnInit {
     //   this.data = res.result;
     // });
    //sealOut
-   this.service.getSealOutById(this.id).subscribe((res: any) => {
+   this.service.getShowReceiptHeader(this.sealOutId).subscribe((res: any) => {
     this.truckName = res.result.truckName;
     this.created =res.result.created;
     this.sealTotal =res.result.sealTotal;
     this.sealTotalExtra =res.result.sealTotalExtra;
-    this.sealOutId =res.result.sealOutId;
-    this.getReportReceiptDetail(this.sealOutId);
    });
-
+   this.getReportReceiptDetail(this.sealOutId);
+   this.getSealExtraDetail(this.sealOutId);
   }
   getReportReceiptDetail(id:string){
     this.service.getReportReceiptDetail(id).subscribe(
@@ -64,7 +63,16 @@ export class RecriptComponent implements OnInit {
       }
     );
   }
-
+  getSealExtraDetail(sealOutId:string){
+    this.service.getSealExtraDetail(sealOutId).subscribe(
+      data => {
+        this.mSealExtraList = data.result;
+      },
+      error => {
+        console.log(JSON.stringify(error));
+      }
+    );
+  }
   getDatetimeNow() {
     return new Date();
   }

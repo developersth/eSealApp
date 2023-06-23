@@ -124,8 +124,7 @@ namespace backend.Controllers
         {
             try
             {
-                var result = Context.Seals.Where(p => p.Status == 4 && p.Type == "ปกติ" && p.IsActive == false); //ยังไม่ได้ใช้งาน ซีลทดแทน
-
+                var result = Context.Seals.Where(p => p.Status == 2 && p.Type == "ปกติ" && p.IsActive == false); //ยังไม่ได้ใช้งาน ซีลทดแทน
                 if (result == null)
                 {
                     return NotFound();

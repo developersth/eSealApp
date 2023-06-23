@@ -3,8 +3,8 @@ version: '3.9'
 services:
   database:
     container_name: mssql-server
-    # image: mcr.microsoft.com/mssql/server:2019-latest #windows
-    image: mcr.microsoft.com/azure-sql-edge           #arm
+    image: mcr.microsoft.com/mssql/server:2019-latest #windows
+    #image: mcr.microsoft.com/azure-sql-edge           #arm
     ports:
       - "1433:1433"
     environment:
@@ -59,6 +59,19 @@ services:
     volumes:
         - ./nginx.conf:/etc/nginx/conf.d/default.conf
     
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - app-network
 
 networks:
   app-network:

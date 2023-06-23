@@ -32,7 +32,7 @@
               <div class="form-group col-md-2">
                 <label>สถานะ:</label>
                 <select class="form-control" [(ngModel)]="isCancel">
-                  <option value="">--ทั้งหมด--</option>
+                  <option value="">ทั้งหมด</option>
                   <option value="0">จ่ายซีลแล้ว</option>
                   <option value="1">ยกเลิก</option>
                 </select>
@@ -40,7 +40,7 @@
               <div class="form-group col-md-2">
                 <label>ค้นหาจาก:</label>
                 <select class="form-control" [(ngModel)]="columnSearch">
-                  <option value="">--ไม่ระบุ--</option>
+                  <option value="">ไม่ระบุ</option>
                   <option value="id">รหัส</option>
                   <option value="sealBetween">ช่วงหมายเลขซีล</option>
                   <option value="sealNo">หมายเลขซีล</option>
@@ -132,12 +132,14 @@
                     <td>{{ item.truckName }}</td>
                     <td>{{ item.created| date: 'yyyy/MM/dd HH:mm'}}</td>
                     <td>
-                      <button class="btn btn-info" (click)="printSlip(item)"><i class="ft ft-printer"></i></button>
+                      <button class="btn btn-info" (click)="printSlip(item)"><i
+                          class="ft ft-printer">พิมพ์</i></button>|
                       <button class="btn btn-secondary" (click)="showSealOutInfo(sealOutInfoModal,item)"><i
-                          class="ft ft-repeat"></i></button>
+                          class="ft ft-repeat"></i>เปลี่ยนซีล</button>|
                       <button class="btn btn-success" routerLink="/seals/sealout/{{item.id}}"><i
-                          class="ft ft-edit"></i></button>
-                      <button (click)="deleteData(item.id)" class="btn btn-danger"><i class="ft ft-trash"></i></button>
+                          class="ft ft-edit">แก้ไข</i></button>|
+                      <button (click)="deleteData(item.id)" class="btn btn-danger"><i
+                          class="ft ft-trash">ลบ</i></button>
                     </td>
                   </tr>
                   <tr *ngIf="sealOutItem.length==0" class="text-center">
@@ -162,33 +164,31 @@
               </div>
               <div class="modal-body">
                 <div class="row">
-                  <div class="col-md-5">
+                  <div class="col-md-3">
                     <table class="table table-bordered  table-hover">
                       <thead>
                         <tr>
-                          <th>รหัสซีลนำเข้า</th>
                           <th>หมายเลขซีล</th>
                           <th>#</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let item of mSealOutInfoList;let idx = index">
-                          <td>
-                            {{item.sealInId}}
-                          </td>
+                        <tr *ngFor="let item of mSealOulItem;let idx = index">
                           <td>
                             <label>{{item.sealNo}}</label><br />
                           </td>
                           <td>
-                            <button class="btn btn-info btn-sm" (click)="addItemSealChange(sealOutId,item.sealInId,item)">>></button>
+
+                            <button class="btn btn-info btn-sm"
+                              (click)="addItemSealChange(sealOutId,item.sealInId,item)">>></button>
                           </td>
 
-                      </tr>
+                        </tr>
                       </tbody>
                     </table>
 
                   </div>
-                  <div class="col-md-7">
+                  <div class="col-md-9">
                     <table class="table table">
                       <thead>
                         <tr>
@@ -200,26 +200,28 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let item of itemSealChange;let i = index">
-                          <td style="width: 20%;">
+                          <td style="width: 15%;">
                             {{item.sealNoOld}}
 
                           </td>
-                          <td style="width: 30%;">
-                            <ng-select [items]="sealItem" [virtualScroll]="true" bindLabel="sealNo"
-                              bindValue="sealNo" [(ngModel)]="item.sealNoNew" placeholder="เลือกหมายเลขซีลใหม่">
-                              <ng-template ng-option-tmp let-item="item" let-index="index">
-                                {{item.sealNo}}
-                              </ng-template>
-                            </ng-select>
+                          <td style="width: 20%;">
+                            <ng-select [items]="sealItem" [virtualScroll]="true" bindLabel="sealNo" bindValue="id"
+                            [(ngModel)]="item.sealIdNew"  placeholder="เลือกหมายเลขซีลใหม่">
+                          </ng-select>
                           </td>
-                          <td style="width: 30%;">
-                            <select class="form-control" [(ngModel)]="item.remarkId"   (change)="selectStatus(item.remarkId)">
-                              <option *ngFor="let s of status" [value]="s.id">{{s.name}}</option>
-                              <option  value="0">--สาเหตุอื่นๆ--</option>
-                            </select>
-                            <div *ngIf="item.remarkId==0">
-                              <label>ระบุสาเหตุ</label>
-                              <input class="form-control" placeholder="กรุณาระบุสาเหตุ" [(ngModel)]="item.remarks" />
+
+                          <td style="width: 40%;">
+                            <div class="form-row">
+                              <div class="col-6">
+                                <select class="form-control" [(ngModel)]="item.remarkId"
+                                (change)="selectRemark(item.remarkId)">
+                                <option *ngFor="let s of sealRemarks" [value]="s.id">{{s.name}}</option>
+                                <option value="0">--สาเหตุอื่นๆ--</option>
+                              </select>
+                              </div>
+                              <div *ngIf="item.remarkId==0" class="col-6">
+                                <input class="form-control" placeholder="กรุณาระบุสาเหตุ" [(ngModel)]="item.remarks" />
+                              </div>
 
                             </div>
                           </td>
@@ -236,7 +238,7 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" (click)="modal.dismiss()">ปิด</button>
                 <button (click)="submitFormSealChange()" class="btn btn-primary btn-save">
-                บันทึก
+                  บันทึก
                 </button>
               </div>
             </ng-template>

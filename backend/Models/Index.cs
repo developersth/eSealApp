@@ -33,21 +33,23 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
     }
 
     public class SealChanges
     {
         public int Id { get; set; }
-        public string SealOutId { get; set; }
-        public string SealInId { get; set; }
-        public int SealIdOld { get; set; }
-        public string SealNoOld { get; set; }
-        public int SealIdNew { get; set; }
-        public string SealNoNew { get; set; }
-        public string RemarkId { get; set; }
-        public string Remarks { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? SealOutId { get; set; }
+        public string? SealInId { get; set; }
+        public int? SealIdOld { get; set; }
+        public string? SealNoOld { get; set; }
+        public int? SealIdNew { get; set; }
+        public string? SealNoNew { get; set; }
+        public int? RemarkId { get; set; }
+        public string? Remarks { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
     }
@@ -68,8 +70,8 @@ namespace backend.Models
     public class SealInItem
     {
         public int Id { get; set; }
-        public string SealInId { get; set; }
-        public int SealId { get; set; }
+        public string? SealInId { get; set; }
+        public int? SealId { get; set; }
         public string? SealNo { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
@@ -111,10 +113,10 @@ namespace backend.Models
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public bool IsActive { get; set; }
-        public int RoleId { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public bool? IsActive { get; set; }
+        public int? RoleId { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
     }
@@ -124,7 +126,7 @@ namespace backend.Models
         public int Id { get; set; }
         public string Name { get; set; }
     }
-     public partial class Trucks
+    public partial class Trucks
     {
         public int TruckId { get; set; }
         public string? TruckHead { get; set; }

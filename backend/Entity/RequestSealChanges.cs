@@ -4,9 +4,9 @@ namespace backend.Entity
     {
         public string? SealOutId { get; set; } //ref Sealout id
         public string? SealInId { get; set; } //ref Sealout id
-        public int? SealIdOld { get; }
+        public int? SealIdOld { get; set; }
         public string? SealNoOld { get; set; }
-        public int? SealIdNew { get; }
+        public int? SealIdNew { get; set; }
         public string? SealNoNew { get; set; }
         public int? RemarkId { get;set; }
         public string? Remarks { get; set; }

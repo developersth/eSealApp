@@ -65,7 +65,6 @@ export class SealoutComponent implements OnInit {
   itemSealOutList: any[] = [];
   itemSealExtra: any[] = [];
   mTruck: Truck[];
-  mSealExtra:Seals[]=[];
   user:string=this.service.getFullNameLocalAuthen();
   //seal no item
   sealNoItem: any[] = [];
@@ -148,23 +147,22 @@ export class SealoutComponent implements OnInit {
     // do something with selected item
   }
   selectSealExtra() {
+    if(this.cbSealExtra==null)  return;
     let id = this.cbSealExtra;
-    const result = this.mSealExtra.find((item) => item.id === id);
+    const result = this.sealItemExtraList.find((item) => item.id === id);
     if (result) {
       this.toastr.warning("มีหมายเลขซีลนี้ในตารางแล้ว");
       return false;
     }
-    this.service.getSealExtraById(id).subscribe((result:any) => {
-      if (result) {
-        this.mSealExtra.push(result.result[0]);
-      }
-    })
+    this.service.getSealExtraById(id).subscribe((res:any) => {
+      this.addListSealExtra(id,res.result[0].sealNo);
+    });
   }
-  addListSealExtra() {
-    this.getSealExtra();
+  addListSealExtra(id:number,sealNo:string) {
+    //this.getSealExtra();
     this.sealItemExtraList.push({
-      id: 0,
-      sealNo: "",
+      id: id,
+      sealNo: sealNo,
       status:1,
       type: "พิเศษ",
       createdBy:this.user,
@@ -177,8 +175,8 @@ export class SealoutComponent implements OnInit {
     this.itemSealOutList.splice(index, 1);
   }
   removeItemExtra(item: any) {
-    let index = this.mSealExtra.indexOf(item);
-    this.mSealExtra.splice(index, 1);
+    let index = this.sealItemExtraList.indexOf(item);
+    this.sealItemExtraList.splice(index, 1);
   }
 
   onChangeSearch(val: string) {
@@ -366,7 +364,7 @@ export class SealoutComponent implements OnInit {
       truckId: result.truckId,
       truckName: `${result.truckHead}/${result.truckTail}`,
       sealItemList:JSON.stringify(this.itemSealOutList)  ,
-      sealExtraList:JSON.stringify(this.mSealExtra) ,
+      sealExtraList:JSON.stringify(this.sealItemExtraList) ,
     };
     this.service.updateSealOut(this.getId, JSON.stringify(body)).subscribe(
       (res: any) => {
@@ -398,11 +396,11 @@ export class SealoutComponent implements OnInit {
 
     const body = {
       sealTotal: this.txtSealTotal,
-      sealTotalExtra: this.mSealExtra.length,
+      sealTotalExtra: this.sealItemExtraList.length,
       truckId: result.truckId,
       truckName: truckName,
       sealOutItem:this.itemSealOutList,
-      sealExtraList:JSON.stringify(this.mSealExtra) ,
+      sealExtraList:JSON.stringify(this.sealItemExtraList) ,
       createdBy: this.service.getFullNameLocalAuthen(),
       updatedBy: this.service.getFullNameLocalAuthen(),
     };

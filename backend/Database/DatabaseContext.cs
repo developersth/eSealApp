@@ -26,6 +26,7 @@ namespace backend.Database
         public virtual DbSet<SealInItem> SealInItem { get; set; }
         public virtual DbSet<SealChanges> SealChanges { get; set; }
         public virtual DbSet<SealOutExtraItem> SealOutExtraItem { get; set; }
+        public virtual DbSet<SealRemarks> SealRemarks { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -87,6 +88,11 @@ namespace backend.Database
                 });
 
             modelBuilder.Entity<SealOutExtraItem>(entity =>
+            {
+                entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");
+            });
+            modelBuilder.Entity<SealRemarks>(entity =>
             {
                 entity.Property(e => e.Created).HasDefaultValueSql("(getdate())");
                 entity.Property(e => e.Updated).HasDefaultValueSql("(getdate())");

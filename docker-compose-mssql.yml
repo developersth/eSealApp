@@ -15,6 +15,7 @@ services:
       - database-volume:/var/opt/mssql
     networks:
       - app-network
+    restart: always
 
 networks:
   app-network:

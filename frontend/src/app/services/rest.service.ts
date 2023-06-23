@@ -156,11 +156,20 @@ export class RestService {
   getSealOutById(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, { headers:this.headers });
   }
+  getSealOutItem(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/SealOutItem/${id}`, { headers:this.headers });
+  }
+  getShowReceiptHeader(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptHeader/${id}`, { headers:this.headers });
+  }
   getSealOutInfoList(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfoList/${id}`, { headers:this.headers });
   }
   getReportReceiptDetail(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptDetail/${id}`, { headers:this.headers });
+  }
+  getSealExtraDetail(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealExtraDetail/${id}`, { headers:this.headers });
   }
   getReportReceipt(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers:this.headers });
@@ -171,12 +180,14 @@ export class RestService {
   getSealChange(): Observable<any> {
     return this.http.get<any[]>(`${this.sealUrl}/GetSealChange`, { headers:this.headers });
   }
+  getSealRemarks(): Observable<any> {
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealRemarks`, { headers:this.headers });
+  }
   getSealStatus(): Observable<any> {
     return this.http.get<any[]>(`${this.sealUrl}/GetSealStatus`, { headers:this.headers });
   }
   sealChange(items: any): Observable<any> {
     let item = JSON.stringify(items);
-    console.log(item);
     return this.http.post<any>(`${this.sealOutUrl}/SealChange`, item, {
       headers:this.headers,
     });
@@ -197,6 +208,7 @@ export class RestService {
     );
   }
   //---------------------------------------------------------------- report
+
   GetRemaining( startDate: string,endDate: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.reportUrl}/GetRemaining?pStartDate=${startDate}&pEndDate=${endDate}`);
   }
@@ -211,6 +223,9 @@ export class RestService {
       // สร้างลิงก์ดาวน์โหลด
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
+      let now: Date = new Date();
+      let filename =`ReportSealChange_${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}.xlsx`;
+      link.download = filename;
       let new_date: Date = new Date();
       link.download = `report_SealChange_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`; // ใช้ชื่อไฟล์ที่ได้รับจากเซิร์ฟเวอร์ หากไม่สามารถรับชื่อไฟล์ได้ให้ใช้ชื่อเริ่มต้นเป็น "SealChanges.xlsx"
       link.click();
@@ -225,7 +240,7 @@ export class RestService {
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
       let new_date: Date = new Date();
-      link.download = `report_SealRemaining_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`; // ใช้ชื่อไฟล์ที่ได้รับจากเซิร์ฟเวอร์ หากไม่สามารถรับชื่อไฟล์ได้ให้ใช้ชื่อเริ่มต้นเป็น "SealChanges.xlsx"
+      link.download = `report_SealRemaining_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`;
       link.click();
     });
   }

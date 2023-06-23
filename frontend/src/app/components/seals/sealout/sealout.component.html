@@ -110,7 +110,7 @@
               <td class="font-medium-2">จำนวนซีลรวมทั้งหมด</td>
               <td class="font-medium-2"> {{subTotalSeal()}} ตัว</td>
             </tr>
-            <table *ngIf="mSealExtra.length!=0" class="table ">
+            <table *ngIf="sealItemExtraList.length!=0" class="table ">
               <thead>
                 <tr class="bg-success" style="color: white;">
                   <th scope="col">ลำดับ</th>
@@ -120,12 +120,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of mSealExtra;let idx = index">
+                <tr *ngFor="let item of sealItemExtraList;let idx = index">
                   <td class="font-medium-3">{{idx+1}}</td>
                   <td class="font-medium-3">
                      {{item.sealNo}}
                   </td>
-                  <td class="font-medium-3">{{item.type==2?'พิเศษ':''}}</td>
+                  <td class="font-medium-3">{{item.type}}</td>
                   <td class="font-medium-3">
                     <btn class="btn btn-danger" (click)="removeItemExtra(item)"><i class="fa fa-trash"></i></btn>
                   </td>
@@ -133,9 +133,9 @@
               </tbody>
             </table>
             <div class="row justify-content-between">
-              <div class="col-lg-9 col-md-6">
+              <div class="col-lg-8 col-md-6">
               </div>
-              <div class="col-lg-3 col-md-6">
+              <div class="col-lg-4 col-md-6">
                 <button type="button" (click)="onSubmit()" class="btn btn-primary btn-lg mr-2"><i
                     class="ft-check-square mr-1"></i>บันทึกข้อมูล</button>
                 <button type="button" (click)="onClickBack()" class="btn btn-secondary btn-lg"><i class="ft-x mr-1"></i>ยกเลิก</button>

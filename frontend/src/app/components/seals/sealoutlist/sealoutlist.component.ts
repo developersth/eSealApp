@@ -65,11 +65,12 @@ export class SealOutListComponent implements OnInit {
   now:Date = new Date();
   columnSearch = "";
   isCancel:string = "";
-  mSealOutInfoList:any[]=[];
+  mSealOulItem:any[]=[];
   mSealList: Seals[] = [];
   itemSealChange:any[] = [];
   sealItem:any[] = [];
-  status:any[];
+  sealRemarks:any[];
+
   sealId:number = 0;
   sealOutId:string = '';
   @Input() txtSealId:number=3;
@@ -152,11 +153,11 @@ export class SealOutListComponent implements OnInit {
         }
       });
   }
-  getSealOutInfoList(id:string){
+  getSealOutItem(id:string){
     console.log(id);
-    this.service.getSealOutInfoList(id).subscribe(
+    this.service.getSealOutItem(id).subscribe(
       data => {
-        this.mSealOutInfoList = data.result;
+        this.mSealOulItem = data.result;
       },
       error => {
         console.log(JSON.stringify(error));
@@ -166,7 +167,7 @@ export class SealOutListComponent implements OnInit {
   showSealOutInfo(content:any,item: any) {
     //debugger;
     this.itemSealChange=[];
-    this.getSealOutInfoList(item.sealOutId);
+    this.getSealOutItem(item.sealOutId);
     this.sealOutId =item.sealOutId;
     const modalOptions: NgbModalOptions = {
       keyboard: false,
@@ -189,7 +190,7 @@ export class SealOutListComponent implements OnInit {
       size: "md",
     };
     const modalRef = this.modalService.open(RecriptComponent, ngbModalOptions);
-    modalRef.componentInstance.id = item.id;
+    modalRef.componentInstance.sealOutId = item.sealOutId;
     //modalRef.componentInstance.data = item;
   }
   sleep(ms) {
@@ -200,27 +201,28 @@ export class SealOutListComponent implements OnInit {
       this.sealItem = data.result;
     });
   }
-  getSealStatus(){
-    this.service.getSealStatus().subscribe((data) =>{
-      this.status = data.result;
+  getSealRemark(){
+    this.service.getSealRemarks().subscribe((data) =>{
+      this.sealRemarks = data.result;
     });
   }
   addItemSealChange(sealOutId:string,sealInId:string,item: any) {
-    const result = this.itemSealChange.find((p) => p.sealNo=== item.sealNo);
+    const result = this.itemSealChange.find((p) => p.sealNoOld=== item.sealNo);
     if (result){
       this.toastr.warning("มีหมายเลขซีลนี้ในตารางแล้ว");
       return false;
     }
     this.getSealChange();
-    this.getSealStatus();
+    this.getSealRemark();
     this.itemSealChange.push({
       sealId: item.id,
       sealOutId: sealOutId,
       sealInId: sealInId,
-      sealIdOld:item.id,
+      sealIdOld:item.sealId,
       sealNoOld:item.sealNo,
+      sealIdNew:0,
       sealNoNew:'',
-      remarkId:2,
+      remarkId:1,
       remarks:'',
       remarkOther:'',
       createdBy:this.user,
@@ -231,21 +233,24 @@ export class SealOutListComponent implements OnInit {
     let index = this.itemSealChange.indexOf(item);
     this.itemSealChange.splice(index, 1);
   }
-  selectStatus(id:string){
+  selectRemark(id:string){
     console.log(id);
   }
+  selectSealNew(item: any) {
+    console.log(item);
+  }
+
   submitFormSealChange(){
     if (this.itemSealChange.length===0){
       this.swal.showDialog("warning", "การแจ้งเตือน:กรุณาเลือกหมายเลขซีลที่ต้องการเปลี่ยนด้วยครับ");
       return;
     }
-    const result = this.itemSealChange.find((p) => p.sealNoNew === "");
+    const result = this.itemSealChange.find((p) => p.sealIdNew ==0);
     if (result) {
       this.toastr.warning("กรุณากรอก หมายเลขซีลใหม่ด้วยครับ");
       return;
     }
 
-    debugger;
     this.service.sealChange(this.itemSealChange).subscribe(
       (res: any) => {
         this.spinner.hide();

@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using backend.Database;
+using backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-
 
 namespace backend
 {
@@ -46,7 +46,7 @@ namespace backend
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                     };
                 });
-
+            services.AddScoped<ReportService, ReportService>();
             services.AddCors(options =>
               {
                   options.AddPolicy("AllowSpecificOrigins",
@@ -54,6 +54,7 @@ namespace backend
                    {
                        builder.WithOrigins(
                            "http://eseal.web",
+                           "http://esso.test",
                            "http://localhost:4200",
                            "http://localhost:8080")
                            .AllowAnyHeader()
