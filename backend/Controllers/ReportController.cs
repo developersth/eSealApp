@@ -21,6 +21,11 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using backend.Services;
+using System.Data;
+//using AspNetCore.Reporting;
+using Microsoft.Reporting.NETCore;
+using System.Reflection.Metadata;
+
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
@@ -33,11 +38,15 @@ namespace backend.Controllers
         public IConfiguration Configuration { get; }
 
         public ReportService _reportService;
-        public ReportController(DatabaseContext context,
+        private readonly IWebHostEnvironment environment;
+        public IWebHostEnvironment _env { get; }
+        public ReportController(IWebHostEnvironment Env,
+         DatabaseContext context,
         ILogger<ReportController> logger,
         IConfiguration Configuration,
         ReportService _reportService)
         {
+            this._env = Env;
             Context = context;
             _logger = logger;
             this.Configuration = Configuration;
@@ -65,6 +74,43 @@ namespace backend.Controllers
 
                 var result = await _reportService.GetSealChanges(startDate, endDate);
                 return Ok(new { result = result, message = "request successfully" });
+            }
+            catch (Exception error)
+            {
+                _logger.LogError($"Log GetRemaining: {error.Message}");
+                return StatusCode(500, new { result = "", message = error.Message });
+            }
+
+        }
+        [HttpGet("GenReportSealOut/{SealOutId}")]
+        public async Task<IActionResult> GenReportSealOut(string SealOutId)
+        {
+            try
+            {
+
+                var byteRes = new byte[] { };
+                string path = $"{_env.WebRootPath}/Reports/rptReceipt.rdlc";
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                //LocalReport report = new LocalReport(path);
+                LocalReport report = new LocalReport();
+                report.ReportPath= path;
+                DataTable dtSealOutDetail = await _reportService.GetSealOutReceipt(SealOutId);
+                //report.AddDataSource("dtSealOutDetail", dt);
+                DataTable dtDetailExtra = await _reportService.GetSealOutReceiptExtra(SealOutId);
+               // report.AddDataSource("dtSealOutDetailExtra", dtExtra);
+                //ReportDataSource dataset1 = new ReportDataSource("Dataset1", dtDetail);
+                //ReportDataSource dataset2 = new ReportDataSource("Dataset2", dtDetailExtra);
+                report.DataSources.Add(new ReportDataSource("dtSealOutDetail", dtSealOutDetail));
+                report.DataSources.Add(new ReportDataSource("dtDetailExtra", dtDetailExtra));
+                // Render the report to a byte array
+                var result = report.Render("PDF");
+                var stream = new MemoryStream(result);
+                stream.Seek(0, SeekOrigin.Begin);
+                var response = new FileStreamResult(stream, "application/pdf");
+                string Filename = "Receipt_" + SealOutId + ".pdf";
+                return File(response.FileStream, "application/pdf", Filename);
+
+               // return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
             {

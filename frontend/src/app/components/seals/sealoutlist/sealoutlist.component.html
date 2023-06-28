@@ -132,6 +132,8 @@
                     <td>{{ item.truckName }}</td>
                     <td>{{ item.created| date: 'yyyy/MM/dd HH:mm'}}</td>
                     <td>
+                      <button class="btn btn-info" (click)="previewReceipt(item.sealOutId)"><i
+                        class="ft ft-eye">Preview</i></button>|
                       <button class="btn btn-info" (click)="printSlip(item)"><i
                           class="ft ft-printer">พิมพ์</i></button>|
                       <button class="btn btn-secondary" (click)="showSealOutInfo(sealOutInfoModal,item)"><i
@@ -243,6 +245,19 @@
               </div>
             </ng-template>
             <!--Modal with Default options ends-->
+
+            <ng-template #content let-c="close" let-d="dismiss">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">Preview Invoice : <b>{{invoiceno}}</b></h4>
+                <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+              </div>
+              <div class="modal-body">
+                <ngx-extended-pdf-viewer [src]="pdfUrl"></ngx-extended-pdf-viewer>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="d('Cross click')">Close</button>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>

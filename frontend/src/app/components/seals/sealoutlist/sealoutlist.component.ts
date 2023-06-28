@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, Input } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, ViewChild, Input, ElementRef } from "@angular/core";
 
 import {
   NgbDateStruct,
@@ -73,6 +73,8 @@ export class SealOutListComponent implements OnInit {
 
   sealId:number = 0;
   sealOutId:string = '';
+  pdfUrl: string;
+  @ViewChild('content') popupview !: ElementRef;
   @Input() txtSealId:number=3;
   user :string =this.service.getFullNameLocalAuthen();
   pageChanged(event: any): void {
@@ -239,7 +241,14 @@ export class SealOutListComponent implements OnInit {
   selectSealNew(item: any) {
     console.log(item);
   }
-
+  previewReceipt(SealOutId: string) {
+    this.service.generateReceiptPDF(SealOutId).subscribe(res => {
+      const blob = new Blob([res.body], { type: 'application/pdf' });
+      this.pdfUrl = URL.createObjectURL(blob);
+      this.modalService.open(this.popupview, { size: 'lg' });
+      //window.open(url);
+    });
+  }
   submitFormSealChange(){
     if (this.itemSealChange.length===0){
       this.swal.showDialog("warning", "การแจ้งเตือน:กรุณาเลือกหมายเลขซีลที่ต้องการเปลี่ยนด้วยครับ");

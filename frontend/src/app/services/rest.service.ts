@@ -14,17 +14,19 @@ import { Response } from "../models/response.model";
 import { SealTypes } from "app/models/seal-types.model";
 import { SealStatus } from "app/models/seal-status.model";
 
-
 @Injectable()
 export class RestService {
   constructor(private http: HttpClient) {}
   private readonly apiUrl = `${environment.apiUrl}`;
-  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  private headers = new HttpHeaders({ "Content-Type": "application/json" });
   private httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/pdf" }),
     responseType: "arraybuffer" as "json",
   };
-
+  private httpOptionPDF = {
+    headers: new HttpHeaders({ "Content-Type": "application/pdf" }),
+    responseType: "arraybuffer" as "json",
+  };
   //----------------------------------------------------------------
   private sealInUrl = `${this.apiUrl}/sealin`;
   private sealUrl = `${this.apiUrl}/Seal`;
@@ -42,7 +44,7 @@ export class RestService {
     return localStorage.getItem(environment.keyLocalAuthenInfo);
   }
   //----------------------------------------------------------------
-  getRoles():Observable<Roles[]>{
+  getRoles(): Observable<Roles[]> {
     return this.http.get<Roles[]>(`${this.rolesUrl}/GetRoles`);
   }
   //----------------------------------------------------------------
@@ -80,7 +82,9 @@ export class RestService {
   //----------------------------------------------------------------
   addSealIn(items: any): Observable<any> {
     let item = JSON.stringify(items);
-    return this.http.post<any>(`${this.sealInUrl}`, item, { headers:this.headers });
+    return this.http.post<any>(`${this.sealInUrl}`, item, {
+      headers: this.headers,
+    });
   }
   getSealIn(
     isActive: string,
@@ -91,105 +95,143 @@ export class RestService {
   ): Observable<any> {
     return this.http.get<any[]>(
       `${this.sealInUrl}?pIsActive=${isActive}&pColumnSearch=${columnSearch}&searchTerm=${searchTerm}&pStartDate=${startDate}&pEndDate=${endDate}`,
-      { headers:this.headers }
+      { headers: this.headers }
     );
   }
   getSeaBetWeen(): Observable<any> {
     return this.http.get<any[]>(`${this.sealInUrl}/GetSealBetWeen`, {
-      headers:this.headers,
+      headers: this.headers,
     });
   }
   deleteSealIn(id: string): Observable<any> {
-    return this.http.delete<any[]>(`${this.sealInUrl}/${id}`, { headers:this.headers });
+    return this.http.delete<any[]>(`${this.sealInUrl}/${id}`, {
+      headers: this.headers,
+    });
   }
   deleteSealAll(itemId: string[]): Observable<any> {
     const deleteRequests = itemId.map((itemId) => this.deleteSealIn(itemId));
     return forkJoin(deleteRequests);
   }
   //----------------------------------------------------------------
-  getTypes():Observable<SealTypes[]>{
+  getTypes(): Observable<SealTypes[]> {
     return this.http.get<SealTypes[]>(`${this.sealUrl}/GetTypes`);
   }
 
-  getStatus():Observable<SealStatus[]>{
+  getStatus(): Observable<SealStatus[]> {
     return this.http.get<SealStatus[]>(`${this.sealUrl}/GetStatus`);
   }
-  getSeals( startDate: string,endDate: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.sealUrl}?pStartDate=${startDate}&pEndDate=${endDate}`);
+  getSeals(startDate: string, endDate: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.sealUrl}?pStartDate=${startDate}&pEndDate=${endDate}`
+    );
   }
   getSealItemBySealInId(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.sealUrl}/BySealInId/${id}`, {
-      headers:this.headers,
+      headers: this.headers,
     });
   }
   getSealExtra(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra`,{headers:this.headers});
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra`, {
+      headers: this.headers,
+    });
   }
-  getSealExtraById(id:number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra/${id}`,{headers:this.headers});
+  getSealExtraById(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealExtra/${id}`, {
+      headers: this.headers,
+    });
   }
   addSeal(items: any): Observable<any> {
     let item = JSON.stringify(items);
-    return this.http.post<any>(`${this.sealUrl}`, item, { headers:this.headers });
+    return this.http.post<any>(`${this.sealUrl}`, item, {
+      headers: this.headers,
+    });
   }
-  updateSeal(id:number,items: any): Observable<any> {
+  updateSeal(id: number, items: any): Observable<any> {
     let item = JSON.stringify(items);
-    return this.http.put<any>(`${this.sealUrl}/${id}`, item, { headers:this.headers });
+    return this.http.put<any>(`${this.sealUrl}/${id}`, item, {
+      headers: this.headers,
+    });
   }
   deleteSeal(id: string): Observable<any> {
-    return this.http.delete<any[]>(`${this.sealUrl}/${id}`, { headers:this.headers });
+    return this.http.delete<any[]>(`${this.sealUrl}/${id}`, {
+      headers: this.headers,
+    });
   }
   //----------------------------------------------------------------
   deleteSealOut(id: string): Observable<any> {
-    return this.http.delete<any[]>(`${this.sealOutUrl}/${id}`, { headers:this.headers });
+    return this.http.delete<any[]>(`${this.sealOutUrl}/${id}`, {
+      headers: this.headers,
+    });
   }
   addSealOut(item: any): Observable<any> {
     return this.http.post<any>(`${this.sealOutUrl}`, item, {
-      headers:this.headers,
+      headers: this.headers,
     });
   }
   updateSealOut(id: string, item: any): Observable<any> {
     return this.http.put<any>(`${this.sealOutUrl}/${id}`, item, {
-      headers:this.headers,
+      headers: this.headers,
     });
   }
   getSealOutById(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/${id}`, {
+      headers: this.headers,
+    });
   }
   getSealOutItem(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/SealOutItem/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/SealOutItem/${id}`, {
+      headers: this.headers,
+    });
   }
   getShowReceiptHeader(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptHeader/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptHeader/${id}`, {
+      headers: this.headers,
+    });
   }
   getSealOutInfoList(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfoList/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfoList/${id}`, {
+      headers: this.headers,
+    });
   }
   getReportReceiptDetail(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptDetail/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/ShowReceiptDetail/${id}`, {
+      headers: this.headers,
+    });
   }
   getSealExtraDetail(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealExtraDetail/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealExtraDetail/${id}`, {
+      headers: this.headers,
+    });
   }
   getReportReceipt(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/showreceipt/${id}`, {
+      headers: this.headers,
+    });
   }
   getSealOutInfo(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfo/${id}`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealOutInfo/${id}`, {
+      headers: this.headers,
+    });
   }
   getSealChange(): Observable<any> {
-    return this.http.get<any[]>(`${this.sealUrl}/GetSealChange`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealChange`, {
+      headers: this.headers,
+    });
   }
   getSealRemarks(): Observable<any> {
-    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealRemarks`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealOutUrl}/GetSealRemarks`, {
+      headers: this.headers,
+    });
   }
   getSealStatus(): Observable<any> {
-    return this.http.get<any[]>(`${this.sealUrl}/GetSealStatus`, { headers:this.headers });
+    return this.http.get<any[]>(`${this.sealUrl}/GetSealStatus`, {
+      headers: this.headers,
+    });
   }
   sealChange(items: any): Observable<any> {
     let item = JSON.stringify(items);
     return this.http.post<any>(`${this.sealOutUrl}/SealChange`, item, {
-      headers:this.headers,
+      headers: this.headers,
     });
   }
   getSealOutAll(
@@ -203,45 +245,66 @@ export class RestService {
     return this.http.get<any[]>(
       `${this.sealOutUrl}?pIsActive=${isCancel}&pColumnSearch=${columnSearch}&searchTerm=${searchTerm}&pStartDate=${startDate}&pEndDate=${endDate}`,
       {
-        headers:this.headers,
+        headers: this.headers,
       }
     );
   }
   //---------------------------------------------------------------- report
-
-  GetRemaining( startDate: string,endDate: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.reportUrl}/GetRemaining?pStartDate=${startDate}&pEndDate=${endDate}`);
+  generateReceiptPDF(SealOutId: string): Observable<any> {
+    const headers = new HttpHeaders().set("Accept", "application/pdf");
+    return this.http.get(`${this.reportUrl}/GenReportSealOut/${SealOutId}`, {
+      headers,
+      observe: "response",
+      responseType: "blob" as "json",
+    });
   }
-  getSealChanges(startDate: string,endDate: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.reportUrl}/GetSealChanges?pStartDate=${startDate}&pEndDate=${endDate}`);
+  GetRemaining(startDate: string, endDate: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.reportUrl}/GetRemaining?pStartDate=${startDate}&pEndDate=${endDate}`
+    );
   }
-  exportSealChanges(startDate: string,endDate: string) {
+  getSealChanges(startDate: string, endDate: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.reportUrl}/GetSealChanges?pStartDate=${startDate}&pEndDate=${endDate}`
+    );
+  }
+  exportSealChanges(startDate: string, endDate: string) {
     let apiEndpoint = `${this.reportUrl}/ExportSealChanges?pStartDate=${startDate}&pEndDate=${endDate}`;
-    this.http.get(apiEndpoint, { responseType: 'blob' }).subscribe((response: any) => {
-      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    this.http
+      .get(apiEndpoint, { responseType: "blob" })
+      .subscribe((response: any) => {
+        const blob = new Blob([response], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
 
-      // สร้างลิงก์ดาวน์โหลด
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      let now: Date = new Date();
-      let filename =`ReportSealChange_${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}.xlsx`;
-      link.download = filename;
-      let new_date: Date = new Date();
-      link.download = `report_SealChange_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`; // ใช้ชื่อไฟล์ที่ได้รับจากเซิร์ฟเวอร์ หากไม่สามารถรับชื่อไฟล์ได้ให้ใช้ชื่อเริ่มต้นเป็น "SealChanges.xlsx"
-      link.click();
-    });
+        // สร้างลิงก์ดาวน์โหลด
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        let now: Date = new Date();
+        let filename = `ReportSealChange_${now.getFullYear()}-${
+          now.getMonth() + 1
+        }-${now.getDate()} ${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}.xlsx`;
+        link.download = filename;
+        let new_date: Date = new Date();
+        link.download = `report_SealChange_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`; // ใช้ชื่อไฟล์ที่ได้รับจากเซิร์ฟเวอร์ หากไม่สามารถรับชื่อไฟล์ได้ให้ใช้ชื่อเริ่มต้นเป็น "SealChanges.xlsx"
+        link.click();
+      });
   }
-  exportRemaining(startDate: string,endDate: string) {
+  exportRemaining(startDate: string, endDate: string) {
     let apiEndpoint = `${this.reportUrl}/ExportRemaining?pStartDate=${startDate}&pEndDate=${endDate}`;
-    this.http.get(apiEndpoint, { responseType: 'blob' }).subscribe((response: any) => {
-      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    this.http
+      .get(apiEndpoint, { responseType: "blob" })
+      .subscribe((response: any) => {
+        const blob = new Blob([response], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
 
-      // สร้างลิงก์ดาวน์โหลด
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      let new_date: Date = new Date();
-      link.download = `report_SealRemaining_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`;
-      link.click();
-    });
+        // สร้างลิงก์ดาวน์โหลด
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        let new_date: Date = new Date();
+        link.download = `report_SealRemaining_${new_date.getFullYear()}${new_date.getMonth()}${new_date.getDate()}${new_date.getTime()}.xlsx`;
+        link.click();
+      });
   }
 }

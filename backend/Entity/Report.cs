@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace backend.Entity
 {
-    [Table("ReportฺBroken")]
-    public class ReportฺBroken
+    [Table("ReportBroken")]
+    public class ReportBroken
     {
         public DateTime? report_date { get; set; }
         public string? truck_name { get; set; }
@@ -13,7 +13,7 @@ namespace backend.Entity
         public string? remark { get; set; }
         public string? user_by { get; set; }
     }
-    public class ReportฺSealChange
+    public class ReportSealChange
     {
         public int? Id { get; set; }
         public string? TruckName { get; set; }
@@ -26,5 +26,21 @@ namespace backend.Entity
         public string? UpdatedBy { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
+    }
+    public class ReportSealOutReceipt
+    {
+        public string SealOutId { get; set; }
+        public DateTime Created { get; set; }
+        public string DriverName { get; set; }
+        public int? TruckId { get; set; }
+        public string? TruckName { get; set; }
+        public int? SealTotal { get; set; }
+        public int? SealTotalExtra { get; set; }
+        public int? SealId { get; set; }
+        public string? SealNo { get; set; }
+        public int? Pack { get; set; }
+        public string? SealBetween { get; set; }
+        public string? SealInId { get; set; }
+        public string Type { get; set; }
     }
 }

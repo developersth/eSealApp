@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetEsso" targetNamespace="http://tempuri.org/DataSetEsso.xsd" xmlns:mstns="http://tempuri.org/DataSetEsso.xsd" xmlns="http://tempuri.org/DataSetEsso.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetEsso" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="DataSetEsso" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetEsso">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="dtSealOutDetail" msprop:Generator_RowClassName="dtSealOutDetailRow" msprop:Generator_RowEvHandlerName="dtSealOutDetailRowChangeEventHandler" msprop:Generator_RowDeletedName="dtSealOutDetailRowDeleted" msprop:Generator_RowDeletingName="dtSealOutDetailRowDeleting" msprop:Generator_RowEvArgName="dtSealOutDetailRowChangeEvent" msprop:Generator_TablePropName="dtSealOutDetail" msprop:Generator_RowChangedName="dtSealOutDetailRowChanged" msprop:Generator_UserTableName="dtSealOutDetail" msprop:Generator_RowChangingName="dtSealOutDetailRowChanging" msprop:Generator_TableClassName="dtSealOutDetailDataTable" msprop:Generator_TableVarName="tabledtSealOutDetail">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SealOutId" msprop:Generator_UserColumnName="SealOutId" msprop:Generator_ColumnPropNameInTable="SealOutIdColumn" msprop:Generator_ColumnPropNameInRow="SealOutId" msprop:Generator_ColumnVarNameInTable="columnSealOutId" type="xs:string" minOccurs="0" />
+              <xs:element name="Created" msprop:Generator_UserColumnName="Created" msprop:Generator_ColumnPropNameInTable="CreatedColumn" msprop:Generator_ColumnPropNameInRow="Created" msprop:Generator_ColumnVarNameInTable="columnCreated" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="DriverName" msprop:Generator_UserColumnName="DriverName" msprop:Generator_ColumnPropNameInTable="DriverNameColumn" msprop:Generator_ColumnPropNameInRow="DriverName" msprop:Generator_ColumnVarNameInTable="columnDriverName" type="xs:string" minOccurs="0" />
+              <xs:element name="TruckId" msprop:Generator_UserColumnName="TruckId" msprop:Generator_ColumnPropNameInTable="TruckIdColumn" msprop:Generator_ColumnPropNameInRow="TruckId" msprop:Generator_ColumnVarNameInTable="columnTruckId" type="xs:string" minOccurs="0" />
+              <xs:element name="TruckName" msprop:Generator_UserColumnName="TruckName" msprop:Generator_ColumnPropNameInTable="TruckNameColumn" msprop:Generator_ColumnPropNameInRow="TruckName" msprop:Generator_ColumnVarNameInTable="columnTruckName" type="xs:string" minOccurs="0" />
+              <xs:element name="SealTotal" msprop:Generator_UserColumnName="SealTotal" msprop:Generator_ColumnPropNameInTable="SealTotalColumn" msprop:Generator_ColumnPropNameInRow="SealTotal" msprop:Generator_ColumnVarNameInTable="columnSealTotal" type="xs:short" minOccurs="0" />
+              <xs:element name="SealTotalExtra" msprop:Generator_UserColumnName="SealTotalExtra" msprop:Generator_ColumnPropNameInTable="SealTotalExtraColumn" msprop:Generator_ColumnPropNameInRow="SealTotalExtra" msprop:Generator_ColumnVarNameInTable="columnSealTotalExtra" type="xs:short" minOccurs="0" />
+              <xs:element name="SealId" msprop:Generator_UserColumnName="SealId" msprop:Generator_ColumnPropNameInTable="SealIdColumn" msprop:Generator_ColumnPropNameInRow="SealId" msprop:Generator_ColumnVarNameInTable="columnSealId" type="xs:string" minOccurs="0" />
+              <xs:element name="SealNo" msprop:Generator_UserColumnName="SealNo" msprop:Generator_ColumnPropNameInTable="SealNoColumn" msprop:Generator_ColumnPropNameInRow="SealNo" msprop:Generator_ColumnVarNameInTable="columnSealNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Pack" msprop:Generator_UserColumnName="Pack" msprop:Generator_ColumnPropNameInTable="PackColumn" msprop:Generator_ColumnPropNameInRow="Pack" msprop:Generator_ColumnVarNameInTable="columnPack" type="xs:short" minOccurs="0" />
+              <xs:element name="SealBetween" msprop:Generator_UserColumnName="SealBetween" msprop:Generator_ColumnPropNameInTable="SealBetweenColumn" msprop:Generator_ColumnPropNameInRow="SealBetween" msprop:Generator_ColumnVarNameInTable="columnSealBetween" type="xs:string" minOccurs="0" />
+              <xs:element name="SealInId" msprop:Generator_UserColumnName="SealInId" msprop:Generator_ColumnPropNameInTable="SealInIdColumn" msprop:Generator_ColumnPropNameInRow="SealInId" msprop:Generator_ColumnVarNameInTable="columnSealInId" type="xs:string" minOccurs="0" />
+              <xs:element name="Type" msprop:Generator_UserColumnName="Type" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_ColumnPropNameInRow="Type" msprop:Generator_ColumnVarNameInTable="columnType" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="dtSealOutDetailExtra" msprop:Generator_RowEvHandlerName="dtSealOutDetailExtraRowChangeEventHandler" msprop:Generator_RowDeletedName="dtSealOutDetailExtraRowDeleted" msprop:Generator_RowDeletingName="dtSealOutDetailExtraRowDeleting" msprop:Generator_RowEvArgName="dtSealOutDetailExtraRowChangeEvent" msprop:Generator_TablePropName="dtSealOutDetailExtra" msprop:Generator_RowChangedName="dtSealOutDetailExtraRowChanged" msprop:Generator_RowChangingName="dtSealOutDetailExtraRowChanging" msprop:Generator_TableClassName="dtSealOutDetailExtraDataTable" msprop:Generator_RowClassName="dtSealOutDetailExtraRow" msprop:Generator_TableVarName="tabledtSealOutDetailExtra" msprop:Generator_UserTableName="dtSealOutDetailExtra">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SealOutId" msprop:Generator_ColumnPropNameInRow="SealOutId" msprop:Generator_ColumnPropNameInTable="SealOutIdColumn" msprop:Generator_ColumnVarNameInTable="columnSealOutId" msprop:Generator_UserColumnName="SealOutId" type="xs:string" minOccurs="0" />
+              <xs:element name="Created" msprop:Generator_ColumnPropNameInRow="Created" msprop:Generator_ColumnPropNameInTable="CreatedColumn" msprop:Generator_ColumnVarNameInTable="columnCreated" msprop:Generator_UserColumnName="Created" type="xs:string" minOccurs="0" />
+              <xs:element name="SealId" msprop:Generator_ColumnPropNameInRow="SealId" msprop:Generator_ColumnPropNameInTable="SealIdColumn" msprop:Generator_ColumnVarNameInTable="columnSealId" msprop:Generator_UserColumnName="SealId" type="xs:string" minOccurs="0" />
+              <xs:element name="SealNo" msprop:Generator_ColumnPropNameInRow="SealNo" msprop:Generator_ColumnPropNameInTable="SealNoColumn" msprop:Generator_ColumnVarNameInTable="columnSealNo" msprop:Generator_UserColumnName="SealNo" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

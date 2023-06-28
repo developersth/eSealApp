@@ -28,6 +28,7 @@ import { AuthGuard } from "./shared/auth/auth-guard.service";
 import { WINDOW_PROVIDERS } from './shared/services/window.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'
 var firebaseConfig = {
   apiKey: "YOUR_API_KEY", //YOUR_API_KEY
   authDomain: "YOUR_AUTH_DOMAIN", //YOUR_AUTH_DOMAIN
@@ -70,6 +71,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     PerfectScrollbarModule,
     FontAwesomeModule,
+    NgxExtendedPdfViewerModule
   ],
   providers: [
     AuthService,
