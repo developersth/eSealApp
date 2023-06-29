@@ -35,7 +35,7 @@ export class UserListComponent implements OnInit {
       console.log(this.users);
     });
   }
-  deleteUser(id: string) {
+  deleteUser(id: any) {
     console.log(id);
     this.swal
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")

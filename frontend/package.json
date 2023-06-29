@@ -53,7 +53,7 @@
     "ngx-chips": "2.2.2",
     "ngx-custom-validators": "8.0.0",
     "ngx-device-detector": "2.0.4",
-    "ngx-extended-pdf-viewer": "^17.3.1",
+    "ngx-extended-pdf-viewer": "^17.3.2",
     "ngx-pagination": "^6.0.3",
     "ngx-perfect-scrollbar": "10.0.1",
     "ngx-quill": "13.0.1",

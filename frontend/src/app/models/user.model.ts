@@ -7,4 +7,5 @@ export interface User {
   isActive:boolean;
   roleId:number;
   roleName:string;
+  created:Date;
 }

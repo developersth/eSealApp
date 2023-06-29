@@ -41,6 +41,7 @@ export class FullLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   isMenuCollapsedOnHover = false;
   isNavbarSeachTextEmpty = true;
   isScrollTopVisible = false;
+  perfectScrollbarEnable=false;
   resizeTimeout;
   options = {
     direction: "ltr",

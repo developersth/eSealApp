@@ -210,7 +210,7 @@ export class SealinComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
-  DeleteData(id: string) {
+  DeleteData(id: any) {
     swal
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
       .then((res) => {

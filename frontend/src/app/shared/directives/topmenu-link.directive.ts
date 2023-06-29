@@ -14,7 +14,7 @@ export class TopMenuLinkDirective implements OnInit, OnDestroy {
   public parent: string;
 
   @Input()
-  public level: number;
+  public level: string;
 
   @HostBinding('class.show')
   @Input()

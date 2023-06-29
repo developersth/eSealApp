@@ -31,6 +31,7 @@ import { TopMenuLinkDirective } from './directives/topmenu-link.directive';
 import { TopMenuDropdownDirective } from './directives/topmenu-dropdown.directive';
 import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle.directive';
 
+
 @NgModule({
     exports: [
         CommonModule,
@@ -57,7 +58,7 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
         PerfectScrollbarModule,
         ClickOutsideModule,
         AutocompleteModule,
-        PipeModule,
+        PipeModule
     ],
     declarations: [
         FooterComponent,

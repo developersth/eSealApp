@@ -12,7 +12,7 @@ export class SidebarLinkDirective implements OnInit, OnDestroy {
   public parent: string;
 
   @Input()
-  public level: number;
+  public level: string;
 
   @Input()
   public hasSub: boolean;

@@ -103,8 +103,9 @@ namespace backend.Controllers
                 report.DataSources.Add(new ReportDataSource("dtSealOutDetail", dtSealOutDetail));
                 report.DataSources.Add(new ReportDataSource("dtDetailExtra", dtDetailExtra));
                 // Render the report to a byte array
-                var result = report.Render("PDF");
-                var stream = new MemoryStream(result);
+                //var result = report.Render("PDF");
+                byte[] pdf = report.Render("PDF");
+                var stream = new MemoryStream(pdf);
                 stream.Seek(0, SeekOrigin.Begin);
                 var response = new FileStreamResult(stream, "application/pdf");
                 string Filename = "Receipt_" + SealOutId + ".pdf";

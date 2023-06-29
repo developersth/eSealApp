@@ -23,7 +23,7 @@ export class UserEditComponent implements OnInit {
   userForm: FormGroup;
   id: string = "";
   user: User[];
-  roles: Roles;
+  roles: Roles[];
 
   @Input() data: any = {};
   constructor(

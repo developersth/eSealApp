@@ -16,7 +16,7 @@ export class SealModalComponent implements OnInit {
   id: number = 0;
   form: FormGroup;
   sealTypes: any[];
-  sealStatus: SealStatus;
+  sealStatus: SealStatus[];
   data: any[];
   constructor(
     public activeModal: NgbActiveModal,

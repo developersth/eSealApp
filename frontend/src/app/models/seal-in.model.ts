@@ -7,6 +7,7 @@ export class SealIn {
   public sealList: string;  //json string
   public pack: number;
   public isUsed: boolean;
+  public isActive: boolean;
   public checked: boolean;
   public createdBy: string;
   public updatedBy: string;

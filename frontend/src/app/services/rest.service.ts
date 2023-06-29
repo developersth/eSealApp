@@ -250,6 +250,9 @@ export class RestService {
     );
   }
   //---------------------------------------------------------------- report
+  GenerateInvoicePDF(invoiceno:any){
+    return this.http.get('https://localhost:7118/Invoice/generatepdf?InvoiceNo='+invoiceno,{observe:'response',responseType:'blob'});
+  }
   generateReceiptPDF(SealOutId: string): Observable<any> {
     const headers = new HttpHeaders().set("Accept", "application/pdf");
     return this.http.get(`${this.reportUrl}/GenReportSealOut/${SealOutId}`, {

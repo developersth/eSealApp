@@ -6,6 +6,7 @@ export class SealOut {
   public sealTotalExtra: number;
   public sealList:string;
   public pack:number;
+  public sealNo:string;
   public sealExtraList:string;
   public truckId: number;
   public truckName: string;
@@ -14,7 +15,7 @@ export class SealOut {
   public isCancel:boolean;
   public createdBy: string;
   public UpdatedBy: string;
-  public Created:Date;
+  public created:Date;
   public Updated:Date;
   public checked: boolean;
   constructor() {

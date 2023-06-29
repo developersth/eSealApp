@@ -137,7 +137,7 @@
                   <tr *ngFor="let item of sealInItem | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
                     <td>
                       <ng-container>
-                        <input type="checkbox" (change)="onItemChecked(item, $event.target.checked)"
+                        <input type="checkbox" (change)="onItemChecked(item, item.checked)"
                           [(ngModel)]="item.checked">
                       </ng-container>
                     </td>
@@ -181,7 +181,7 @@
               </div>
               <div class="modal-body">
                 <div id="printDivQR" class="text-center">
-                  <qrcode width="400px" qrdata="{{sealBetween}}" print></qrcode>
+                  <qrcode [width]="400" qrdata="{{sealBetween}}" print></qrcode>
                   <h3>{{sealBetween}}</h3>
                 </div>
               </div>

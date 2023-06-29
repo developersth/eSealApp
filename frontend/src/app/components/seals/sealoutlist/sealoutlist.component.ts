@@ -74,6 +74,7 @@ export class SealOutListComponent implements OnInit {
   sealId:number = 0;
   sealOutId:string = '';
   pdfUrl: string;
+  invoiceno:string = '';
   @ViewChild('content') popupview !: ElementRef;
   @Input() txtSealId:number=3;
   user :string =this.service.getFullNameLocalAuthen();
@@ -138,7 +139,7 @@ export class SealOutListComponent implements OnInit {
     });
   }
 
-  deleteData(id: string) {;
+  deleteData(id: any) {;
     this.swal
       .ConfirmText("แจ้งเตือนการลบข้อมูล", "คุณต้องการลบข้อมูลหรือไม่?")
       .then((res) => {
@@ -242,7 +243,7 @@ export class SealOutListComponent implements OnInit {
     console.log(item);
   }
   previewReceipt(SealOutId: string) {
-    this.service.generateReceiptPDF(SealOutId).subscribe(res => {
+    this.service.GenerateInvoicePDF('IVN3576788').subscribe(res => {
       const blob = new Blob([res.body], { type: 'application/pdf' });
       this.pdfUrl = URL.createObjectURL(blob);
       this.modalService.open(this.popupview, { size: 'lg' });
