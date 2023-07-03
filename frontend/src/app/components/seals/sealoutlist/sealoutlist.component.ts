@@ -243,9 +243,10 @@ export class SealOutListComponent implements OnInit {
     console.log(item);
   }
   previewReceipt(SealOutId: string) {
-    this.service.GenerateInvoicePDF('IVN3576788').subscribe(res => {
+    this.service.generateReceiptPDF(SealOutId).subscribe(res => {
       const blob = new Blob([res.body], { type: 'application/pdf' });
       this.pdfUrl = URL.createObjectURL(blob);
+      console.log(this.pdfUrl);
       this.modalService.open(this.popupview, { size: 'lg' });
       //window.open(url);
     });

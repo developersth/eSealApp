@@ -30,7 +30,8 @@ import { TopMenuDirective } from './directives/topmenu.directive';
 import { TopMenuLinkDirective } from './directives/topmenu-link.directive';
 import { TopMenuDropdownDirective } from './directives/topmenu-dropdown.directive';
 import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle.directive';
-
+//PDF Directive
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'
 
 @NgModule({
     exports: [
@@ -58,7 +59,8 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
         PerfectScrollbarModule,
         ClickOutsideModule,
         AutocompleteModule,
-        PipeModule
+        PipeModule,
+        NgxExtendedPdfViewerModule
     ],
     declarations: [
         FooterComponent,

@@ -88,6 +88,7 @@ namespace backend
                 app.UseSwaggerUI();
             }
 
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

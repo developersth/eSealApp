@@ -23,8 +23,11 @@ using OfficeOpenXml.Table;
 using backend.Services;
 using System.Data;
 //using AspNetCore.Reporting;
-using Microsoft.Reporting.NETCore;
+//using Microsoft.Reporting.NETCore;
 using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+//using Microsoft.Reporting.WebForms;
+using Microsoft.Reporting.NETCore;
 
 namespace backend.Controllers
 {
@@ -82,41 +85,41 @@ namespace backend.Controllers
             }
 
         }
+
         [HttpGet("GenReportSealOut/{SealOutId}")]
         public async Task<IActionResult> GenReportSealOut(string SealOutId)
         {
+            string path = Path.Combine(_env.WebRootPath, "Reports", "rptReceipt.rdlc");
             try
             {
 
                 var byteRes = new byte[] { };
-                string path = $"{_env.WebRootPath}/Reports/rptReceipt.rdlc";
+
+                //string path = $"{_env.ContentRootPath}/Reports/rptReceipt.rdlc";
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 //LocalReport report = new LocalReport(path);
                 LocalReport report = new LocalReport();
-                report.ReportPath= path;
+                report.ReportPath = path;
                 DataTable dtSealOutDetail = await _reportService.GetSealOutReceipt(SealOutId);
-                //report.AddDataSource("dtSealOutDetail", dt);
-                DataTable dtDetailExtra = await _reportService.GetSealOutReceiptExtra(SealOutId);
-               // report.AddDataSource("dtSealOutDetailExtra", dtExtra);
-                //ReportDataSource dataset1 = new ReportDataSource("Dataset1", dtDetail);
-                //ReportDataSource dataset2 = new ReportDataSource("Dataset2", dtDetailExtra);
+                //DataTable dtDetailExtra = await _reportService.GetSealOutReceiptExtra(SealOutId);
                 report.DataSources.Add(new ReportDataSource("dtSealOutDetail", dtSealOutDetail));
-                report.DataSources.Add(new ReportDataSource("dtDetailExtra", dtDetailExtra));
+
+
                 // Render the report to a byte array
                 //var result = report.Render("PDF");
-                byte[] pdf = report.Render("PDF");
-                var stream = new MemoryStream(pdf);
+                byte[] result = report.Render("PDF");
+                var stream = new MemoryStream(result);
                 stream.Seek(0, SeekOrigin.Begin);
                 var response = new FileStreamResult(stream, "application/pdf");
                 string Filename = "Receipt_" + SealOutId + ".pdf";
                 return File(response.FileStream, "application/pdf", Filename);
 
-               // return Ok(new { result = result, message = "request successfully" });
+                // return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
             {
                 _logger.LogError($"Log GetRemaining: {error.Message}");
-                return StatusCode(500, new { result = "", message = error.Message });
+                return StatusCode(500, new { result = path, message = error.Message });
             }
 
         }
@@ -194,7 +197,7 @@ namespace backend.Controllers
                 return StatusCode(500, new { result = "", message = error });
             }
         }
-             [HttpGet("ExportRemaining")]
+        [HttpGet("ExportRemaining")]
         public IActionResult ExportRemaining([FromQuery] string pStartDate = "", [FromQuery] string pEndDate = "")
         {
 
