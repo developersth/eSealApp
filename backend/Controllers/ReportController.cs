@@ -27,7 +27,12 @@ using System.Data;
 using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 //using Microsoft.Reporting.WebForms;
-using Microsoft.Reporting.NETCore;
+//using Microsoft.Reporting.NETCore;
+using System.IO;
+using FastReport.Utils;
+using FastReport;
+using FastReport.Export.Html;
+using FastReport.Export.PdfSimple;
 
 namespace backend.Controllers
 {
@@ -85,44 +90,74 @@ namespace backend.Controllers
             }
 
         }
-
-        [HttpGet("GenReportSealOut/{SealOutId}")]
-        public async Task<IActionResult> GenReportSealOut(string SealOutId)
+        [HttpGet("GenerateReport")]
+        public IActionResult GenerateReport()
         {
-            string path = Path.Combine(_env.WebRootPath, "Reports", "rptReceipt.rdlc");
+            // Load the report template
+            //string reportPath = Path.Combine("Reports", "your_report_template.frx");
             try
             {
-
-                var byteRes = new byte[] { };
-
-                //string path = $"{_env.ContentRootPath}/Reports/rptReceipt.rdlc";
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                //LocalReport report = new LocalReport(path);
-                LocalReport report = new LocalReport();
-                report.ReportPath = path;
-                DataTable dtSealOutDetail = await _reportService.GetSealOutReceipt(SealOutId);
-                //DataTable dtDetailExtra = await _reportService.GetSealOutReceiptExtra(SealOutId);
-                report.DataSources.Add(new ReportDataSource("dtSealOutDetail", dtSealOutDetail));
+                string reportPath = Path.Combine(_env.WebRootPath, "Reports", "QR-Codes.frx");
+                Report report = new Report();
+                report.Load(reportPath);
 
 
-                // Render the report to a byte array
-                //var result = report.Render("PDF");
-                byte[] result = report.Render("PDF");
-                var stream = new MemoryStream(result);
-                stream.Seek(0, SeekOrigin.Begin);
-                var response = new FileStreamResult(stream, "application/pdf");
-                string Filename = "Receipt_" + SealOutId + ".pdf";
-                return File(response.FileStream, "application/pdf", Filename);
+                // Generate the report
+                report.Prepare();
 
-                // return Ok(new { result = result, message = "request successfully" });
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    PDFSimpleExport pdfExport = new PDFSimpleExport();
+                    pdfExport.Export(report, ms);
+                    ms.Flush();
+                    return File(ms.ToArray(), "application/pdf", Path.GetFileNameWithoutExtension("Master-Detail") + ".pdf");
+                }
             }
-            catch (Exception error)
+            catch (System.Exception error)
             {
                 _logger.LogError($"Log GetRemaining: {error.Message}");
-                return StatusCode(500, new { result = path, message = error.Message });
+                return StatusCode(500, new { result = error.Message, message = error.Message });
             }
 
         }
+
+        //[HttpGet("GenReportSealOut/{SealOutId}")]
+        //public async Task<IActionResult> GenReportSealOut(string SealOutId)
+        //{
+        //    string path = Path.Combine(_env.WebRootPath, "Reports", "rptReceipt.rdlc");
+        //    try
+        //    {
+
+        //        var byteRes = new byte[] { };
+
+        //        //string path = $"{_env.ContentRootPath}/Reports/rptReceipt.rdlc";
+        //        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        //        //LocalReport report = new LocalReport(path);
+        //        LocalReport report = new LocalReport();
+        //        report.ReportPath = path;
+        //        DataTable dtSealOutDetail = await _reportService.GetSealOutReceipt(SealOutId);
+        //        //DataTable dtDetailExtra = await _reportService.GetSealOutReceiptExtra(SealOutId);
+        //        report.DataSources.Add(new ReportDataSource("dtSealOutDetail", dtSealOutDetail));
+
+
+        //        // Render the report to a byte array
+        //        //var result = report.Render("PDF");
+        //        byte[] result = report.Render("PDF");
+        //        var stream = new MemoryStream(result);
+        //        stream.Seek(0, SeekOrigin.Begin);
+        //        var response = new FileStreamResult(stream, "application/pdf");
+        //        string Filename = "Receipt_" + SealOutId + ".pdf";
+        //        return File(response.FileStream, "application/pdf", Filename);
+
+        //        // return Ok(new { result = result, message = "request successfully" });
+        //    }
+        //    catch (Exception error)
+        //    {
+        //        _logger.LogError($"Log GetRemaining: {error.Message}");
+        //        return StatusCode(500, new { result = path, message = error.Message });
+        //    }
+
+        //}
         [HttpGet("ExportSealChanges")]
         public async Task<IActionResult> ExportSealChanges([FromQuery] string pStartDate = "", [FromQuery] string pEndDate = "")
         {
