@@ -13,6 +13,15 @@ namespace backend.Entity
         public string? remark { get; set; }
         public string? user_by { get; set; }
     }
+        public class ReportRemaining
+    {
+        public string? ReportDate { get; set; }
+        public int? SealStart { get; set; }
+        public int? SealIsActive { get; set; }
+        public int? SealAdditional { get; set; }
+        public int? SealBroken { get; set; }
+        public int? SealBalances { get; set; }
+    }
     public class ReportSealChange
     {
         public int? Id { get; set; }

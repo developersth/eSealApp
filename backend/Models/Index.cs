@@ -5,7 +5,7 @@ namespace backend.Models
         public int Id { get; set; }
         public string? SealNo { get; set; }
         public string? Type { get; set; }
-        public int? Status { get; set; }
+        public int? Status { get; set; }//1=ซีล
         public bool? IsActive { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

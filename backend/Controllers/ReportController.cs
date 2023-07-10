@@ -33,7 +33,6 @@ using FastReport.Utils;
 using FastReport;
 using FastReport.Export.Html;
 using FastReport.Export.PdfSimple;
-
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
@@ -90,6 +89,8 @@ namespace backend.Controllers
             }
 
         }
+
+
         [HttpGet("GenerateReport")]
         public IActionResult GenerateReport()
         {
@@ -219,16 +220,31 @@ namespace backend.Controllers
             }
         }
         [HttpGet("GetRemaining")]
-        public IActionResult GetRemaining()
+        public async Task<IActionResult> GetRemaining([FromQuery] string pStartDate = "", [FromQuery] string pEndDate = "")
         {
             try
             {
-                var result = Context.Roles.ToList();
+
+                DateTime startDate = DateTime.Now;
+                DateTime endDate = DateTime.Now;
+                if (!string.IsNullOrEmpty(pStartDate))
+                {
+                    string[] p = pStartDate.Split('-');
+                    startDate = new DateTime(Convert.ToInt16(p[0]), Convert.ToInt16(p[1]), Convert.ToInt16(p[2]));
+                }
+                if (!string.IsNullOrEmpty(pEndDate))
+                {
+                    string[] p = pEndDate.Split('-');
+                    endDate = new DateTime(Convert.ToInt16(p[0]), Convert.ToInt16(p[1]), Convert.ToInt16(p[2]));
+                }
+
+
+                var result = await _reportService.GetRemaining(startDate, endDate);
                 return Ok(new { result = result, message = "request successfully" });
             }
             catch (Exception error)
             {
-                _logger.LogError($"Log Get User: {error}");
+                _logger.LogError($"Log GetRemaining: {error}");
                 return StatusCode(500, new { result = "", message = error });
             }
         }

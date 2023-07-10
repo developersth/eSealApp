@@ -3,6 +3,7 @@ using backend.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Globalization;
 
 namespace backend.Services
 {
@@ -73,12 +74,12 @@ namespace backend.Services
                     item.Type
                 );
             }
-          
+
             return dataTable;
         }
         public async Task<DataTable> GetSealOutReceiptExtra(string SealOutId)
         {
-            var result = Context.SealOutExtraItem.Where(a=>a.SealOutId==SealOutId);
+            var result = Context.SealOutExtraItem.Where(a => a.SealOutId == SealOutId);
 
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("SealOutId", typeof(string));
@@ -124,7 +125,24 @@ namespace backend.Services
             var result = await query.ToListAsync();
             return result;
         }
+        public async Task<List<ReportRemaining>> GetRemaining(DateTime startDate, DateTime endDate)
+        {
+            var query = Context.Seals
+                        .Where(u => u.Created >= startDate && u.Created <= endDate) // ตรวจสอบว่าฟิลด์ Created.Date เท่ากับวันที่ค้นหา
+                        .GroupBy(s => s.Created.Date)
+                        .Select(g => new ReportRemaining
+                        {
+                            ReportDate = g.Key.ToString("yyyy/MM/dd", new CultureInfo("en-US")),
+                            SealStart = Context.Seals.Count(a => a.Created.Date == g.Key.Date.AddDays(-1) && a.IsActive == false),
+                            SealIsActive = g.Count(s => s.IsActive == true),
+                            SealAdditional = g.Count(),
+                            SealBroken = g.Count(s => s.Status == 2),
+                            SealBalances = g.Count(s => s.IsActive == false) + Context.Seals.Count(a => a.Created.Date == g.Key.Date.AddDays(-1) && a.IsActive == false),
+                        });
 
+            var result = await query.ToListAsync();
+            return result;
+        }
 
     }
 }

@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
     <PackageReference Include="EPPlus" Version="6.2.4" />
-    <PackageReference Include="FastReport.OpenSource" Version="2023.2.20" />
     <PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2023.2.20" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
@@ -41,6 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\Reports\QR-Codes.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\Reports\rptReceipt.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
